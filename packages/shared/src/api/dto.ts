@@ -137,6 +137,7 @@ export const ItemCountsDto = z.object({
   blocked: z.number().int(),
   not_applicable: z.number().int(),
 });
+export type ItemCountsDto = z.infer<typeof ItemCountsDto>;
 
 export const ApplicationDto = z.object({
   id: Uuid,
@@ -189,12 +190,14 @@ export const EssayDraftDto = z.object({
   source: z.string(),
   created_at: IsoDateTime,
 });
+export type EssayDraftDto = z.infer<typeof EssayDraftDto>;
 export const EssayFeedbackDto = z.object({
   id: Uuid,
   essay_draft_id: Uuid,
   feedback: EssayFeedback,
   created_at: IsoDateTime,
 });
+export type EssayFeedbackDto = z.infer<typeof EssayFeedbackDto>;
 export const EssayDto = z.object({
   id: Uuid,
   application_id: Uuid.nullable(),
@@ -229,6 +232,7 @@ export const RecommenderAssignmentDto = z.object({
   submitted_at: IsoDate.nullable(),
   evidence: ItemEvidence.nullable(),
 });
+export type RecommenderAssignmentDto = z.infer<typeof RecommenderAssignmentDto>;
 export const RecommenderDto = z.object({
   id: Uuid,
   name: z.string(),
@@ -325,6 +329,7 @@ export const SnapshotSummaryDto = z.object({
   low_confidence_sections: z.array(z.string()),
   changes: z.array(StateChange),
 });
+export type SnapshotSummaryDto = z.infer<typeof SnapshotSummaryDto>;
 
 export const TimelineEntryDto = z.object({
   date: IsoDate,
@@ -363,6 +368,7 @@ export const CredentialStatusDto = z.object({
   last_used_at: nullableDateTime,
   failure_count: z.number().int(),
 });
+export type CredentialStatusDto = z.infer<typeof CredentialStatusDto>;
 
 export const SyncStatusDto = z.object({
   last_synced_at: nullableDateTime,
@@ -410,6 +416,7 @@ export const AdminStudentDto = z.object({
   tokens_30d: z.object({ input: z.number().int(), output: z.number().int() }),
   browser_minutes_30d: z.number(),
 });
+export type AdminStudentDto = z.infer<typeof AdminStudentDto>;
 export const QueueHealthDto = z.object({
   queue: z.string(),
   waiting: z.number().int(),
@@ -418,6 +425,7 @@ export const QueueHealthDto = z.object({
   failed: z.number().int(),
   completed: z.number().int(),
 });
+export type QueueHealthDto = z.infer<typeof QueueHealthDto>;
 export const DriftAlertDto = z.object({
   id: Uuid,
   section: z.string(),
@@ -428,6 +436,7 @@ export const DriftAlertDto = z.object({
   created_at: IsoDateTime,
   resolved_at: nullableDateTime,
 });
+export type DriftAlertDto = z.infer<typeof DriftAlertDto>;
 export const CostReportDto = z.object({
   students: z.array(
     z.object({
@@ -443,3 +452,4 @@ export const CostReportDto = z.object({
   ),
   since: IsoDateTime,
 });
+export type CostReportDto = z.infer<typeof CostReportDto>;
