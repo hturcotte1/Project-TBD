@@ -1,45 +1,14 @@
-import { randomUUID } from 'node:crypto';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { appendAudit } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
 import { APPLICATION_PLANS, type ApplicationPlan } from '@tbd/shared/domain';
-import type { SchoolRequirementsData } from '@tbd/shared/schemas';
+import { createApplication, DuplicateApplicationError } from '@tbd/shared/services';
 import { localDate } from '@tbd/shared/time';
-import { buildChecklist, findSchool, resolveDeadline } from '../integrations/shared-engines';
+import { findSchool } from '../integrations/shared-engines';
 import { defineTool, fail, ok } from './types';
 
 export const AddApplicationInput = z.object({ school: z.string().min(1).max(200), plan: z.enum(APPLICATION_PLANS).optional() });
-
-const UNVERIFIED_CYCLE = '2026-27';
-
-function unverifiedRequirements(): SchoolRequirementsData {
-  return {
-    cycle: UNVERIFIED_CYCLE,
-    plans: [{ plan: 'RD', deadline: '2027-01-01', notes: 'Placeholder deadline — not yet verified.', needs_verification: true }],
-    supplements: [],
-    recommendations: { teacher_min: 1, teacher_max: 2, counselor_required: true, other_max: 0, notes: '' },
-    test_policy: 'optional',
-    interview_policy: 'none',
-    portfolio: { status: 'none', description: '' },
-    midyear_report: true,
-    css_profile: { required: false, deadline: null, needs_verification: false },
-    fafsa_priority_deadline: null,
-    application_fee: null,
-    fee_waiver_eligible: true,
-    needs_verification: true,
-    source: 'internal_dataset',
-    notes: 'Added by the student; requirements not yet verified.',
-  };
-}
-
-function slugify(name: string): string {
-  const s = name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-  return s || `school-${randomUUID().slice(0, 8)}`;
-}
 
 export const addApplicationTool = defineTool({
   name: 'addApplication',
@@ -47,128 +16,48 @@ export const addApplicationTool = defineTool({
   inputSchema: AddApplicationInput,
   authorization: 'student_text',
   async run(tc, input) {
+    // Peeked only to pick a sensible default plan (the school's first offered plan) when the
+    // student didn't name one; createApplication does the real (re-)lookup and DB work.
     const entry = findSchool(input.school);
-    const db = tc.deps.db;
-
-    let schoolId: string;
-    let schoolName: string;
-    let schoolSlug: string;
-    let commonAppMember: boolean;
-    let requirementsData: SchoolRequirementsData;
-    let needsVerification: boolean;
-
-    if (entry) {
-      const existing = await db.select().from(S.schools).where(eq(S.schools.slug, entry.slug)).limit(1);
-      let row = existing[0];
-      if (!row) {
-        const [created] = await db
-          .insert(S.schools)
-          .values({
-            slug: entry.slug,
-            name: entry.name,
-            ceebCode: entry.ceeb_code,
-            commonAppMember: entry.common_app_member,
-            portalUrl: entry.portal_url,
-            website: entry.website,
-            city: entry.city,
-            state: entry.state,
-            type: entry.type,
-            aliases: entry.aliases,
-          })
-          .returning();
-        row = created;
-      }
-      if (!row) return fail('Could not create that school.');
-      schoolId = row.id;
-      schoolName = row.name;
-      schoolSlug = row.slug;
-      commonAppMember = row.commonAppMember;
-      requirementsData = entry.requirements;
-      needsVerification = entry.requirements.needs_verification;
-      const existingReq = await db
-        .select()
-        .from(S.schoolRequirements)
-        .where(and(eq(S.schoolRequirements.schoolId, schoolId), eq(S.schoolRequirements.cycle, entry.requirements.cycle)))
-        .limit(1);
-      if (!existingReq[0]) {
-        await db.insert(S.schoolRequirements).values({ schoolId, cycle: entry.requirements.cycle, data: entry.requirements, needsVerification: entry.requirements.needs_verification });
-      }
-    } else {
-      schoolName = input.school.trim();
-      requirementsData = unverifiedRequirements();
-      needsVerification = true;
-      const [created] = await db
-        .insert(S.schools)
-        .values({ slug: slugify(schoolName), name: schoolName, commonAppMember: true, city: '', state: '', type: 'private', aliases: [] })
-        .returning();
-      if (!created) return fail('Could not create that school.');
-      schoolId = created.id;
-      schoolSlug = created.slug;
-      commonAppMember = created.commonAppMember;
-      await db.insert(S.schoolRequirements).values({ schoolId, cycle: requirementsData.cycle, data: requirementsData, needsVerification: true });
-    }
-
-    const existingApp = await tc.sdb.selectOne(S.applications, eq(S.applications.schoolId, schoolId));
-    if (existingApp) return fail(`${schoolName} is already on your list.`);
-
-    const requestedPlan: ApplicationPlan | undefined = input.plan;
-    const resolvedPlan: ApplicationPlan =
-      requestedPlan && requirementsData.plans.some((p) => p.plan === requestedPlan) ? requestedPlan : (requirementsData.plans[0]?.plan ?? 'RD');
-    const resolved = resolveDeadline(requirementsData, resolvedPlan);
-    const deadline = resolved?.deadline ?? '2027-01-01';
-
-    const [application] = await tc.sdb.insert(S.applications, {
-      schoolId,
-      plan: resolvedPlan,
-      deadline,
-      deadlineSource: entry ? 'internal_dataset' : 'student',
-      status: 'not_started',
-    });
-    if (!application) return fail('Could not add that application.');
-
-    // First checklist straight from the requirements engine: no Common App snapshot yet, so every
-    // Common App-backed item starts as "missing" and the next sync reconciles it against reality.
+    const plan: ApplicationPlan = input.plan ?? entry?.requirements.plans[0]?.plan ?? 'RD';
     const profile = tc.ctx.profile;
     const testScores = profile?.testScores;
-    const specs = buildChecklist({
-      application: { id: application.id, plan: resolvedPlan, deadline, schoolSlug, schoolName, commonAppMember, status: 'not_started' },
-      requirements: requirementsData,
-      snapshotCollege: null,
-      sections: null,
-      student: {
-        testStance: testScores?.test_optional_stance ?? 'undecided',
-        hasSatOrAct: Boolean(testScores && (testScores.sat.length > 0 || testScores.act.length > 0)),
-        financialConstraints: profile?.demographics.financial_constraints ?? null,
-        firstGeneration: profile?.demographics.first_generation ?? null,
-      },
-      today: localDate(tc.deps.clock.now(), tc.ctx.student.timezone),
-      capturedAt: null,
-    });
-    if (specs.length > 0) {
-      await tc.sdb.insert(
-        S.applicationItems,
-        specs.map((d) => ({
-          applicationId: application.id,
-          ruleKey: d.ruleKey,
-          kind: d.kind,
-          title: d.title,
-          description: d.description,
-          source: d.source,
-          status: d.status,
-          evidence: d.evidence,
-          dueDate: d.dueDate,
-          importance: d.importance,
-          effort: d.effort,
-          dependsOnOthers: d.dependsOnOthers,
-          blocking: d.blocking,
-        })),
+
+    let application: S.Application;
+    try {
+      application = await createApplication(
+        tc.deps.db,
+        tc.sdb,
+        { schoolName: input.school, plan, selfAssessment: null },
+        {
+          today: localDate(tc.deps.clock.now(), tc.ctx.student.timezone),
+          student: {
+            testStance: testScores?.test_optional_stance ?? 'undecided',
+            hasSatOrAct: Boolean(testScores && (testScores.sat.length > 0 || testScores.act.length > 0)),
+            financialConstraints: profile?.demographics.financial_constraints ?? null,
+            firstGeneration: profile?.demographics.first_generation ?? null,
+          },
+          enqueuer: tc.deps.enqueuer,
+        },
       );
+    } catch (err) {
+      if (err instanceof DuplicateApplicationError) return fail(`${err.schoolName} is already on your list.`);
+      throw err;
     }
 
-    await tc.deps.enqueuer.enqueue('maintenance.recompute_next_actions', { studentId: tc.studentId, reason: 'application_added' });
-    await appendAudit(tc.sdb, { actor: 'agent', action: 'application.added', entityType: 'application', entityId: application.id, details: { school: schoolName, plan: resolvedPlan } });
+    const schoolRows = await tc.deps.db.select().from(S.schools).where(eq(S.schools.id, application.schoolId)).limit(1);
+    const schoolName = schoolRows[0]?.name ?? input.school.trim();
+    const needsVerification = entry ? entry.requirements.needs_verification : true;
+
+    await appendAudit(tc.sdb, {
+      actor: 'agent',
+      action: 'application.added',
+      entityType: 'application',
+      entityId: application.id,
+      details: { school: schoolName, plan: application.plan },
+    });
 
     const verificationNote = needsVerification ? " I don't have verified requirements for them yet, so flag me if anything looks off." : '';
-    return ok({ applicationId: application.id, schoolId }, `Added ${schoolName} (${resolvedPlan}, due ${deadline}).${verificationNote}`);
+    return ok({ applicationId: application.id, schoolId: application.schoolId }, `Added ${schoolName} (${application.plan}, due ${application.deadline}).${verificationNote}`);
   },
 });

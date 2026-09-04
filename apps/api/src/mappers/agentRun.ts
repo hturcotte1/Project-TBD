@@ -1,0 +1,18 @@
+import * as S from '@tbd/shared/db/schema';
+import * as D from '@tbd/shared/api';
+
+export function mapAgentRun(row: S.AgentRun): D.AgentRunDto {
+  return {
+    id: row.id,
+    trigger: row.trigger,
+    model: row.model,
+    tools_called: row.toolsCalled,
+    input_tokens: row.inputTokens,
+    output_tokens: row.outputTokens,
+    duration_ms: row.durationMs,
+    outcome: row.outcome,
+    error: row.error,
+    metadata: row.metadata,
+    created_at: row.createdAt.toISOString(),
+  };
+}
