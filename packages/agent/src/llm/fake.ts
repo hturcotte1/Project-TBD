@@ -27,8 +27,8 @@ import type {
   LLMMessage,
   LLMProvider,
 } from '@tbd/shared/adapters';
-import { EssayFeedback, PhotoExtraction, ResumeExtraction, StudentNarrative, TranscriptExtraction, WeeklyPlan } from '@tbd/shared/schemas';
-import { findSchool, SCHOOL_BY_SLUG } from '../integrations/shared-engines';
+import { type EssayFeedback, PhotoExtraction, type ResumeExtraction, type StudentNarrative, type TranscriptExtraction, type WeeklyPlan } from '@tbd/shared/schemas';
+import { SCHOOL_BY_SLUG } from '../integrations/shared-engines';
 import { ghostwritingRefusalText, isGhostwritingRequest } from '../runtime/essay';
 import { readUntrustedBlock } from '../runtime/untrusted';
 import { LLMExtractionError } from './errors';
@@ -325,8 +325,9 @@ function toGenerateResponse(decision: Decision): LLMGenerateResponse {
 
 function buildTranscriptExtraction(messages: LLMMessage[]): TranscriptExtraction {
   const text = allText(messages);
-  const gpaMatch = /unweighted[^0-9]{0,15}(\d\.\d{1,2})|gpa[^0-9]{0,10}(\d\.\d{1,2})/i.exec(text);
-  const weightedMatch = /weighted[^0-9]{0,15}(\d\.\d{1,2})/i.exec(text);
+  const gpaMatch = /\bunweighted[^0-9]{0,15}(\d\.\d{1,2})|\bgpa[^0-9]{0,10}(\d\.\d{1,2})/i.exec(text);
+  // \b before "weighted" excludes matching inside "unweighted" (no boundary between "un" and "weighted").
+  const weightedMatch = /\bweighted[^0-9]{0,15}(\d\.\d{1,2})/i.exec(text);
   const satMatch = /\bsat\b[^0-9]{0,10}(\d{3,4})/i.exec(text);
   const actMatch = /\bact\b[^0-9]{0,10}(\d{1,2})\b/i.exec(text);
   const courseLines = text

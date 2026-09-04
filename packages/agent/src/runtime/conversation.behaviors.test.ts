@@ -5,9 +5,8 @@ import * as S from '@tbd/shared/db/schema';
 import { getTestDb, truncateAll } from '@tbd/shared/testing';
 import type { MemoryJobEnqueuer } from '@tbd/shared/jobs';
 import { buildTestDeps, sendInboundText } from '../testing/deps';
-import { InMemoryMessagingProvider } from '../testing/messaging';
+import { type InMemoryMessagingProvider } from '../testing/messaging';
 import { seedDemoStudent } from '../testing/seed';
-import type { AgentDeps } from './deps';
 import { runConversationTurn } from './conversation';
 
 describe('conversation behaviors', () => {

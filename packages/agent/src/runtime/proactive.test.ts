@@ -7,10 +7,12 @@ import type { TriggerEvent } from '@tbd/shared/schemas';
 import { factsMentioned, templateForTrigger } from '../integrations/shared-engines';
 import { ScriptedFakeLLM } from '../llm/fake';
 import { buildTestDeps } from '../testing/deps';
-import { InMemoryMessagingProvider } from '../testing/messaging';
+import { type InMemoryMessagingProvider } from '../testing/messaging';
 import { seedDemoStudent } from '../testing/seed';
 import { phraseNudges, sendProactive } from './proactive';
 
+// Fact keys ("recommender", "school", "days_since_invite") match the real
+// `@tbd/shared/proactive` templateForTrigger/factsMentioned contract for this trigger kind.
 function makeTrigger(overrides: Partial<TriggerEvent> = {}): TriggerEvent {
   return {
     kind: 'recommender_inactivity',
@@ -20,8 +22,8 @@ function makeTrigger(overrides: Partial<TriggerEvent> = {}): TriggerEvent {
     recommender_id: null,
     essay_id: null,
     due_date: null,
-    days_remaining: null,
-    facts: { recommender_name: 'Ms. Park', school_name: 'University of Michigan', days_since: 5 },
+    days_remaining: 12,
+    facts: { recommender: 'Ms. Park', school: 'University of Michigan', days_since_invite: 5 },
     always_send: false,
     priority: 50,
     ...overrides,

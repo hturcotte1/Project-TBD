@@ -5,6 +5,7 @@ import { appendAudit } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
 import { APPLICATION_PLANS, type ApplicationPlan } from '@tbd/shared/domain';
 import type { SchoolRequirementsData } from '@tbd/shared/schemas';
+import { localDate } from '@tbd/shared/time';
 import { buildChecklist, findSchool, resolveDeadline } from '../integrations/shared-engines';
 import { defineTool, fail, ok } from './types';
 
@@ -51,6 +52,8 @@ export const addApplicationTool = defineTool({
 
     let schoolId: string;
     let schoolName: string;
+    let schoolSlug: string;
+    let commonAppMember: boolean;
     let requirementsData: SchoolRequirementsData;
     let needsVerification: boolean;
 
@@ -78,6 +81,8 @@ export const addApplicationTool = defineTool({
       if (!row) return fail('Could not create that school.');
       schoolId = row.id;
       schoolName = row.name;
+      schoolSlug = row.slug;
+      commonAppMember = row.commonAppMember;
       requirementsData = entry.requirements;
       needsVerification = entry.requirements.needs_verification;
       const existingReq = await db
@@ -98,6 +103,8 @@ export const addApplicationTool = defineTool({
         .returning();
       if (!created) return fail('Could not create that school.');
       schoolId = created.id;
+      schoolSlug = created.slug;
+      commonAppMember = created.commonAppMember;
       await db.insert(S.schoolRequirements).values({ schoolId, cycle: requirementsData.cycle, data: requirementsData, needsVerification: true });
     }
 
@@ -119,17 +126,36 @@ export const addApplicationTool = defineTool({
     });
     if (!application) return fail('Could not add that application.');
 
-    const drafts = buildChecklist(requirementsData, resolvedPlan);
-    if (drafts.length > 0) {
+    // First checklist straight from the requirements engine: no Common App snapshot yet, so every
+    // Common App-backed item starts as "missing" and the next sync reconciles it against reality.
+    const profile = tc.ctx.profile;
+    const testScores = profile?.testScores;
+    const specs = buildChecklist({
+      application: { id: application.id, plan: resolvedPlan, deadline, schoolSlug, schoolName, commonAppMember, status: 'not_started' },
+      requirements: requirementsData,
+      snapshotCollege: null,
+      sections: null,
+      student: {
+        testStance: testScores?.test_optional_stance ?? 'undecided',
+        hasSatOrAct: Boolean(testScores && (testScores.sat.length > 0 || testScores.act.length > 0)),
+        financialConstraints: profile?.demographics.financial_constraints ?? null,
+        firstGeneration: profile?.demographics.first_generation ?? null,
+      },
+      today: localDate(tc.deps.clock.now(), tc.ctx.student.timezone),
+      capturedAt: null,
+    });
+    if (specs.length > 0) {
       await tc.sdb.insert(
         S.applicationItems,
-        drafts.map((d) => ({
+        specs.map((d) => ({
           applicationId: application.id,
           ruleKey: d.ruleKey,
           kind: d.kind,
           title: d.title,
           description: d.description,
           source: d.source,
+          status: d.status,
+          evidence: d.evidence,
           dueDate: d.dueDate,
           importance: d.importance,
           effort: d.effort,

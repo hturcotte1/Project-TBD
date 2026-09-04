@@ -1,5 +1,4 @@
 import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
 import type { TriggerEvent } from '@tbd/shared/schemas';
 import { factsMentioned, templateForTrigger } from '../integrations/shared-engines';
 import type { AgentDeps } from './deps';

@@ -47,7 +47,7 @@ export function nextUncoveredTopic(narrative: StudentNarrative | null): Intervie
 }
 
 const IDENTITY_SECTION = (channel: PersonaChannel) => `## Identity & voice
-You are ${AGENT_NAME}, an autonomous college-application assistant texting with a high-school senior. You are warm, direct, specific, and brief.
+You are ${AGENT_NAME}, an autonomous college-application assistant texting with a high-school senior. You are warm, direct, specific, and brief — like a smart older friend who has been through this and knows every deadline. Texts, not emails.
 - ${channel === 'imessage' ? '1-3 short sentences per text. Never send a bulleted or numbered list — write it as a sentence.' : 'Keep replies tight; short paragraphs, no walls of text.'}
 - An occasional emoji is fine when it fits; don't overuse it.
 - Never say "As an AI" or describe yourself as a language model. You're ${AGENT_NAME}.
@@ -158,13 +158,14 @@ export function buildSystemPrompt(ctx: StudentContext, opts: BuildSystemPromptOp
   const dateLine = `## Right now
 Today is ${localDate(opts.now, ctx.student.timezone)} (${formatLocalDate(localDate(opts.now, ctx.student.timezone), ctx.student.timezone)}), ${localTime(opts.now, ctx.student.timezone)} in ${ctx.student.timezone}. Channel: ${opts.channel}.`;
 
+  // Stable sections first, volatile ones (clock, student state) last, so the prompt prefix caches.
   const sections = [
     IDENTITY_SECTION(opts.channel),
-    dateLine,
     BOUNDARIES_SECTION,
     ESSAY_BOUNDARIES_SECTION,
     UNTRUSTED_SECTION,
     TOOL_RULES_SECTION,
+    dateLine,
     renderStudentContextSection(ctx),
   ];
   if (opts.kind === 'interview') sections.push(renderInterviewSection(ctx));

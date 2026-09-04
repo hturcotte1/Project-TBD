@@ -20,7 +20,7 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 | W1-B | Prioritizer, deadline math, trigger rules, nudge policy, tests | `packages/shared/src/{prioritize,proactive}/**` | sonnet | done |
 | W1-C | Messaging: Sendblue + Fake providers, webhook parsing, signature, vCard, tests | `packages/messaging/**` | sonnet | done |
 | W1-D | Browser: selector map, cheerio extractors, reader, writer, session providers, guard, mock site, fixtures, tests | `packages/browser/**` | sonnet | in-progress |
-| W1-E | Agent: LLM adapters, router, persona, tools, runtime, essay boundaries + adversarial tests, extractors, injection defense | `packages/agent/**` | sonnet | in-progress |
+| W1-E | Agent: LLM adapters, router, persona, tools, runtime, essay boundaries + adversarial tests, extractors, injection defense | `packages/agent/**` | sonnet | done |
 | W1-F | Web shell: Next app, auth (Clerk + dev), API client, UI kit, layout, onboarding steps 1–7 | `apps/web/**` | sonnet | done |
 | W1-G | Seed: Demo Student with 12 schools and partial Common App state | `packages/shared/src/seed/**` | sonnet | done |
 
@@ -28,10 +28,10 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 
 | ID | Task | Files | Owner | Status |
 |---|---|---|---|---|
-| W2-A | API: Fastify server, auth, every contract route, webhooks, dev phone, uploads, tests | `apps/api/**` | sonnet | todo |
+| W2-A | API: Fastify server, auth, every contract route, webhooks, dev phone, uploads, tests | `apps/api/**` | sonnet | in-progress |
 | W2-B | Worker: queues, scheduler tick, browser job handlers with pause/resume, agent runs, proactive dispatch, maintenance, tests | `apps/worker/**` | sonnet | todo |
-| W2-C | Web pages: Home, Schools, Timeline (+ .ics), Essays | `apps/web/app/(dashboard)/...` | sonnet | todo |
-| W2-D | Web pages: Recommenders, Activity, Profile, Settings, Admin, chat mirror | `apps/web/app/(dashboard)/...` | sonnet | todo |
+| W2-C | Web pages: Home, Schools, Timeline (+ .ics), Essays | `apps/web/app/(dashboard)/...` | sonnet | in-progress |
+| W2-D | Web pages: Recommenders, Activity, Profile, Settings, Admin, chat mirror | `apps/web/app/(dashboard)/...` | sonnet | in-progress |
 
 ## Wave 3 — integration and verification (orchestrator)
 
