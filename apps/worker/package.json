@@ -1,0 +1,28 @@
+{
+  "name": "@tbd/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@tbd/agent": "workspace:*",
+    "@tbd/browser": "workspace:*",
+    "@tbd/messaging": "workspace:*",
+    "@tbd/shared": "workspace:*",
+    "bullmq": "^5.81.0",
+    "ioredis": "^5.11.0",
+    "pino": "^9.14.0",
+    "pino-pretty": "^13.1.0",
+    "playwright": "^1.62.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": { "@types/node": "^22.15.0", "eslint": "^9.39.0", "tsup": "^8.5.0", "tsx": "^4.23.0", "typescript": "^5.9.3", "vitest": "^3.2.7" }
+}

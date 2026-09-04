@@ -1,0 +1,14 @@
+node_modules
+dist
+.next
+.turbo
+.data
+coverage
+*.log
+.env
+.env.local
+.env.*.local
+playwright-report
+test-results
+packages/browser/fixtures/recorded/*.html
+!packages/browser/fixtures/recorded/.gitkeep

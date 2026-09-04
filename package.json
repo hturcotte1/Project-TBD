@@ -1,0 +1,49 @@
+{
+  "name": "project-tbd",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "pnpm db:ready && turbo run dev --parallel",
+    "test": "turbo run test",
+    "test:live": "LLM_PROVIDER=anthropic vitest run --config packages/agent/vitest.live.config.ts",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "pnpm --filter @tbd/shared db:generate",
+    "db:migrate": "pnpm --filter @tbd/shared db:migrate",
+    "db:seed": "pnpm --filter @tbd/shared db:seed",
+    "db:reset": "pnpm --filter @tbd/shared db:reset",
+    "db:ready": "pnpm --filter @tbd/shared db:ready",
+    "e2e": "pnpm --filter @tbd/e2e test",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "eslint": "^9.39.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.69.0",
+    "turbo": "^2.10.0",
+    "vitest": "^3.2.7",
+    "prettier": "^3.6.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "msgpackr-extract",
+      "sharp",
+      "unrs-resolver",
+      "@tailwindcss/oxide",
+      "protobufjs",
+      "bufferutil",
+      "utf-8-validate",
+      "@clerk/shared",
+      "core-js",
+      "playwright",
+      "@browserbasehq/stagehand"
+    ]
+  },
+  "type": "module"
+}
