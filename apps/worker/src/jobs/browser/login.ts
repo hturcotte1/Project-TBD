@@ -48,13 +48,10 @@ export async function loginForJob(deps: WorkerDeps, session: BrowserSessionHandl
   const result = await deps.browser.login(session, { username: stored.username, secret: stored.secret }, {
     onVerificationCodeRequired: async () => {
       verificationRequested = true;
-      await import('@tbd/shared/db').then(({ browserJobsRepo }) => browserJobsRepo.update(sdb, browserJobId, { status: 'awaiting_verification_code' }));
+      await browserJobsRepo.update(sdb, browserJobId, { status: 'awaiting_verification_code' });
       await texted(deps, studentId, VERIFICATION_REQUESTED_TEXT, 'verification.requested');
       const code = await deps.codeChannel.waitFor(browserJobId, deps.verificationTimeoutMs);
-      if (code !== null) {
-        const { browserJobsRepo } = await import('@tbd/shared/db');
-        await browserJobsRepo.update(sdb, browserJobId, { status: 'running' });
-      }
+      if (code !== null) await browserJobsRepo.update(sdb, browserJobId, { status: 'running' });
       return code;
     },
   });

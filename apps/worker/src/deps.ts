@@ -55,6 +55,9 @@ function isAddressInUseError(err: unknown): boolean {
 
 export interface CreatedWorkerDeps {
   deps: WorkerDeps;
+  /** The concrete enqueuer (same object as `deps.enqueuer`), typed so `src/index.ts` can reach
+   * `.queue()` to register the repeatable `scheduler.tick` job. */
+  enqueuer: BullJobEnqueuer;
   /** BullMQ needs its own connections (a shared one for enqueueing, a factory for BLPOP/Workers). */
   redis: { connection: Redis; makeBlockingConnection: () => Redis };
   mock: MockCommonAppHandle | null;
@@ -111,6 +114,7 @@ export async function createWorkerDeps(env: Env, logger: Logger): Promise<Create
 
   return {
     deps,
+    enqueuer,
     redis: { connection, makeBlockingConnection },
     mock,
     close: async () => {

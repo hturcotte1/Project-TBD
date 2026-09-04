@@ -13,15 +13,7 @@ import type { ApiDeps } from '../deps';
 import type { AuthVerifier } from '../auth/verifier';
 import { createAuthenticate } from '../auth/authenticate';
 import { sendError } from '../errors';
-
-const MAX_BYTES = 20 * 1024 * 1024;
-const EXT_BY_MIME: Record<string, string> = {
-  'application/pdf': 'pdf',
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/webp': 'webp',
-  'image/heic': 'heic',
-};
+import { EXT_BY_MIME, MAX_UPLOAD_BYTES as MAX_BYTES } from '../util/mime';
 
 export function registerDocumentUpload(app: FastifyInstance, deps: ApiDeps, verifier: AuthVerifier): void {
   const authenticate = createAuthenticate(deps, verifier);
