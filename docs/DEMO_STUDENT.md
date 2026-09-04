@@ -3,7 +3,7 @@
 The seed (`packages/shared/src/seed`) and the mock Common App site (`packages/browser/src/mock`) must describe the same student so that a sync against the mock site reconciles cleanly with the seeded rows. Today's date for the demo is treated as **2026-09-04** (the app itself uses the real clock).
 
 ## Identity
-- Name: Dee Demo (preferred "Dee"); email `demo@example.com`; auth id `dev:demo`
+- Name: Dee Demo (preferred "Dee"); email `demo@example.com`; auth id `dev:demo@example.com`
 - Phone `+15555550100`; Lincoln High School (Chicago, IL); graduating 2027; timezone `America/Chicago`
 - Quiet hours 22:00–07:00; nudge intensity `normal`; onboarding complete
 - Common App login email: `demo@example.com`, password `demo-password` (mock site only)
