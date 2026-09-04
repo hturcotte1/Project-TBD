@@ -1,4 +1,8 @@
+import { applyDotEnv } from '@tbd/shared/config';
 import type { NextConfig } from 'next';
+
+// The repo root .env is the single local config file; Next.js only reads apps/web/.env* itself.
+applyDotEnv(process.cwd());
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@tbd/shared'],

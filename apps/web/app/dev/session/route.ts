@@ -1,3 +1,4 @@
+import { loadEnv } from '@tbd/shared/config';
 import { createDevToken } from '@tbd/shared/auth';
 import { type NextRequest, NextResponse } from 'next/server';
 import { AUTH_MODE, DEV_SESSION_COOKIE } from '@/lib/auth';
@@ -21,7 +22,8 @@ export async function POST(req: NextRequest): Promise<Response> {
     return NextResponse.redirect(url, 303);
   }
 
-  const secret = process.env.DEV_AUTH_SECRET;
+  // Same default as the API (packages/shared/src/config/env.ts) so a bare dev setup just works.
+  const secret = loadEnv().DEV_AUTH_SECRET;
   if (!secret) {
     return NextResponse.json({ code: 'config_error', message: 'DEV_AUTH_SECRET is not set' }, { status: 500 });
   }
