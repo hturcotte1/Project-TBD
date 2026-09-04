@@ -66,8 +66,13 @@ export async function closeTestDb(): Promise<void> {
   }
 }
 
+let studentCounter = 0;
+
 export async function createTestStudent(db: Db, overrides: Partial<S.NewStudent> = {}): Promise<S.Student> {
-  const n = Math.random().toString(36).slice(2, 8);
+  // Unique per process: a counter plus the pid keeps phones distinct even across parallel workers.
+  studentCounter += 1;
+  const serial = `${process.pid % 1000}${studentCounter}`.padStart(7, '0').slice(-7);
+  const n = `${serial}${Math.random().toString(36).slice(2, 6)}`;
   const [row] = await db
     .insert(S.students)
     .values({
@@ -75,7 +80,7 @@ export async function createTestStudent(db: Db, overrides: Partial<S.NewStudent>
       authUserId: `dev:${n}`,
       firstName: 'Test',
       lastName: n,
-      phoneE164: `+1555${n.replace(/\D/g, '1').padEnd(7, '1').slice(0, 7)}`,
+      phoneE164: `+1555${serial}`,
       ...overrides,
     })
     .returning();

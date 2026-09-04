@@ -1,6 +1,7 @@
 import { scoped, approvalsRepo } from '@tbd/shared/db';
 import { buildActivitiesFillPayload } from '@tbd/shared/domain';
 import * as S from '@tbd/shared/db/schema';
+import { createTestStudent } from '@tbd/shared/testing';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 
@@ -103,5 +104,21 @@ describe('approvals', () => {
     const res = await app.inject({ method: 'POST', url: `/approvals/${approval.id}/answer`, headers, payload: { approve: true } });
     expect(res.statusCode).toBe(403);
     expect(res.json().code).toBe('autonomy_level');
+  });
+
+  it('cross-student: student B cannot answer student A approval', async () => {
+    const { app, studentId: aId, token, deps } = await makeTestApp();
+    const sdb = scoped(deps.db, aId);
+    const approval = await approvalsRepo.create(sdb, {
+      kind: 'custom',
+      summary: 'Something',
+      payload: { kind: 'custom', description: 'x', data: {} },
+      requestedVia: 'dashboard',
+    });
+
+    const b = await createTestStudent(deps.db, { phoneE164: null });
+    const headersB = authHeader(await token(b.id));
+    const res = await app.inject({ method: 'POST', url: `/approvals/${approval.id}/answer`, headers: headersB, payload: { approve: true } });
+    expect(res.statusCode).toBe(404);
   });
 });

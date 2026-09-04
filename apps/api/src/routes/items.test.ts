@@ -45,7 +45,7 @@ describe('items', () => {
       await app.inject({ method: 'POST', url: '/items', headers: headersA, payload: { application_id: null, title: 'x', description: '', due_date: null } })
     ).json();
 
-    const b = await createTestStudent(deps.db, {});
+    const b = await createTestStudent(deps.db, { phoneE164: null });
     const headersB = authHeader(await token(b.id));
     const res = await app.inject({ method: 'PATCH', url: `/items/${item.id}`, headers: headersB, payload: { status: 'done' } });
     expect(res.statusCode).toBe(404);

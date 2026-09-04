@@ -1,9 +1,10 @@
 import * as S from '@tbd/shared/db/schema';
-import { scoped } from '@tbd/shared/db';
+import { scoped, type Db } from '@tbd/shared/db';
+import { createTestStudent } from '@tbd/shared/testing';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 
-async function seedPersonalEssay(deps: { db: import('@tbd/shared/db').Db }, studentId: string): Promise<string> {
+async function seedPersonalEssay(deps: { db: Db }, studentId: string): Promise<string> {
   const sdb = scoped(deps.db, studentId);
   const [essay] = await sdb.insert(S.essays, { applicationId: null, applicationItemId: null, title: 'Personal essay', prompt: 'Prompt 5', wordLimit: 650 });
   return essay!.id;
@@ -59,5 +60,19 @@ describe('essays', () => {
     const res = await app.inject({ method: 'POST', url: `/essays/${essayId}/feedback`, headers });
     expect(res.statusCode).toBe(400);
     expect(res.json().code).toBe('no_draft');
+  });
+
+  it('cross-student: student B cannot read or save a draft on student A essay', async () => {
+    const { app, studentId: aId, token, deps } = await makeTestApp();
+    const essayId = await seedPersonalEssay(deps, aId);
+
+    const b = await createTestStudent(deps.db, { phoneE164: null });
+    const headersB = authHeader(await token(b.id));
+
+    const getRes = await app.inject({ method: 'GET', url: `/essays/${essayId}`, headers: headersB });
+    expect(getRes.statusCode).toBe(404);
+
+    const draftRes = await app.inject({ method: 'POST', url: `/essays/${essayId}/drafts`, headers: headersB, payload: { content: 'hijacked', mode: 'autosave' } });
+    expect(draftRes.statusCode).toBe(404);
   });
 });

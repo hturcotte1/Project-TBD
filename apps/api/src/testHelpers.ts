@@ -21,9 +21,11 @@ import { FakeMessagingProvider } from '@tbd/messaging';
 import { buildApp } from './app';
 import type { ApiDeps } from './deps';
 
+/** `deps.enqueuer` is narrowed to `MemoryJobEnqueuer` (its actual runtime type in tests) so test
+ * files can call `.ofName(...)`/`.drain()` without casting. */
 export interface TestApp {
   app: FastifyInstance;
-  deps: ApiDeps;
+  deps: Omit<ApiDeps, 'enqueuer'> & { enqueuer: MemoryJobEnqueuer };
   studentId: string;
   /** Bearer token for any existing student row (looked up by id each call). */
   token: (studentId: string) => Promise<string>;
@@ -45,6 +47,15 @@ export interface MakeTestAppOptions {
   now?: string;
 }
 
+/** A phone number unique enough to never collide across concurrently-running test files —
+ * `createTestStudent`'s own random default collapses to a small set of values far too often for
+ * a shared, non-isolated test database. */
+function uniquePhone(): string {
+  let digits = '';
+  while (digits.length < 7) digits += Math.floor(Math.random() * 10).toString();
+  return `+1555${digits}`;
+}
+
 export async function makeTestApp(opts: MakeTestAppOptions = {}): Promise<TestApp> {
   setTestEnv();
   const env = loadEnv();
@@ -59,11 +70,11 @@ export async function makeTestApp(opts: MakeTestAppOptions = {}): Promise<TestAp
   const clock = new FixedClock(opts.now ?? '2026-09-04T12:00:00.000Z');
   const logger = createLogger({ name: 'api-test', level: 'silent' });
 
-  const deps: ApiDeps = { db, env, logger, enqueuer, messaging, storage, codeChannel, redis: null, clock };
+  const deps = { db, env, logger, enqueuer, messaging, storage, codeChannel, redis: null, clock };
   const app = buildApp(deps);
   await app.ready();
 
-  const student = await createTestStudent(db, {});
+  const student = await createTestStudent(db, { phoneE164: uniquePhone() });
 
   async function token(studentId: string): Promise<string> {
     const row = await studentsRepo.findById(db, studentId);
@@ -81,7 +92,7 @@ export function authHeader(tok: string): { authorization: string } {
 /** A student authenticated as an admin (email in ADMIN_EMAILS). */
 export async function createAdmin(deps: ApiDeps): Promise<{ id: string; token: string }> {
   const authUserId = `dev:admin-${randomUUID()}`;
-  const student = await createTestStudent(deps.db, { authUserId, email: 'admin@example.com', role: 'admin' });
+  const student = await createTestStudent(deps.db, { authUserId, email: 'admin@example.com', role: 'admin', phoneE164: null });
   const tok = createDevToken({ sub: authUserId, email: 'admin@example.com' }, deps.env.DEV_AUTH_SECRET);
   return { id: student.id, token: tok };
 }

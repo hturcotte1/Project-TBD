@@ -66,7 +66,7 @@ describe('applications', () => {
     const headersA = authHeader(await token(aId));
     const created = (await app.inject({ method: 'POST', url: '/applications', headers: headersA, payload: { school_slug: 'purdue', plan: 'EA', self_assessment: null } })).json();
 
-    const b = await createTestStudent(deps.db, {});
+    const b = await createTestStudent(deps.db, { phoneE164: null });
     const headersB = authHeader(await token(b.id));
 
     const getRes = await app.inject({ method: 'GET', url: `/applications/${created.id}`, headers: headersB });
