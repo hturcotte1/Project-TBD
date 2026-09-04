@@ -36,7 +36,10 @@ export async function sendWelcome(deps: AgentDeps, input: SendWelcomeInput): Pro
   });
 
   try {
-    await deps.messaging.sendContactCard(ctx.student.phoneE164, vcard(AGENT_NAME, deps.messaging.phoneNumber));
+    // Sendblue can only attach media it can fetch, so the real provider gets the API's hosted vCard
+    // URL; the fake provider accepts the vCard text directly.
+    const card = deps.messaging.name === 'sendblue' ? `${deps.env.API_URL.replace(/\/$/, '')}/public/agent.vcf` : vcard(AGENT_NAME, deps.messaging.phoneNumber);
+    await deps.messaging.sendContactCard(ctx.student.phoneE164, card);
   } catch (err) {
     deps.logger.warn({ err: err instanceof Error ? err.message : String(err) }, 'welcome.contact_card_failed');
   }
