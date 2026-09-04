@@ -38,6 +38,7 @@ export const approvalHandlers: Pick<Handlers, 'approvalsList' | 'approvalAnswer'
       throw new HttpError(400, 'unsupported_section', 'College-specific questions are not yet supported for fill proposals.');
     } else if (body.section === 'activities') {
       const activities = await sdb.select(S.activities, undefined, { orderBy: asc(S.activities.position) });
+      if (activities.length === 0) throw new HttpError(400, 'no_activities', 'Add at least one activity before proposing a fill.');
       payload = buildActivitiesFillPayload(activities);
     } else if (body.section === 'profile') {
       const student = await studentsRepo.findById(deps.db, auth.studentId);

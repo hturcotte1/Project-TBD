@@ -1,5 +1,5 @@
 import { AuthorizationError, studentsRepo } from '@tbd/shared/db';
-import * as D from '@tbd/shared/api';
+import type * as D from '@tbd/shared/api';
 import { buildIcs, buildTimeline, type TimelineEntry } from '@tbd/shared/services';
 import { localDate } from '@tbd/shared/time';
 import { authed, type Handlers } from './contract';

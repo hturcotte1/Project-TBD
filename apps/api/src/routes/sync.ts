@@ -40,14 +40,14 @@ export const syncHandlers: Pick<
     return mapBrowserJob(job, deps.storage);
   }),
 
-  credentialsConnectCommonApp: authed(async ({ auth, sdb, deps, body }) => {
+  credentialsConnectCommonApp: authed(async ({ auth, sdb, deps, body, requestId }) => {
     const ring = parseKeyRing(deps.env.CREDENTIALS_ENCRYPTION_KEYS, deps.env.CREDENTIALS_ENCRYPTION_KEY_VERSION);
     await credentialsRepo.store(sdb, ring, 'common_app', body.email, body.password);
     await sdb.db.update(S.students).set({ syncPausedReason: null }).where(eq(S.students.id, auth.studentId));
 
     const job = await browserJobsRepo.create(sdb, { kind: 'verify_credentials', provider: deps.env.BROWSER_PROVIDER });
     await deps.enqueuer.enqueue('browser.verify_credentials', { studentId: auth.studentId, browserJobId: job.id }, { jobId: jobIds.verify(job.id) });
-    await appendAudit(sdb, { actor: 'student', action: 'credentials.connected', entityType: 'credential', details: { provider: 'common_app' } });
+    await appendAudit(sdb, { actor: 'student', action: 'credentials.connected', entityType: 'credential', details: { provider: 'common_app' }, requestId });
     return mapBrowserJob(job, deps.storage);
   }),
 

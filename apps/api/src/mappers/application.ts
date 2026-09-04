@@ -1,5 +1,5 @@
-import * as S from '@tbd/shared/db/schema';
-import * as D from '@tbd/shared/api';
+import type * as S from '@tbd/shared/db/schema';
+import type * as D from '@tbd/shared/api';
 import { applicationCommonAppUrl } from '@tbd/shared/requirements';
 import { daysUntil } from '@tbd/shared/time';
 import { mapSchool } from './school';

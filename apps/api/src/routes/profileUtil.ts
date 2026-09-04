@@ -1,6 +1,6 @@
 import * as S from '@tbd/shared/db/schema';
 import type { StudentDb } from '@tbd/shared/db';
-import { Academics, ActivityList, Demographics, Goals, TestScores } from '@tbd/shared/schemas';
+import { Academics, type ActivityList, Demographics, Goals, TestScores } from '@tbd/shared/schemas';
 import type { ChecklistStudent } from '@tbd/shared/requirements';
 import type { z } from 'zod';
 

@@ -14,7 +14,7 @@ export function registerSendblueWebhook(app: FastifyInstance, deps: ApiDeps): vo
   app.route({
     method: 'POST',
     url: '/webhooks/sendblue',
-    config: { rawBody: true },
+    config: { rawBody: true, rateLimit: { max: 60, timeWindow: '1 minute' } },
     handler: async (req, reply) => {
       const webhookReq = toWebhookRequest(req);
       if (!deps.messaging.verifySignature(webhookReq)) {

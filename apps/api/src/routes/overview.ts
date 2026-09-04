@@ -1,7 +1,7 @@
 import { desc, gt, inArray } from 'drizzle-orm';
 import * as S from '@tbd/shared/db/schema';
 import { approvalsRepo, AuthorizationError, browserJobsRepo, studentsRepo } from '@tbd/shared/db';
-import * as D from '@tbd/shared/api';
+import type * as D from '@tbd/shared/api';
 import { daysUntil, localDate } from '@tbd/shared/time';
 import { authed, type Handlers } from './contract';
 

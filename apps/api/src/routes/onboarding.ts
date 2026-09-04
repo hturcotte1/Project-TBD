@@ -2,7 +2,7 @@ import { asc, desc, eq, inArray } from 'drizzle-orm';
 import * as S from '@tbd/shared/db/schema';
 import { AuthorizationError, credentialsRepo, studentsRepo } from '@tbd/shared/db';
 import type { StudentDb } from '@tbd/shared/db';
-import * as D from '@tbd/shared/api';
+import type * as D from '@tbd/shared/api';
 import { ONBOARDING_STEP_COUNT } from '@tbd/shared/domain';
 import { jobIds } from '@tbd/shared/jobs';
 import { createApplication, DuplicateApplicationError, ensureStudentWideItems, InvalidSchoolInputError } from '@tbd/shared/services';

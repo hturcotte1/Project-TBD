@@ -65,7 +65,7 @@ export const recommenderHandlers: Pick<Handlers, 'recommendersList' | 'recommend
     if (body.invite_status !== undefined) set.inviteStatus = body.invite_status;
     if (body.invited_at !== undefined) set.invitedAt = body.invited_at;
 
-    let row = Object.keys(set).length > 0 ? (await sdb.update(S.recommenders, set, eq(S.recommenders.id, params.id)))[0] : await sdb.selectOne(S.recommenders, eq(S.recommenders.id, params.id));
+    const row = Object.keys(set).length > 0 ? (await sdb.update(S.recommenders, set, eq(S.recommenders.id, params.id)))[0] : await sdb.selectOne(S.recommenders, eq(S.recommenders.id, params.id));
     if (!row) throw new AuthorizationError();
 
     if (body.application_ids !== undefined) {

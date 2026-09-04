@@ -6,7 +6,7 @@ import { Queue } from 'bullmq';
 import { desc, eq, gt, inArray, ne } from 'drizzle-orm';
 import * as S from '@tbd/shared/db/schema';
 import { AuthorizationError, browserJobsRepo, scoped } from '@tbd/shared/db';
-import * as D from '@tbd/shared/api';
+import type * as D from '@tbd/shared/api';
 import { QUEUES, jobIds, type QueueName } from '@tbd/shared/jobs';
 import { estimateLlmCostUsd, mapAdminStudent, mapBrowserJob, mapDriftAlert, mapQueueHealth } from '../mappers';
 import type { AdminStudentAggregate } from '../mappers';

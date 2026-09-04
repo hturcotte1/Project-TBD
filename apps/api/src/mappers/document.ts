@@ -1,5 +1,5 @@
-import * as S from '@tbd/shared/db/schema';
-import * as D from '@tbd/shared/api';
+import type * as S from '@tbd/shared/db/schema';
+import type * as D from '@tbd/shared/api';
 import type { StorageProvider } from '@tbd/shared/adapters';
 
 export async function mapDocument(row: S.Document, storage: StorageProvider): Promise<D.DocumentDto> {

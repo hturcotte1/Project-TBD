@@ -8,7 +8,8 @@ import { eq } from 'drizzle-orm';
 import type { CaptureHooks, BrowserSessionHandle } from '@tbd/browser';
 import { appendAudit, browserJobsRepo, credentialsRepo, scoped } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
-import type { BrowserJobKind, BrowserJobResult, ScreenshotRef } from '@tbd/shared/schemas';
+import type { BrowserJobKind } from '@tbd/shared/domain';
+import type { BrowserJobResult, ScreenshotRef } from '@tbd/shared/schemas';
 import type { WorkerDeps } from '../../deps';
 
 /** Hooks handed to a job's work function: the same `onPage` screenshot hook `@tbd/browser` calls,
@@ -41,7 +42,11 @@ export async function runBrowserJob(deps: WorkerDeps, ref: BrowserJobRef, work: 
   const hooks: JobHooks = {
     screenshots,
     onPage: async (name, _html, png) => {
-      const key = `${ref.studentId}/screenshots/${ref.browserJobId}/${name}.png`;
+      // `name` can carry a per-college id after a colon (e.g. "college_questions:umich"); storage
+      // keys allow only [A-Za-z0-9_-./], so the key uses a sanitized form while `page` keeps the
+      // original semantic name.
+      const safeName = name.replace(/[^A-Za-z0-9_.-]/g, '_');
+      const key = `${ref.studentId}/screenshots/${ref.browserJobId}/${safeName}.png`;
       await deps.storage.put(key, png, 'image/png');
       screenshots.push({ page: name, storage_key: key, taken_at: deps.clock.now().toISOString() });
       await browserJobsRepo.update(sdb, ref.browserJobId, { screenshots: [...screenshots] });

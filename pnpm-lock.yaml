@@ -59,6 +59,9 @@ importers:
       bullmq:
         specifier: ^5.81.0
         version: 5.81.4
+      drizzle-orm:
+        specifier: ^0.45.0
+        version: 0.45.2(@opentelemetry/api@1.9.1)(postgres@3.4.9)
       fastify:
         specifier: ^5.12.0
         version: 5.12.3
@@ -238,6 +241,9 @@ importers:
       bullmq:
         specifier: ^5.81.0
         version: 5.81.4
+      drizzle-orm:
+        specifier: ^0.45.0
+        version: 0.45.2(@opentelemetry/api@1.9.1)(postgres@3.4.9)
       ioredis:
         specifier: ^5.11.0
         version: 5.11.1

@@ -8,7 +8,7 @@
 import type { FastifyInstance, FastifyReply } from 'fastify';
 import { scoped, type StudentDb } from '@tbd/shared/db';
 import { api, type RouteKey, type RouteResponse, type RouteDef } from '@tbd/shared/api';
-import { z } from 'zod';
+import { type z } from 'zod';
 import type { AuthContext } from '../auth/authenticate';
 import { createAuthenticate, requireAdmin } from '../auth/authenticate';
 import type { ApiDeps } from '../deps';
