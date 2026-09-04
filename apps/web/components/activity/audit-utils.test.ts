@@ -35,6 +35,16 @@ describe('redactDetails', () => {
     expect(entries).toEqual([{ key: 'essay_id', value: '11111111-1111-4111-8111-111111111111' }]);
   });
 
+  it('redacts a snake_case key even when the sensitive term is not at a word boundary', () => {
+    // "message_body" and "zip_code" both have underscores on both sides of the interesting part,
+    // so a naive `\bterm\b` regex would miss them — this is exactly the case that guards against that.
+    const entries = redactDetails({ message_body: 'hey what should i do first', reply_code: '482910' });
+    expect(entries).toEqual([
+      { key: 'message_body', value: '[redacted]' },
+      { key: 'reply_code', value: '[redacted]' },
+    ]);
+  });
+
   it('passes through ordinary values untouched, stringifying objects', () => {
     const entries = redactDetails({ school_name: 'University of Michigan', changes_count: 3, ok: true, evidence: { seen_at: '2026-09-03T00:00:00.000Z' } });
     expect(entries).toEqual([
