@@ -589,7 +589,7 @@ async function mergeFallback(
             snap.confidence[key] = r.confidence;
           }
         } else if (sub === 'recommenders') {
-          const r = await fallback.extractSection(key, "Read this college's Recommenders tab: the FERPA release status, and every counselor/teacher/other recommender's name, status, invite date, and submit date. Do not click or fill anything.", recommendersSchema4, session);
+          const r = await fallback.extractSection(key, "Read this college's Recommenders tab: the FERPA release status, and every counselor/teacher/other recommender's name, status, invited date, and submitted date. Do not click or fill anything.", recommendersSchema4, session);
           if (r.confidence > (snap.confidence[key] ?? 0)) {
             college.ferpa_status = r.value.ferpa_status;
             college.counselor = r.value.counselor;
@@ -598,7 +598,7 @@ async function mergeFallback(
             snap.confidence[key] = r.confidence;
           }
         } else if (sub === 'review_submit') {
-          const r = await fallback.extractSection(key, "Read this college's completion status, the application fee status, and whether it has been submitted. Do not click or fill anything, and never interact with any button on this page.", reviewSubmitSchema4, session);
+          const r = await fallback.extractSection(key, "Read this college's completion status, the application cost status (unpaid, paid, or waived), and whether it has been submitted. Do not click or fill anything, and never interact with any button on this page.", reviewSubmitSchema4, session);
           if (r.confidence > (snap.confidence[key] ?? 0)) {
             college.review_submit_status = r.value.review_submit_status;
             college.fee_status = r.value.fee_status;

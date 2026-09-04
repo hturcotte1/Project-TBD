@@ -103,13 +103,27 @@ function collectScannedFiles(dir: string): string[] {
   return out;
 }
 
-/** Extracts the contents of every string/template literal in `source`, skipping comments. */
+/** Characters after which a `/` starts a regex literal rather than being division/an operator. */
+const REGEX_CONTEXT_CHARS = new Set('([{,;:=&|!?+-*%^~<>'.split(''));
+
+/**
+ * Extracts the contents of every string/template/regex literal in `source`, skipping comments.
+ * Regex literals are scanned (and their matched text discarded, not treated as a "literal" to
+ * check) purely so their internal `/`, `'`, and `"` characters never desynchronize the quote
+ * scanner below — e.g. `replace(/value="[^"]*"/g, ...)` has quote characters *inside* the regex.
+ */
 function extractStringLiterals(source: string): string[] {
   const literals: string[] = [];
   let i = 0;
   const n = source.length;
+  let lastMeaningful = ''; // last non-whitespace, non-comment character seen, for regex-vs-division
   while (i < n) {
-    const c = source[i];
+    const c = source[i] as string;
+
+    if (c === ' ' || c === '\t' || c === '\r' || c === '\n') {
+      i++;
+      continue;
+    }
     if (c === '/' && source[i + 1] === '/') {
       while (i < n && source[i] !== '\n') i++;
       continue;
@@ -135,8 +149,46 @@ function extractStringLiterals(source: string): string[] {
       }
       literals.push(buf);
       i = j + 1;
+      lastMeaningful = quote;
       continue;
     }
+    if (c === '/' && REGEX_CONTEXT_CHARS.has(lastMeaningful)) {
+      let j = i + 1;
+      let inClass = false;
+      let closed = false;
+      while (j < n && source[j] !== '\n') {
+        const cj = source[j];
+        if (cj === '\\') {
+          j += 2;
+          continue;
+        }
+        if (cj === '[') {
+          inClass = true;
+          j++;
+          continue;
+        }
+        if (cj === ']') {
+          inClass = false;
+          j++;
+          continue;
+        }
+        if (cj === '/' && !inClass) {
+          j++;
+          closed = true;
+          break;
+        }
+        j++;
+      }
+      if (closed) {
+        while (j < n && /[a-z]/i.test(source[j] as string)) j++;
+        i = j;
+        lastMeaningful = '/';
+        continue;
+      }
+      // Not actually a regex literal (never closed before end of line) — treat "/" as an
+      // ordinary character (division) and keep scanning normally from the next character.
+    }
+    lastMeaningful = c;
     i++;
   }
   return literals;

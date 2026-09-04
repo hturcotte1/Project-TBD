@@ -1,8 +1,9 @@
 import type { FillFieldsPayload } from '@tbd/shared/schemas';
 import { createLogger } from '@tbd/shared/logging';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { COMMONAPP_MAP, resolveCollegePath } from './commonapp-map';
 import { createCommonAppClient } from './client';
-import { SubmitGuardError } from './guard';
+import { SafePage, SubmitGuardError } from './guard';
 import { defaultMockState, startMockCommonApp, type MockCommonAppHandle } from './mock/index';
 import { LocalChromiumSessionProvider } from './session/local';
 import type { BrowserSessionHandle } from './session/types';
@@ -213,6 +214,26 @@ describe('CommonAppClient e2e (real headless Chromium, mock site)', () => {
     // Nothing changed: the guard fired before any navigation away from the dashboard.
     const college = mock.getState().colleges.find((c) => c.slug === 'umich');
     expect(college?.reviewSubmitStatus).toBe('not_ready');
+  });
+
+  it('the mock review-and-completion page really has a submit button, and SafePage refuses to click it', async () => {
+    const session = await openSession();
+    const login = await client.login(session, { username: 'demo@example.com', secret: 'demo-password' }, { onVerificationCodeRequired: async () => null });
+    expect(login).toEqual({ ok: true });
+
+    const def = COMMONAPP_MAP.college_review_submit;
+    const safePage = new SafePage(session.page);
+    // Reading the page (including its submit button's existence) is fine — only guard.ts blocks acting on it.
+    await safePage.goto(`${mock.url}${resolveCollegePath(def, 'umich')}`);
+    await safePage.waitFor(def.waitFor);
+    await expect(safePage.locator(def.selectors.submitApplicationButton).count()).resolves.toBe(1);
+
+    await expect(safePage.click(def.selectors.submitApplicationButton)).rejects.toThrow(SubmitGuardError);
+
+    // Posting to that route is also a safe no-op server-side (see the mock's route notes), but the
+    // guard means this package's own code can never reach it by clicking.
+    const college = mock.getState().colleges.find((c) => c.slug === 'umich');
+    expect(college?.submissionStatus).toBe('not_submitted');
   });
 
   it('recovers from a session expiry by re-logging in once with the stored credentials, then succeeds', async () => {
