@@ -3,7 +3,7 @@
  *
  * `AUTH_MODE=dev` reads a signed dev token straight out of the `tbd_dev_session` cookie (set by
  * `/dev/login`). `AUTH_MODE=clerk` asks Clerk for the current session's JWT. Server components and
- * route handlers should call `getToken()` / `requireToken()`; never import this from a client
+ * route handlers should call `getToken()` / `requireStudent()`; never import this from a client
  * component (it uses `next/headers`, which only works on the server).
  */
 import { cookies } from 'next/headers';
@@ -31,7 +31,7 @@ export async function getToken(): Promise<string | null> {
 }
 
 /** Server components: redirect to login when signed out, otherwise return the bearer token. */
-export async function requireToken(): Promise<string> {
+export async function requireStudent(): Promise<string> {
   const token = await getToken();
   if (!token) redirect(loginPath());
   return token;

@@ -57,7 +57,7 @@ export const StudentProfileDto = z.object({
 });
 export type StudentProfileDto = z.infer<typeof StudentProfileDto>;
 
-export const ActivityDto = ActivityInput.extend({ id: Uuid, position: z.number().int() });
+export const ActivityDto = ActivityInput.extend({ id: Uuid, order: z.number().int() });
 export type ActivityDto = z.infer<typeof ActivityDto>;
 
 export const NarrativeDto = z.object({

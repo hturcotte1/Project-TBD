@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
 import { serverApi } from '@/lib/api.server';
-import { AUTH_MODE, loginPath, requireToken } from '@/lib/auth';
+import { AUTH_MODE, loginPath, requireStudent } from '@/lib/auth';
 
 async function loadShellData() {
   const api = serverApi();
@@ -16,7 +16,7 @@ async function loadShellData() {
 }
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
-  await requireToken();
+  await requireStudent();
   const [student, settings] = await loadShellData();
 
   if (!student.onboarding_completed_at) redirect('/onboarding');
