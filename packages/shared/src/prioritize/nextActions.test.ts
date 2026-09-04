@@ -174,3 +174,24 @@ describe('sendCap / topForIntensity', () => {
     expect(topForIntensity(actions, 'chill')[0]).toEqual(actions[0]);
   });
 });
+
+describe('describeAction wording', () => {
+  it('does not double the word essay', () => {
+    const base = { applicationId: 'a1', schoolName: 'UChicago', status: 'missing' as const, dueDate: '2026-11-01', importance: 90, effort: 'large' as const, dependsOnOthers: false, blocking: true, notes: '', evidenceText: null, ruleKey: 'x', kind: 'supplement_essay' as const };
+    const apps = [{ id: 'a1', schoolName: 'UChicago', plan: 'EA' as const, deadline: '2026-11-01', status: 'in_progress' as const }];
+    const out = computeNextActions({
+      today: '2026-09-04',
+      nudgeIntensity: 'normal',
+      applications: apps,
+      items: [
+        { ...base, id: 'i1', title: 'Extended essay' },
+        { ...base, id: 'i2', title: 'Why UChicago' },
+        { ...base, id: 'i3', title: 'Purdue short answers' },
+      ],
+    });
+    const actions = out.map((a) => a.action);
+    expect(actions).toContain('Finish the Extended essay');
+    expect(actions).toContain('Finish the Why UChicago essay');
+    expect(actions).toContain('Finish the Purdue short answers');
+  });
+});

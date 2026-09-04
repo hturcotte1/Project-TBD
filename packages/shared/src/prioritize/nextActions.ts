@@ -42,8 +42,10 @@ function describeAction(item: PrioritizeItem, application: PrioritizeApplication
 
   switch (item.kind) {
     case 'supplement_essay':
-    case 'personal_essay':
-      return `Finish the ${item.title} essay${evidenceSuffix}`;
+    case 'personal_essay': {
+      const noun = /\b(essay|essays|statement|answer|answers|questions|response|responses)\b\s*$/i.test(item.title) ? '' : ' essay';
+      return `Finish the ${item.title}${noun}${evidenceSuffix}`;
+    }
     case 'teacher_rec':
     case 'counselor_rec':
     case 'other_rec':
