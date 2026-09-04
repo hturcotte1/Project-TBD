@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8" /><title>Vanderbilt University — Questions</title></head>
+<body>
+<nav data-testid="app-nav">
+  <a href="/dashboard">Dashboard</a>
+  <a href="/my-colleges">My Colleges</a>
+  <a href="/common-app/profile">Common App</a>
+</nav>
+<main data-testid="college-questions-page">
+<h1>Vanderbilt University — Questions</h1>
+<p data-testid="questions-section-status">not_started</p>
+<form data-testid="questions-form" method="post" action="/college/vanderbilt/questions">
+  <label>Intended major <select name="q_intended_major"><option value=""></option><option value="undecided" >undecided</option><option value="biology" >biology</option><option value="chemistry" >chemistry</option><option value="computer_science" >computer_science</option><option value="economics" >economics</option><option value="english" >english</option><option value="history" >history</option><option value="psychology" >psychology</option><option value="engineering" >engineering</option><option value="political_science" >political_science</option><option value="other" >other</option></select></label>
+  <label>Additional info <textarea name="q_additional_info"></textarea></label>
+  <button type="submit" data-testid="questions-save">Save</button>
+</form>
+</main>
+</body>
+</html>

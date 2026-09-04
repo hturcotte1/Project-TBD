@@ -92,6 +92,11 @@ export class SafePage {
     await this.page.locator(selector).first().waitFor({ state: 'visible', timeout: opts?.timeout });
   }
 
+  /** Waits for the page to finish loading after a navigation — never throws (best-effort). */
+  async waitForLoad(opts?: { timeout?: number }): Promise<void> {
+    await this.page.waitForLoadState('load', { timeout: opts?.timeout }).catch(() => undefined);
+  }
+
   private async visibleTextOf(selector: string): Promise<string> {
     try {
       return await this.page.locator(selector).first().innerText({ timeout: 2000 });

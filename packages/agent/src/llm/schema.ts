@@ -3,6 +3,17 @@ import type { z } from 'zod';
 import type { AutoParseableOutputFormat } from '@anthropic-ai/sdk';
 import { LLMExtractionError } from './errors';
 
+/**
+ * `LLMExtractRequest<T>.schema` is typed `z.ZodType<T>`, whose `Input` type parameter defaults to
+ * `T` itself (fully required). Every schema in `@tbd/shared/schemas` leans on `.default()` for
+ * most fields, so its real Input type is narrower than its Output type `T` — TS then refuses the
+ * assignment even though `.parse`/`.safeParse` behave exactly as expected at runtime. This cast
+ * only affects the type-level `Input` parameter; it changes nothing about how the schema parses.
+ */
+export function forExtraction<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>): z.ZodType<T> {
+  return schema as unknown as z.ZodType<T>;
+}
+
 /** JSON Schema (draft 7, no `$ref`s) for a tool's `input_schema` or a structured-output format. */
 export function toJsonSchema(schema: z.ZodTypeAny): Record<string, unknown> {
   return zodToJsonSchema(schema, { target: 'jsonSchema7', $refStrategy: 'none' }) as Record<string, unknown>;

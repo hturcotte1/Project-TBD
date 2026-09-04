@@ -39,7 +39,7 @@ const SECTION_STATUS_VALUES = ['complete', 'in_progress', 'not_started', 'unknow
 const SUBMISSION_STATUS_VALUES = ['not_submitted', 'submitted', 'unknown'] as const;
 
 /** Same rule the mock uses to render the my-colleges summary badge — recomputed here from the authoritative per-college page. */
-function aggregateSupplementStatus(supplements: SupplementRow[]): (typeof SECTION_STATUS_VALUES)[number] {
+export function aggregateSupplementStatus(supplements: SupplementRow[]): (typeof SECTION_STATUS_VALUES)[number] {
   if (supplements.length === 0) return 'complete';
   if (supplements.every((s) => s.status === 'complete')) return 'complete';
   if (supplements.some((s) => s.status === 'complete' || s.status === 'in_progress')) return 'in_progress';

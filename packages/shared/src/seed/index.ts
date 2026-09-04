@@ -1,5 +1,6 @@
-// Populated by task W1-G (seed data). Must export seedDemoStudent(db) and seedSchools(db).
-import type { Db } from '../db/client';
-export async function seedDemoStudent(_db: Db): Promise<{ studentId: string }> {
-  throw new Error('seed not implemented yet (W1-G)');
-}
+/** Seed data: the internal school dataset loader and the canonical demo student fixture. */
+export { seedSchools } from './schools';
+export type { SeedSchoolsResult } from './schools';
+export { DEMO_STUDENT, seedDemoStudent, wordCount } from './demo';
+export type { SeedDemoStudentResult } from './demo';
+export { demoSnapshot } from './demo-snapshot';

@@ -26,7 +26,7 @@ export const markItemDoneTool = defineTool({
     await tc.sdb.update(S.nextActions, { status: 'done' }, eq(S.nextActions.applicationItemId, match.id));
     await appendAudit(tc.sdb, { actor: 'agent', action: 'item.marked_done', entityType: 'application_item', entityId: match.id, details: { title: match.title } });
     const school = match.applicationId ? schoolNameByAppId.get(match.applicationId) : undefined;
-    return ok({ itemId: match.id, title: match.title, school: school ?? null }, `Marked "${match.title}"${school ? ` for ${school}` : ''} done.`);
+    return ok({ itemId: match.id, title: match.title, school: school ?? null, kind: match.kind }, `Marked "${match.title}"${school ? ` for ${school}` : ''} done.`);
   },
 });
 

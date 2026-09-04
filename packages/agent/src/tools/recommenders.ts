@@ -34,12 +34,14 @@ export const updateRecommenderStatusTool = defineTool({
 
     const now = tc.deps.clock.now();
     const evidence = { seen_at: now.toISOString(), text: input.evidence, confidence: 0.7, source_url: null };
+    // recommender_assignments.status has no "declined" value; a decline resets it to pending.
+    const assignmentStatus: 'pending' | 'invited' | 'submitted' = input.status === 'declined' ? 'pending' : input.status;
 
     if (assignment) {
       await tc.sdb.update(
         S.recommenderAssignments,
         {
-          status: input.status,
+          status: assignmentStatus,
           submittedAt: input.status === 'submitted' ? now.toISOString().slice(0, 10) : assignment.assignment.submittedAt,
           evidence,
         },

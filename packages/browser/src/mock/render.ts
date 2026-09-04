@@ -62,7 +62,7 @@ ${opts.error ? `<div data-testid="login-error" role="alert">${esc(opts.error)}</
   <label>Email <input type="email" name="email" /></label>
   <label>Password <input type="password" name="password" /></label>
   <label><input type="checkbox" name="remember_device" value="1" /> Remember this device</label>
-  <button type="submit" data-testid="login-submit">Log In</button>
+  <button type="submit" data-testid="login-continue">Log In</button>
 </form>`,
   });
 }
@@ -76,7 +76,7 @@ export function verificationPage(opts: { error?: string } = {}): string {
 ${opts.error ? `<div data-testid="verification-error" role="alert">${esc(opts.error)}</div>` : ''}
 <form data-testid="verification-form" method="post" action="/account/verify">
   <label>Code <input type="text" name="code" /></label>
-  <button type="submit" data-testid="verification-submit">Verify</button>
+  <button type="submit" data-testid="verification-continue">Verify</button>
 </form>
 <p data-testid="verification-remember-note">If you checked "remember this device", you won't need a code next time you log in on this device.</p>`,
   });

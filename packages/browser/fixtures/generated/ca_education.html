@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8" /><title>Common App — Education</title></head>
+<body>
+<nav data-testid="app-nav">
+  <a href="/dashboard">Dashboard</a>
+  <a href="/my-colleges">My Colleges</a>
+  <a href="/common-app/profile">Common App</a>
+</nav>
+<main data-testid="education-page">
+<h1>Education</h1>
+<p data-testid="education-section-status">in_progress</p>
+<p data-testid="education-high-school">Lincoln High School</p>
+<form data-testid="education-form" method="post" action="/common-app/education">
+  <label>High school <input type="text" name="high_school" value="Lincoln High School" /></label>
+  <label>Graduation year <input type="number" name="graduation_year" value="2027" /></label>
+  <label>Unweighted GPA <input type="number" step="0.01" name="gpa_unweighted" value="3.82" /></label>
+  <label>Weighted GPA <input type="number" step="0.01" name="gpa_weighted" value="4.31" /></label>
+  <label>Class rank <input type="number" name="class_rank" value="41" /></label>
+  <button type="submit" data-testid="education-save">Save</button>
+</form>
+</main>
+</body>
+</html>

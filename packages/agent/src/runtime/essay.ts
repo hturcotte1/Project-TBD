@@ -8,6 +8,7 @@ import { desc, eq } from 'drizzle-orm';
 import { appendAudit, scoped } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
 import { EssayFeedback } from '@tbd/shared/schemas';
+import { forExtraction } from '../llm/schema';
 import type { AgentDeps } from './deps';
 
 /** Each pattern matches one family of ghostwriting request. Keep matches specific to avoid flagging legitimate feedback asks. */
@@ -113,11 +114,11 @@ export async function runEssayFeedback(deps: AgentDeps, input: RunEssayFeedbackI
   const system =
     'You give specific, honest feedback on a college essay draft. Return ONLY the structured fields requested — never a rewritten sentence, paragraph, or example. Point at exact phrases the student used when you flag something generic.';
 
-  const { data } = await deps.llm.extract({
+  const { data } = await deps.llm.extract<EssayFeedback>({
     task: 'essay_feedback',
     system,
     messages: [{ role: 'user', content: [{ type: 'text', text: promptParts.join('\n\n') }] }],
-    schema: EssayFeedback,
+    schema: forExtraction(EssayFeedback),
     schemaName: 'EssayFeedback',
     metadata: { studentId: input.studentId, runId: input.runId },
   });

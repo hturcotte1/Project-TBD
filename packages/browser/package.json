@@ -21,9 +21,11 @@
     "@fastify/cookie": "^11.1.0",
     "@tbd/shared": "workspace:*",
     "cheerio": "^1.2.0",
+    "domhandler": "^5.0.3",
     "fastify": "^5.12.0",
     "playwright": "^1.62.0",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "zod-stagehand": "npm:zod@4.4.3"
   },
   "devDependencies": { "@types/node": "^22.15.0", "eslint": "^9.39.0", "tsx": "^4.23.0", "typescript": "^5.9.3", "vitest": "^3.2.7" }
 }

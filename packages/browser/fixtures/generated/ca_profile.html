@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8" /><title>Common App — Profile</title></head>
+<body>
+<nav data-testid="app-nav">
+  <a href="/dashboard">Dashboard</a>
+  <a href="/my-colleges">My Colleges</a>
+  <a href="/common-app/profile">Common App</a>
+</nav>
+<main data-testid="profile-page">
+<h1>Profile</h1>
+<p data-testid="profile-section-status">complete</p>
+<form data-testid="profile-form" method="post" action="/common-app/profile">
+  <label>Legal first name <input type="text" name="first_name" value="Dee" /></label>
+  <label>Legal last name <input type="text" name="last_name" value="Demo" /></label>
+  <label>Preferred name <input type="text" name="preferred_name" value="Dee" /></label>
+  <button type="submit" data-testid="profile-save">Save</button>
+</form>
+</main>
+</body>
+</html>

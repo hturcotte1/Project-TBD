@@ -27,7 +27,7 @@ export const setQuietHoursTool = defineTool({
   inputSchema: SetQuietHoursInput,
   authorization: 'student_text',
   async run(tc, input) {
-    await tc.sdb.update(S.students, { quietHoursStart: input.start, quietHoursEnd: input.end }, eq(S.students.id, tc.studentId));
+    await tc.deps.db.update(S.students).set({ quietHoursStart: input.start, quietHoursEnd: input.end }).where(eq(S.students.id, tc.studentId));
     await appendAudit(tc.sdb, { actor: 'agent', action: 'quiet_hours.updated', details: { start: input.start, end: input.end } });
     return ok({ start: input.start, end: input.end }, `Quiet hours set to ${input.start}–${input.end}.`);
   },
@@ -42,7 +42,7 @@ export const snoozeNotificationsTool = defineTool({
   authorization: 'student_text',
   async run(tc, input) {
     const until = new Date(input.until);
-    await tc.sdb.update(S.students, { snoozedUntil: until }, eq(S.students.id, tc.studentId));
+    await tc.deps.db.update(S.students).set({ snoozedUntil: until }).where(eq(S.students.id, tc.studentId));
     await appendAudit(tc.sdb, { actor: 'agent', action: 'notifications.snoozed', details: { until: until.toISOString() } });
     return ok({ until: until.toISOString() }, "Okay, I'll leave you alone until then.");
   },

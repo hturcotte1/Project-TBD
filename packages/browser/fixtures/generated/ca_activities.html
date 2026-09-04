@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8" /><title>Common App — Activities</title></head>
+<body>
+<nav data-testid="app-nav">
+  <a href="/dashboard">Dashboard</a>
+  <a href="/my-colleges">My Colleges</a>
+  <a href="/common-app/profile">Common App</a>
+</nav>
+<main data-testid="activities-page">
+<h1>Activities</h1>
+<p data-testid="activities-section-status">in_progress</p>
+<p data-testid="activities-count">6</p>
+<div data-testid="activity-row-0">
+  <span data-testid="activity-type">journalism_publication</span>
+  <span data-testid="activity-position">Editor-in-Chief</span>
+  <span data-testid="activity-organization">The Lincoln Log</span>
+  <span data-testid="activity-description">Lead a staff of 14 reporters and editors; assign, edit, and lay out every issue of the school paper; run weekly pitch meetings and manage the print budget.</span>
+  <span data-testid="activity-grade-levels">10,11,12</span>
+  <span data-testid="activity-timing">school_year</span>
+  <span data-testid="activity-hours">8</span>
+  <span data-testid="activity-weeks">36</span>
+  <span data-testid="activity-continue">true</span>
+  <a href="/common-app/activities?edit=0" data-testid="activity-edit-0">Edit</a>
+</div>
+<div data-testid="activity-row-1">
+  <span data-testid="activity-type">music_instrumental</span>
+  <span data-testid="activity-position">Lead Trumpet</span>
+  <span data-testid="activity-organization">Jazz Band</span>
+  <span data-testid="activity-description">First-chair trumpet; solo features at winter and spring concerts and two regional festivals.</span>
+  <span data-testid="activity-grade-levels">9,10,11,12</span>
+  <span data-testid="activity-timing">all_year</span>
+  <span data-testid="activity-hours">5</span>
+  <span data-testid="activity-weeks">40</span>
+  <span data-testid="activity-continue">true</span>
+  <a href="/common-app/activities?edit=1" data-testid="activity-edit-1">Edit</a>
+</div>
+<div data-testid="activity-row-2">
+  <span data-testid="activity-type">work_paid</span>
+  <span data-testid="activity-position">Line Cook</span>
+  <span data-testid="activity-organization">Rosa&#39;s Taqueria</span>
+  <span data-testid="activity-description">Run the line during dinner rush at my family&#39;s restaurant; train new cooks; manage inventory.</span>
+  <span data-testid="activity-grade-levels">11,12</span>
+  <span data-testid="activity-timing">all_year</span>
+  <span data-testid="activity-hours">12</span>
+  <span data-testid="activity-weeks">48</span>
+  <span data-testid="activity-continue">false</span>
+  <a href="/common-app/activities?edit=2" data-testid="activity-edit-2">Edit</a>
+</div>
+<div data-testid="activity-row-3">
+  <span data-testid="activity-type">community_service</span>
+  <span data-testid="activity-position">Tutor</span>
+  <span data-testid="activity-organization">Boys &amp; Girls Club</span>
+  <span data-testid="activity-description">Weekly reading and math tutoring for 3rd-5th graders; built a lending library for the site.</span>
+  <span data-testid="activity-grade-levels">10,11,12</span>
+  <span data-testid="activity-timing">school_year</span>
+  <span data-testid="activity-hours">3</span>
+  <span data-testid="activity-weeks">30</span>
+  <span data-testid="activity-continue">true</span>
+  <a href="/common-app/activities?edit=3" data-testid="activity-edit-3">Edit</a>
+</div>
+<div data-testid="activity-row-4">
+  <span data-testid="activity-type">family_responsibilities</span>
+  <span data-testid="activity-position">Caregiver</span>
+  <span data-testid="activity-organization">Family</span>
+  <span data-testid="activity-description">After-school and evening childcare for two younger siblings while parents work.</span>
+  <span data-testid="activity-grade-levels">9,10,11,12</span>
+  <span data-testid="activity-timing">all_year</span>
+  <span data-testid="activity-hours">10</span>
+  <span data-testid="activity-weeks">50</span>
+  <span data-testid="activity-continue">false</span>
+  <a href="/common-app/activities?edit=4" data-testid="activity-edit-4">Edit</a>
+</div>
+<div data-testid="activity-row-5">
+  <span data-testid="activity-type">debate_speech</span>
+  <span data-testid="activity-position">Varsity Debater</span>
+  <span data-testid="activity-organization">Lincoln Debate</span>
+  <span data-testid="activity-description">Varsity policy debate; qualified for state tournament junior year; mentor novice debaters.</span>
+  <span data-testid="activity-grade-levels">9,10,11</span>
+  <span data-testid="activity-timing">school_year</span>
+  <span data-testid="activity-hours">6</span>
+  <span data-testid="activity-weeks">28</span>
+  <span data-testid="activity-continue">true</span>
+  <a href="/common-app/activities?edit=5" data-testid="activity-edit-5">Edit</a>
+</div>
+<form data-testid="activity-form" method="post" action="/common-app/activities">
+  <input type="hidden" name="index" value="6" />
+  <label>Type <select name="activity_type"><option value="academic" selected>academic</option><option value="art" >art</option><option value="athletics_club" >athletics_club</option><option value="athletics_jv_varsity" >athletics_jv_varsity</option><option value="career_oriented" >career_oriented</option><option value="community_service" >community_service</option><option value="computer_technology" >computer_technology</option><option value="cultural" >cultural</option><option value="dance" >dance</option><option value="debate_speech" >debate_speech</option><option value="environmental" >environmental</option><option value="family_responsibilities" >family_responsibilities</option><option value="foreign_exchange" >foreign_exchange</option><option value="foreign_language" >foreign_language</option><option value="internship" >internship</option><option value="journalism_publication" >journalism_publication</option><option value="junior_rotc" >junior_rotc</option><option value="lgbtq" >lgbtq</option><option value="music_instrumental" >music_instrumental</option><option value="music_vocal" >music_vocal</option><option value="other_club" >other_club</option><option value="religious" >religious</option><option value="research" >research</option><option value="robotics" >robotics</option><option value="school_spirit" >school_spirit</option><option value="science_math" >science_math</option><option value="social_justice" >social_justice</option><option value="student_government" >student_government</option><option value="theater_drama" >theater_drama</option><option value="work_paid" >work_paid</option><option value="other" >other</option></select></label>
+  <label>Position <input type="text" name="position" value="" /></label>
+  <label>Organization <input type="text" name="organization" value="" /></label>
+  <label>Description <textarea name="description"></textarea></label>
+  <fieldset><legend>Grade levels</legend><label><input type="checkbox" name="grade_levels" value="9" /> 9</label>
+<label><input type="checkbox" name="grade_levels" value="10" /> 10</label>
+<label><input type="checkbox" name="grade_levels" value="11" /> 11</label>
+<label><input type="checkbox" name="grade_levels" value="12" /> 12</label>
+<label><input type="checkbox" name="grade_levels" value="PG" /> PG</label></fieldset>
+  <fieldset><legend>Timing</legend><label><input type="checkbox" name="timing" value="school_year" /> school_year</label>
+<label><input type="checkbox" name="timing" value="school_break" /> school_break</label>
+<label><input type="checkbox" name="timing" value="all_year" /> all_year</label></fieldset>
+  <label>Hours/week <input type="number" step="0.5" name="hours_per_week" value="0" /></label>
+  <label>Weeks/year <input type="number" name="weeks_per_year" value="1" /></label>
+  <label><input type="checkbox" name="continue_in_college" value="1" /> Continue in college</label>
+  <button type="submit" data-testid="activity-save">Save activity</button>
+</form>
+</main>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8" /><title>Common App — Verify</title></head>
+<body>
+
+<main data-testid="verification-page">
+<h1>Enter the verification code</h1>
+<p>We sent you a code to help verify it's really you.</p>
+<div data-testid="verification-error" role="alert">That code didn&#39;t match. Please check your email and try again.</div>
+<form data-testid="verification-form" method="post" action="/account/verify">
+  <label>Code <input type="text" name="code" /></label>
+  <button type="submit" data-testid="verification-submit">Verify</button>
+</form>
+<p data-testid="verification-remember-note">If you checked "remember this device", you won't need a code next time you log in on this device.</p>
+</main>
+</body>
+</html>

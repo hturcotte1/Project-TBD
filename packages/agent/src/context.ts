@@ -3,7 +3,7 @@
  * is authorized to that student. See `src/persona.ts` for how this gets rendered into a prompt.
  */
 import { asc, desc, eq, inArray } from 'drizzle-orm';
-import { approvalsRepo, browserJobsRepo, scoped, type Db } from '@tbd/shared/db';
+import { approvalsRepo, AuthorizationError, browserJobsRepo, scoped, studentsRepo, type Db } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
 import type { Clock } from '@tbd/shared/time';
 import { daysUntil } from '@tbd/shared/time';
@@ -48,7 +48,8 @@ export async function loadStudentContext(db: Db, studentId: string, clock: Clock
   const sdb = scoped(db, studentId);
   const now = clock.now();
 
-  const student = await sdb.requireOne(S.students);
+  const student = await studentsRepo.findById(db, studentId);
+  if (!student) throw new AuthorizationError();
   const profile = await sdb.selectOne(S.studentProfiles);
   const narrative = await sdb.selectOne(S.studentNarratives, undefined, { orderBy: desc(S.studentNarratives.version) });
 

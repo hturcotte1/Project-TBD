@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8" /><title>Common App — Writing</title></head>
+<body>
+<nav data-testid="app-nav">
+  <a href="/dashboard">Dashboard</a>
+  <a href="/my-colleges">My Colleges</a>
+  <a href="/common-app/profile">Common App</a>
+</nav>
+<main data-testid="writing-page">
+<h1>Writing</h1>
+<p data-testid="writing-section-status">in_progress</p>
+<p data-testid="writing-prompt-index">5</p>
+<p data-testid="writing-word-count">412</p>
+<form data-testid="writing-form" method="post" action="/common-app/writing">
+  <label>Prompt <select name="prompt_index"><option value="1" >Prompt 1</option><option value="2" >Prompt 2</option><option value="3" >Prompt 3</option><option value="4" >Prompt 4</option><option value="5" selected>Prompt 5</option><option value="6" >Prompt 6</option><option value="7" >Prompt 7</option></select></label>
+  <label>Essay <textarea name="essay_text">The griddle at Rosa&#39;s Taqueria never fully cools between the lunch and dinner rush, and neither do I. I started as the kid who refilled salsa boats; three years later I run the line on Friday nights, calling out ticket times while the radio plays cumbias too loud for the health inspector&#39;s taste. My mom thinks I took the job to help with rent, and I did, but I stayed for the fifteen minutes before open when the whole crew stands around the pass eating whatever came out wrong, arguing about whether the carnitas needs more orange peel. Restaurant work taught me to read a room in under a second: whose order is about to go sideways, who needs a joke before they snap at the register, when the walk-in cooler compressor is about to give out again. It also taught me that &quot;family business&quot; is not a metaphor. My abuela&#39;s recipes are the menu, my tios argue about the books in the back office, and my little brother does his homework on an overturned bus tub because there is nowhere else quiet enough. I used to be embarrassed that my after-school job smelled like cumin instead of looking good on a resume next to an internship logo. I am not anymore. Debate taught me to build an argument; the taqueria taught me to read the room the argument is happening in, and to keep the line moving even when the ticket printer jams and the walk-in door sticks and somebody ordered eight tacos with no cilantro, extra cilantro, both, apparently, at once. I want to study public health in college because I have watched, close up, what it costs a family when nobody in the building has a degree that lets them read a lease or a labor law twice. I am not walking away from the taqueria. I am trying to become the person who can finally read the fine print for it, translate the health code binder into something my tios can actually use, and come home on breaks to run the Friday line, because somebody always has to call the ticket times, and I am good at it, and it is, against every odd a college essay is supposed to describe, still the best fifteen minutes of my day.</textarea></label>
+  <button type="submit" data-testid="writing-save">Save</button>
+</form>
+</main>
+</body>
+</html>

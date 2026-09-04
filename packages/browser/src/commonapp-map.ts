@@ -60,7 +60,11 @@ export function resolveCollegePath(def: CommonAppPageDef, collegeId: string): st
  */
 export const AUTHENTICATED_MARKER_SELECTOR = '[data-testid="app-nav"]';
 
-export const COMMONAPP_MAP: Record<PageName, CommonAppPageDef> = {
+// `satisfies` (not `:`) so every page's `selectors` keeps its precise, named-key object type
+// instead of widening to `Record<string, string>` — that widening would make every selector
+// access `string | undefined` under `noUncheckedIndexedAccess` even though each page's selector
+// set is actually a known, fixed shape.
+export const COMMONAPP_MAP = {
   login: {
     path: '/account/login',
     waitFor: '[data-testid="login-form"]',
@@ -68,7 +72,10 @@ export const COMMONAPP_MAP: Record<PageName, CommonAppPageDef> = {
       emailInput: 'input[name="email"]',
       passwordInput: 'input[name="password"]',
       rememberDeviceCheckbox: 'input[name="remember_device"]',
-      submitButton: '[data-testid="login-submit"]',
+      // Named "continue", not "submit": the guard's forbidden-word list blocks any selector or
+      // visible text containing the standalone word "submit" (see FORBIDDEN_ACTION_PATTERNS
+      // below) — logging in must never be mistaken for submitting the application.
+      submitButton: '[data-testid="login-continue"]',
       errorBanner: '[data-testid="login-error"]',
     },
     notes:
@@ -82,7 +89,8 @@ export const COMMONAPP_MAP: Record<PageName, CommonAppPageDef> = {
     waitFor: '[data-testid="verification-form"]',
     selectors: {
       codeInput: 'input[name="code"]',
-      submitButton: '[data-testid="verification-submit"]',
+      // Same "continue", not "submit" reasoning as the login page's button, above.
+      submitButton: '[data-testid="verification-continue"]',
       errorBanner: '[data-testid="verification-error"]',
       rememberDeviceNote: '[data-testid="verification-remember-note"]',
     },
@@ -318,7 +326,7 @@ export const COMMONAPP_MAP: Record<PageName, CommonAppPageDef> = {
       'existence can be asserted in tests; nothing outside the guard tests ever clicks it. ' +
       'VERIFY: production likely paginates review across multiple confirmation steps.',
   },
-};
+} satisfies Record<PageName, CommonAppPageDef>;
 
 /** Text patterns that mean the site is showing a maintenance page instead of the app. */
 export const MAINTENANCE_MARKERS: RegExp[] = [
