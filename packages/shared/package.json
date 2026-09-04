@@ -22,7 +22,8 @@
     "./proactive": "./src/proactive/index.ts",
     "./seed": "./src/seed/index.ts",
     "./testing": "./src/testing/index.ts",
-    "./auth": "./src/auth/index.ts"
+    "./auth": "./src/auth/index.ts",
+    "./domain": "./src/domain/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",

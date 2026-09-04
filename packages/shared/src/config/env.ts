@@ -51,6 +51,8 @@ export const EnvSchema = z.object({
   COMMONAPP_MOCK_VERIFICATION_CODE: z.string().optional(),
   RECORD_FIXTURES: bool.default(false),
   STAGEHAND_FALLBACK: bool.default(false),
+  /** Explicit Chromium binary for BROWSER_PROVIDER=local (when Playwright's bundled revision is absent). */
+  PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: z.string().optional(),
 
   CREDENTIALS_ENCRYPTION_KEYS: z.string().default('1:ZGV2LWtleS1kZXYta2V5LWRldi1rZXktZGV2LWtleS0xMjM='),
   CREDENTIALS_ENCRYPTION_KEY_VERSION: z.coerce.number().int().default(1),
