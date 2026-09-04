@@ -22,7 +22,7 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 | W1-D | Browser: selector map, cheerio extractors, reader, writer, session providers, guard, mock site, fixtures, tests | `packages/browser/**` | sonnet | in-progress |
 | W1-E | Agent: LLM adapters, router, persona, tools, runtime, essay boundaries + adversarial tests, extractors, injection defense | `packages/agent/**` | sonnet | in-progress |
 | W1-F | Web shell: Next app, auth (Clerk + dev), API client, UI kit, layout, onboarding steps 1–7 | `apps/web/**` | sonnet | done |
-| W1-G | Seed: Demo Student with 12 schools and partial Common App state | `packages/shared/src/seed/**` | sonnet | in-progress |
+| W1-G | Seed: Demo Student with 12 schools and partial Common App state | `packages/shared/src/seed/**` | sonnet | done |
 
 ## Wave 2 — apps (parallel, after Wave 1)
 

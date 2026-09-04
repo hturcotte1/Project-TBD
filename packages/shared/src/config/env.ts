@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AUTONOMY_LEVELS } from '../domain/enums';
+import { applyDotEnv } from './dotenv';
 
 const bool = z
   .union([z.boolean(), z.string()])
@@ -54,7 +55,7 @@ export const EnvSchema = z.object({
   /** Explicit Chromium binary for BROWSER_PROVIDER=local (when Playwright's bundled revision is absent). */
   PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: z.string().optional(),
 
-  CREDENTIALS_ENCRYPTION_KEYS: z.string().default('1:ZGV2LWtleS1kZXYta2V5LWRldi1rZXktZGV2LWtleS0xMjM='),
+  CREDENTIALS_ENCRYPTION_KEYS: z.string().default('1:ZGV2LWtleS1kZXYta2V5LWRldi1rZXktZGV2LWtleSE='),
   CREDENTIALS_ENCRYPTION_KEY_VERSION: z.coerce.number().int().default(1),
 
   STORAGE_PROVIDER: z.enum(['local', 's3']).default('local'),
@@ -77,6 +78,7 @@ let cached: Env | null = null;
 /** Parse process.env once. Throws a readable error listing every invalid variable. */
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   if (cached && source === process.env) return cached;
+  if (source === process.env) applyDotEnv();
   const parsed = EnvSchema.safeParse(source);
   if (!parsed.success) {
     const issues = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('\n  ');
