@@ -1,0 +1,156 @@
+/*
+ * Apogee design tokens. This file is the only source of color, type size, spacing, radius,
+ * elevation and motion values in apps/web. Tailwind maps to these variables (see
+ * tailwind.config.ts); components never write a hex, a px shadow or a radius of their own.
+ * The rationale for every value is in docs/DESIGN.md.
+ */
+
+:root {
+  /* Surfaces. Dark is the base theme: closer surfaces are lighter. */
+  --page: #141d2b;
+  --s1: #1b2634;
+  --s2: #233041;
+  --s3: #2c3a4d;
+  --line: #2f3d50;
+  --line-strong: #3e4e64;
+
+  /* Text. */
+  --fg: #e8edf4;
+  --fg-2: #a9b6c7;
+  --fg-3: #8a9aae;
+  --fg-on-brand: #141d2b;
+
+  /* Brand: chrome only (wordmark, selected rail item, focus, the one primary button, links). */
+  --brand: #a3c4e6;
+  --brand-soft: rgba(163, 196, 230, 0.12);
+
+  /* One signal: heat. Step 0 (more than 30 days) is secondary text. */
+  --heat-1: #b99a6c;
+  --heat-2: #d9a75c;
+  --heat-3: #ee9c42;
+  --heat-4: #f5843c;
+  --heat-5: #ff7a55;
+
+  /* Outcomes. */
+  --ok: #8fb89a;
+  --err: #e68a8a;
+
+  /* Focus. */
+  --focus: var(--brand);
+
+  /* Elevation: the only shadow, for floating Surface 3 elements. */
+  --shadow-float: 0 12px 32px rgba(6, 10, 18, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+
+  /* Selection. */
+  --selection: rgba(163, 196, 230, 0.25);
+
+  /* Type families are injected by next/font as --font-ui and --font-count. */
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Type scale: 14px base, ratio 1.25, line heights on the 4px grid. */
+  --text-12: 0.75rem;
+  --lh-12: 1rem;
+  --text-14: 0.875rem;
+  --lh-14: 1.25rem;
+  --text-17: 1.0625rem;
+  --lh-17: 1.5rem;
+  --text-22: 1.375rem;
+  --lh-22: 1.75rem;
+  --text-28: 1.75rem;
+  --lh-28: 2.125rem;
+  --text-34: 2.125rem;
+  --lh-34: 2.5rem;
+  --text-43: 2.6875rem;
+  --lh-43: 3rem;
+  --text-54: 3.375rem;
+  --lh-54: 3.5rem;
+  --text-67: 4.1875rem;
+  --lh-67: 4.25rem;
+  --text-84: 5.25rem;
+  --lh-84: 5.25rem;
+
+  /* Spacing scale. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Layout. */
+  --row: 40px;
+  --row-touch: 48px;
+  --rail: 232px;
+  --rail-collapsed: 56px;
+  --tabbar: 56px;
+  --content-max: 1040px;
+  --measure: 64ch;
+
+  /* Radii: in-flow controls and floating surfaces. */
+  --radius-control: 6px;
+  --radius-float: 12px;
+
+  /* Motion. */
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur-open: 200ms;
+  --dur-settle: 600ms;
+
+  color-scheme: dark;
+}
+
+/* Light theme: designed to the same rules. Lighter is still closer. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --page: #f3f5f8;
+    --s1: #ffffff;
+    --s2: #e9edf2;
+    --s3: #dde3ea;
+    --line: #d5dce5;
+    --line-strong: #b9c3d0;
+    --fg: #18222f;
+    --fg-2: #4a5a6e;
+    --fg-3: #5c6979;
+    --fg-on-brand: #ffffff;
+    --brand: #2e5a8a;
+    --brand-soft: rgba(46, 90, 138, 0.1);
+    --heat-1: #7d5a2c;
+    --heat-2: #8c5612;
+    --heat-3: #9e4c0c;
+    --heat-4: #aa4210;
+    --heat-5: #ad3220;
+    --ok: #2f6b3e;
+    --err: #a83434;
+    --shadow-float: 0 12px 32px rgba(24, 34, 47, 0.16), 0 0 0 1px rgba(24, 34, 47, 0.06);
+    --selection: rgba(46, 90, 138, 0.18);
+    color-scheme: light;
+  }
+}
+
+:root[data-theme='light'] {
+  --page: #f3f5f8;
+  --s1: #ffffff;
+  --s2: #e9edf2;
+  --s3: #dde3ea;
+  --line: #d5dce5;
+  --line-strong: #b9c3d0;
+  --fg: #18222f;
+  --fg-2: #4a5a6e;
+  --fg-3: #5c6979;
+  --fg-on-brand: #ffffff;
+  --brand: #2e5a8a;
+  --brand-soft: rgba(46, 90, 138, 0.1);
+  --heat-1: #7d5a2c;
+  --heat-2: #8c5612;
+  --heat-3: #9e4c0c;
+  --heat-4: #aa4210;
+  --heat-5: #ad3220;
+  --ok: #2f6b3e;
+  --err: #a83434;
+  --shadow-float: 0 12px 32px rgba(24, 34, 47, 0.16), 0 0 0 1px rgba(24, 34, 47, 0.06);
+  --selection: rgba(46, 90, 138, 0.18);
+  color-scheme: light;
+}

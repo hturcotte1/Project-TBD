@@ -49,3 +49,19 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 | W3-10 | Authz, webhook signature, prompt-injection tests | done — StudentDb cross-student tests, authz scan, API cross-student 404s, forged webhook 401, injection fixture + origin guard tests |
 | W3-11 | README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY | done — README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY |
 | W3-12 | Adversarial review (6 reviewers × 2 refuters, 21 findings) and fixes | done — 13 confirmed + 4 contested fixed with tests (DECISIONS #27–35); 1 refuted; 1 documented in KNOWN_GAPS |
+
+## Wave 4 — Apogee rename and dashboard redesign
+
+| ID | Task | Files | Owner | Status |
+|---|---|---|---|---|
+| W4-1 | Rename to Apogee / Vector across packages, config, docs, persona and welcome; full test run | everywhere | orchestrator | done — commit 13c2259 |
+| W4-2 | Design plan: `docs/DESIGN.md`, `tokens.css`, typeface bake-off, Tailwind on tokens only, self-hosted fonts, theme script | `docs/DESIGN.md`, `apps/web/app/{tokens.css,globals.css,fonts.ts,fonts/,layout.tsx}`, `apps/web/tailwind.config.ts` | orchestrator | done |
+| W4-3 | Component system `components/system/*` (Radix underneath) + `/dev/system` kitchen sink in both themes; `lib/urgency.ts` six-step heat; `lib/theme.ts`; screenshots script skeleton | `apps/web/components/system/**`, `apps/web/app/dev/system`, `apps/web/scripts/screenshots.ts` | sonnet | todo |
+| W4-4a | Today + command palette + app shell (rail, tab bar, student menu) | `apps/web/app/(app)/{layout,page}.tsx`, `components/{shell,today,palette}` | sonnet | todo |
+| W4-4b | Schools table + school detail | `apps/web/app/(app)/schools/**`, `components/schools/**` | sonnet | todo |
+| W4-4c | Timeline runway + agenda | `apps/web/app/(app)/timeline`, `components/timeline/**` | sonnet | todo |
+| W4-4d | Essays table + editor | `apps/web/app/(app)/essays/**`, `components/essays/**` | sonnet | todo |
+| W4-4e | Recommenders table + reminder drawer; Vector chat | `apps/web/app/(app)/{recommenders,chat}`, `components/{recommenders,chat}/**` | sonnet | todo |
+| W4-4f | Activity stream; Settings; Profile; Admin | `apps/web/app/(app)/{activity,settings,profile,admin}`, `components/{activity,settings,profile,admin}/**` | sonnet | todo |
+| W4-4g | Onboarding (one question per screen), sign-in, dev login, empty states | `apps/web/app/(onboarding)/**`, `app/sign-in`, `app/dev/login`, `components/onboarding/**` | sonnet | todo |
+| W4-5 | Review pass 1 and 2 with notes in `docs/DESIGN_REVIEW.md`; fixes; copy pass; delete `components/ui`; DoD greps; fresh-clone build/test/lint; `docs/screenshots` committed; KNOWN_GAPS and DECISIONS | root | orchestrator | todo |

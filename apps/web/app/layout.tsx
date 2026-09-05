@@ -1,27 +1,35 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { AUTH_MODE } from '@/lib/auth';
 import { QueryProvider } from '@/lib/query';
+import { bricolage, hanken } from './fonts';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-
 export const metadata: Metadata = {
-  title: { default: 'Apogee', template: '%s · Apogee' },
-  description: 'Your college application, handled — a next action every day, drafted for your approval, never submitted without it.',
+  title: { default: 'Apogee', template: '%s, Apogee' },
+  description: 'An autonomous college-application agent: every deadline counted down, every draft ready for your approval, nothing submitted without you.',
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 };
+
+/**
+ * Applies the stored theme before first paint so a light-theme user never sees a dark flash.
+ * Values: "dark" | "light"; anything else (or nothing) follows the system preference.
+ */
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('apogee-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const content = (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${hanken.variable} ${bricolage.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>
         <QueryProvider>
           {children}
