@@ -1,8 +1,6 @@
-import { Badge } from '@/components/ui/badge';
 import { relativeDays } from '@/lib/format';
-import { urgencyTone } from '@/lib/urgency';
-
-const VARIANT_BY_TONE = { critical: 'urgent', warning: 'warn', neutral: 'outline' } as const;
+import { heatTextClass } from '@/lib/urgency';
+import { cn } from '@/lib/utils';
 
 export interface DeadlineBadgeProps {
   daysRemaining: number | null;
@@ -11,12 +9,8 @@ export interface DeadlineBadgeProps {
   className?: string;
 }
 
+/** Transitional: the legacy pages still import this; every rebuilt page uses system/days-figure. */
 export function DeadlineBadge({ daysRemaining, label, className }: DeadlineBadgeProps) {
-  const tone = urgencyTone(daysRemaining);
   const text = label ?? (daysRemaining === null ? 'no deadline' : relativeDays(daysRemaining));
-  return (
-    <Badge variant={VARIANT_BY_TONE[tone]} className={className}>
-      {text}
-    </Badge>
-  );
+  return <span className={cn('text-12 tabular-nums', heatTextClass(daysRemaining), className)}>{text}</span>;
 }

@@ -1,26 +1,29 @@
 import { describe, expect, it } from 'vitest';
-import { urgencyTone } from '@/lib/urgency';
+import { HEAT_TEXT_CLASSES, heatStep, heatTextClass } from './urgency';
 
-describe('urgencyTone', () => {
-  it('is neutral when there is no deadline', () => {
-    expect(urgencyTone(null)).toBe('neutral');
-    expect(urgencyTone(undefined)).toBe('neutral');
+describe('heatStep', () => {
+  it('is silent with no deadline or more than 30 days out', () => {
+    expect(heatStep(null)).toBe(0);
+    expect(heatStep(undefined)).toBe(0);
+    expect(heatStep(31)).toBe(0);
+    expect(heatStep(120)).toBe(0);
   });
 
-  it('is critical at 3 days or fewer, including overdue', () => {
-    expect(urgencyTone(3)).toBe('critical');
-    expect(urgencyTone(1)).toBe('critical');
-    expect(urgencyTone(0)).toBe('critical');
-    expect(urgencyTone(-2)).toBe('critical');
+  it('heats up in six steps', () => {
+    expect(heatStep(30)).toBe(1);
+    expect(heatStep(15)).toBe(1);
+    expect(heatStep(14)).toBe(2);
+    expect(heatStep(8)).toBe(2);
+    expect(heatStep(7)).toBe(3);
+    expect(heatStep(4)).toBe(3);
+    expect(heatStep(3)).toBe(4);
+    expect(heatStep(0)).toBe(4);
+    expect(heatStep(-1)).toBe(5);
   });
 
-  it('is warning between 4 and 14 days', () => {
-    expect(urgencyTone(4)).toBe('warning');
-    expect(urgencyTone(14)).toBe('warning');
-  });
-
-  it('is neutral beyond 14 days', () => {
-    expect(urgencyTone(15)).toBe('neutral');
-    expect(urgencyTone(90)).toBe('neutral');
+  it('maps to a text class and never a background', () => {
+    expect(heatTextClass(2)).toBe('text-heat-4');
+    expect(heatTextClass(null)).toBe('text-fg-2');
+    for (const cls of Object.values(HEAT_TEXT_CLASSES)) expect(cls.startsWith('text-')).toBe(true);
   });
 });
