@@ -37,14 +37,14 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 
 | ID | Task | Status |
 |---|---|---|
-| W3-1 | Integrate, `pnpm install && pnpm build && pnpm test && pnpm lint` clean | todo |
-| W3-2 | `pnpm dev` brings up everything, seeds Demo Student | todo |
-| W3-3 | Onboarding e2e in browser against mock Common App | todo |
-| W3-4 | fullSync → snapshot → diff → items → next actions → dashboard | todo |
-| W3-5 | Verification code pause/resume via fake phone | todo |
-| W3-6 | Section 9 conversation tests | todo |
-| W3-7 | Essay adversarial tests | todo |
-| W3-8 | Proactive engine timing tests | todo |
-| W3-9 | Fill-fields flow + submit guard tests | todo |
-| W3-10 | Authz, webhook signature, prompt-injection tests | todo |
-| W3-11 | README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY | todo |
+| W3-1 | Integrate, `pnpm install && pnpm build && pnpm test && pnpm lint` clean | done — root `pnpm build`, `pnpm lint`, `pnpm test` (serial) green; fresh-clone run recorded below |
+| W3-2 | `pnpm dev` brings up everything, seeds Demo Student | done — one `pnpm dev` brings up db:ready + seed, api :4000, `/dev/phone`, mock :4100, web :3000, worker |
+| W3-3 | Onboarding e2e in browser against mock Common App | done — Playwright drove all 7 steps for a new student (transcript → GPA 3.7, resume → 6 activities, interview → narrative, 12 schools, connect → verified, first sync + plan, dashboard) |
+| W3-4 | fullSync → snapshot → diff → items → next actions → dashboard | done — live `syncRun`: 53 pages, 53 screenshots, confidence 1.0, zero diff vs the seed; changed mock state → important change + item done (worker tests) |
+| W3-5 | Verification code pause/resume via fake phone | done — mock demanded a code: job paused, one text, code typed into `/dev/phone`, job resumed (53 pages); code retained nowhere |
+| W3-6 | Section 9 conversation tests | done — agent behaviors suite + live fake-phone run (what's next, Michigan status, done-with-supp with ambiguity guard, snooze to 7am, stressed, add school, activities fill) |
+| W3-7 | Essay adversarial tests | done — 16 ghostwriting phrasings refused with redirects; feedback path returns specific items; prose-handback safety net |
+| W3-8 | Proactive engine timing tests | done — trigger/policy tests with fixed clocks; worker tick tests (3-day countdown once, quiet-hours deferral, recommender inactivity once) |
+| W3-9 | Fill-fields flow + submit guard tests | done — live: propose → approval → fill job → 72/72 verified → screenshot in audit → mock state updated; guard tests (unit, grep-level, runtime) |
+| W3-10 | Authz, webhook signature, prompt-injection tests | done — StudentDb cross-student tests, authz scan, API cross-student 404s, forged webhook 401, injection fixture + origin guard tests |
+| W3-11 | README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY | done — README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY |
