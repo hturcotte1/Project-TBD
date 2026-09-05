@@ -18,12 +18,13 @@ export function renderDevPhonePage(defaultPhone: string): string {
   .bubble { max-width: 72%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.3; white-space: pre-wrap; word-break: break-word; }
   .bubble img { max-width: 220px; display: block; border-radius: 12px; margin-top: 4px; }
   .row { display: flex; }
-  .row.out { justify-content: flex-end; }
-  .row.in { justify-content: flex-start; }
-  .out .bubble { background: #0b93f6; color: #fff; }
-  .in .bubble { background: #e5e5ea; color: #000; }
+  /* The page is the student's phone: their own texts (inbound to us) sit right in blue; the agent's sit left in gray. */
+  .row.out { justify-content: flex-start; }
+  .row.in { justify-content: flex-end; }
+  .out .bubble { background: #ffffff; color: #000; }
+  .in .bubble { background: #0b93f6; color: #fff; }
   .row.reaction .bubble { background: transparent; color: #8e8e93; font-size: 12px; padding: 0; }
-  .typing { align-self: flex-start; background: #e5e5ea; border-radius: 18px; padding: 8px 14px; width: fit-content; }
+  .typing { align-self: flex-start; background: #ffffff; border-radius: 18px; padding: 8px 14px; width: fit-content; }
   .typing span { display: inline-block; width: 6px; height: 6px; margin: 0 1px; border-radius: 50%; background: #8e8e93; animation: bounce 1.2s infinite ease-in-out; }
   .typing span:nth-child(2) { animation-delay: 0.15s; }
   .typing span:nth-child(3) { animation-delay: 0.3s; }
@@ -77,7 +78,7 @@ export function renderDevPhonePage(defaultPhone: string): string {
       var bubble = document.createElement('div');
       bubble.className = 'bubble';
       if (m.kind === 'reaction') {
-        bubble.textContent = (isOut ? 'You' : 'Them') + ' reacted ' + (m.reaction || '');
+        bubble.textContent = (isOut ? 'Remy' : 'You') + ' reacted ' + (m.reaction || '');
       } else {
         if (m.body) bubble.appendChild(document.createTextNode(m.body));
         (m.media || []).forEach(function (media) {
