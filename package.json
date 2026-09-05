@@ -8,7 +8,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "pnpm db:ready && turbo run dev --parallel",
-    "test": "turbo run test",
+    "test": "turbo run test --concurrency=1",
     "test:live": "LLM_PROVIDER=anthropic vitest run --config packages/agent/vitest.live.config.ts",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
