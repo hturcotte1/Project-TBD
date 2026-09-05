@@ -175,24 +175,28 @@ function questionsItem(input: ChecklistInput): ChecklistItemSpec | null {
 }
 
 function supplementItems(input: ChecklistInput): ChecklistItemSpec[] {
-  if (!input.application.commonAppMember) return [];
   const prompts = supplementsForPlan(input.requirements, input.application.plan);
+  // Schools outside Common App still have supplements; we cannot observe their status, so the
+  // items come from the requirements dataset and the student marks them done.
+  const observable = input.application.commonAppMember;
   return prompts.map((prompt): ChecklistItemSpec => {
-    const match: SupplementEntry | undefined = input.snapshotCollege?.supplements.find(
-      (s) => normalizeTitle(s.title) === normalizeTitle(prompt.title),
-    );
+    const match: SupplementEntry | undefined = observable
+      ? input.snapshotCollege?.supplements.find((s) => normalizeTitle(s.title) === normalizeTitle(prompt.title))
+      : undefined;
     const status: SectionStatus = match?.status ?? 'unknown';
     const text = match
       ? `${match.word_count ?? 0} words — ${status.replace('_', ' ')}`
-      : 'Not yet visible on Common App';
+      : observable
+        ? 'Not yet visible on Common App'
+        : `Tracked from the school's own application; mark it done when submitted.`;
     return {
       ruleKey: `supplement:${prompt.id}`,
       kind: 'supplement_essay',
       title: prompt.title,
       description: prompt.word_limit ? `${prompt.title} (${prompt.word_limit} words max).` : prompt.title,
-      source: 'common_app',
+      source: observable ? 'common_app' : 'internal_rule',
       status: mapSectionStatus(status),
-      evidence: evidence(input.capturedAt, text, sectionConfidence(status)),
+      evidence: observable ? evidence(input.capturedAt, text, sectionConfidence(status)) : null,
       dueDate: input.application.deadline,
       importance: prompt.required ? 90 : 40,
       effort: 'large',

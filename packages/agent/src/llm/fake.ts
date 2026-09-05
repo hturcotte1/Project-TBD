@@ -172,9 +172,6 @@ function extractAddSchool(text: string): string | undefined {
   return m?.[1]?.trim();
 }
 
-function nextFutureIso(hoursFromNow: number): string {
-  return new Date(Date.now() + hoursFromNow * 3600 * 1000).toISOString();
-}
 
 function findPhotoExtraction(text: string): PhotoExtraction | null {
   const block = readUntrustedBlock(text, 'photo');
@@ -271,7 +268,7 @@ function decideConversation(ctx: ConversationCtx): Decision {
   if (ctx.hasImage) return decidePhoto(ctx);
 
   if (/\b(leave me alone|stop texting me)\b[\s\S]*\btonight\b/i.test(lower)) {
-    return toolThenRespond(ctx.toolResults, 'snoozeNotifications', { until: nextFutureIso(8) }, () => "You got it — I'll leave you alone tonight.");
+    return toolThenRespond(ctx.toolResults, 'snoozeNotifications', { until: 'tomorrow_morning' }, () => "You got it — I'll leave you alone tonight.");
   }
 
   if (/\b(stressed|overwhelmed)\b/i.test(lower)) return decideStressed(ctx);

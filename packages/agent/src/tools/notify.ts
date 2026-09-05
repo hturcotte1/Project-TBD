@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { appendAudit } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
 import { IsoDateTime } from '@tbd/shared/schemas';
+import { nextQuietHoursEnd } from '@tbd/shared/time';
 import { defineTool, ok } from './types';
 
 export const SendDashboardLinkInput = z.object({ page: z.string().min(1).max(100).optional() });
@@ -33,7 +34,10 @@ export const setQuietHoursTool = defineTool({
   },
 });
 
-export const SnoozeNotificationsInput = z.object({ until: IsoDateTime });
+export const SnoozeNotificationsInput = z.object({
+  /** An ISO instant, or "tomorrow_morning" = when the student's quiet hours next end (default 7am local). */
+  until: z.union([IsoDateTime, z.literal('tomorrow_morning')]),
+});
 
 export const snoozeNotificationsTool = defineTool({
   name: 'snoozeNotifications',
@@ -41,7 +45,10 @@ export const snoozeNotificationsTool = defineTool({
   inputSchema: SnoozeNotificationsInput,
   authorization: 'student_text',
   async run(tc, input) {
-    const until = new Date(input.until);
+    const until =
+      input.until === 'tomorrow_morning'
+        ? nextQuietHoursEnd(tc.deps.clock.now(), tc.ctx.student.timezone, { start: tc.ctx.student.quietHoursStart, end: tc.ctx.student.quietHoursEnd })
+        : new Date(input.until);
     await tc.deps.db.update(S.students).set({ snoozedUntil: until }).where(eq(S.students.id, tc.studentId));
     await appendAudit(tc.sdb, { actor: 'agent', action: 'notifications.snoozed', details: { until: until.toISOString() } });
     return ok({ until: until.toISOString() }, "Okay, I'll leave you alone until then.");

@@ -180,7 +180,13 @@ describe('buildChecklist — Georgetown RD (non-Common-App)', () => {
     for (const commonAppOnlyKey of ['questions', 'counselor_rec', 'ferpa', 'review_submit']) {
       expect(keys).not.toContain(commonAppOnlyKey);
     }
-    expect(keys.some((k) => k.startsWith('supplement:'))).toBe(false);
+    // Supplements still exist for a school outside Common App; they are tracked as internal rules.
+    const supplements = items.filter((i) => i.ruleKey.startsWith('supplement:'));
+    expect(supplements.length).toBe(georgetown.requirements.supplements.length);
+    for (const s of supplements) {
+      expect(s.status).toBe('missing');
+      expect(s.evidence).toBeNull();
+    }
     expect(keys.some((k) => k.startsWith('teacher_rec:'))).toBe(false);
 
     expect(items.length).toBeGreaterThan(0);

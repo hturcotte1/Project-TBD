@@ -5,7 +5,7 @@ import { appendAudit, nudgesRepo } from '@tbd/shared/db';
 import * as S from '@tbd/shared/db/schema';
 import { IsoDate, IsoDateTime } from '@tbd/shared/schemas';
 import { defineTool, fail, ok } from './types';
-import { bestMatch, matchesSchool } from './util';
+import { bestMatch, matchItem, matchesSchool } from './util';
 
 export const MarkItemDoneInput = z.object({ query: z.string().min(1).max(300) });
 
@@ -18,8 +18,16 @@ export const markItemDoneTool = defineTool({
     const items = await tc.sdb.select(S.applicationItems, undefined, { orderBy: asc(S.applicationItems.importance) });
     const schoolNameByAppId = new Map(tc.ctx.applications.map((v) => [v.application.id, v.school.name]));
     const openItems = items.filter((i) => i.status !== 'done' && i.status !== 'not_applicable');
-    const match = bestMatch(input.query, openItems, (i) => `${i.title} ${i.applicationId ? (schoolNameByAppId.get(i.applicationId) ?? '') : ''}`);
-    if (!match) return fail(`I couldn't find an open item matching "${input.query}".`);
+    const outcome = matchItem(
+      input.query,
+      openItems.map((i) => ({ id: i.id, title: i.title, kind: i.kind, schoolName: i.applicationId ? (schoolNameByAppId.get(i.applicationId) ?? null) : null, row: i })),
+    );
+    if (outcome.kind === 'none') return fail(`I couldn't find an open item matching "${input.query}".`);
+    if (outcome.kind === 'ambiguous') {
+      const names = outcome.candidates.map((c) => `${c.title}${c.schoolName ? ` (${c.schoolName})` : ''}`).join(' or ');
+      return fail(`Which one did you finish: ${names}?`);
+    }
+    const match = outcome.item.row;
     const [updated] = await tc.sdb.update(S.applicationItems, { status: 'done', completedAt: tc.deps.clock.now(), studentEdited: true }, eq(S.applicationItems.id, match.id));
     if (!updated) return fail('Could not update that item.');
     await nudgesRepo.acknowledgeForItem(tc.sdb, match.id);
