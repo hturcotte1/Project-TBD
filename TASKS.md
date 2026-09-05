@@ -28,8 +28,8 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 
 | ID | Task | Files | Owner | Status |
 |---|---|---|---|---|
-| W2-A | API: Fastify server, auth, every contract route, webhooks, dev phone, uploads, tests | `apps/api/**` | sonnet | in-progress |
-| W2-B | Worker: queues, scheduler tick, browser job handlers with pause/resume, agent runs, proactive dispatch, maintenance, tests | `apps/worker/**` | sonnet | in-progress |
+| W2-A | API: Fastify server, auth, every contract route, webhooks, dev phone, uploads, tests | `apps/api/**` | sonnet | done |
+| W2-B | Worker: queues, scheduler tick, browser job handlers with pause/resume, agent runs, proactive dispatch, maintenance, tests | `apps/worker/**` | sonnet | done |
 | W2-C | Web pages: Home, Schools, Timeline (+ .ics), Essays | `apps/web/app/(dashboard)/...` | sonnet | done |
 | W2-D | Web pages: Recommenders, Activity, Profile, Settings, Admin, chat mirror | `apps/web/app/(dashboard)/...` | sonnet | done |
 

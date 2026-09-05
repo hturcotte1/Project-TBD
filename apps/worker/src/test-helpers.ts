@@ -28,6 +28,33 @@ import type { WorkerDeps } from './deps';
 
 export const DEMO_SEED_NOW = new Date('2026-09-01T15:00:00Z');
 
+// The whole worker test suite shares one Postgres test DB that every harness truncates and
+// reseeds with the (single, fixed-identity) demo student. Vitest's file/hook sequencing alone has
+// not proven reliable enough in this environment to guarantee that never overlaps, so this module
+// enforces it directly: `acquireDbLock` hands out a strictly one-at-a-time ticket, and
+// `setupWorkerTest`'s returned `close()` is the only thing that releases it. A test file that
+// touches the shared DB without going through `setupWorkerTest` (see `src/scheduler/tick.test.ts`)
+// must wrap its own body in `acquireDbLock`/release the same way.
+let dbLockChain: Promise<void> = Promise.resolve();
+
+/** Waits for exclusive use of the shared test DB and returns the function that releases it. Every
+ * acquire MUST be matched by exactly one release (in a `finally`), or every later test hangs. */
+export async function acquireDbLock(): Promise<() => void> {
+  let release!: () => void;
+  const ticket = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const previous = dbLockChain;
+  dbLockChain = ticket;
+  await previous;
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    release();
+  };
+}
+
 export interface WorkerTestHarness {
   deps: WorkerDeps;
   clock: FixedClock;
@@ -55,9 +82,49 @@ function randomPort(): number {
 }
 
 export async function setupWorkerTest(opts: SetupOptions = {}): Promise<WorkerTestHarness> {
+  const releaseDbLock = await acquireDbLock();
+  try {
+    return await buildHarness(opts, releaseDbLock);
+  } catch (err) {
+    // A harness that never finished building never hands back a `close()` to release the lock —
+    // release it here so a failed setup doesn't wedge every test queued behind it.
+    releaseDbLock();
+    throw err;
+  }
+}
+
+/** True for the foreign-key-violation shape Postgres reports when a row this transaction just
+ * read/inserted was concurrently truncated out from under it. */
+function isConcurrentTruncateError(err: unknown): boolean {
+  const code = (err as { cause?: { code?: string } } | undefined)?.cause?.code ?? (err as { code?: string } | undefined)?.code;
+  return code === '23503';
+}
+
+/** Runs `fn` (expected to itself call `truncateAll` first) with a bounded retry against the
+ * concurrent-truncate FK-violation shape. `acquireDbLock` should already make that impossible for
+ * callers that hold it for their whole DB-touching span, but this test DB is also shared with
+ * whatever else the environment runs outside this suite — one bounded retry absorbs a genuinely
+ * external collision without masking a real seeding bug. Exported for test files (e.g.
+ * `src/scheduler/tick.test.ts`) that build their own fixtures instead of using `setupWorkerTest`. */
+export async function withTruncateRetry<T>(fn: () => Promise<T>): Promise<T> {
+  const maxAttempts = 3;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt === maxAttempts || !isConcurrentTruncateError(err)) throw err;
+      await new Promise((r) => setTimeout(r, 200 * attempt));
+    }
+  }
+  throw new Error('unreachable');
+}
+
+async function buildHarness(opts: SetupOptions, releaseDbLock: () => void): Promise<WorkerTestHarness> {
   const db = await getTestDb();
-  await truncateAll(db);
-  const { studentId, adminId } = await seedDemoStudent(db, { now: DEMO_SEED_NOW });
+  const { studentId, adminId } = await withTruncateRetry(async () => {
+    await truncateAll(db);
+    return seedDemoStudent(db, { now: DEMO_SEED_NOW });
+  });
 
   const env = loadEnv();
   const logger = createLogger({ name: 'worker-test', level: 'silent' });
@@ -112,7 +179,11 @@ export async function setupWorkerTest(opts: SetupOptions = {}): Promise<WorkerTe
     studentId,
     adminId,
     close: async () => {
-      await mock.close();
+      try {
+        await mock.close();
+      } finally {
+        releaseDbLock();
+      }
     },
   };
 }
