@@ -129,7 +129,7 @@ export const onboardingHandlers: Pick<Handlers, 'onboardingGet' | 'onboardingSte
 
         const student = await studentsRepo.findById(deps.db, studentId);
         if (student && student.welcomeSentAt === null && student.phoneE164) {
-          await deps.enqueuer.enqueue('agent.welcome', { studentId }, { jobId: `welcome:${studentId}` });
+          await deps.enqueuer.enqueue('agent.welcome', { studentId }, { jobId: jobIds.welcome(studentId) });
         }
         break;
       }

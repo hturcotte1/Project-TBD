@@ -99,6 +99,7 @@ export const jobIds = {
   weekly: (studentId: string, weekStart: string) => joinJobId('weekly', studentId, weekStart),
   extraction: (documentId: string) => joinJobId('extract', documentId),
   essayFeedback: (runId: string) => joinJobId('essay', runId),
+  welcome: (studentId: string) => joinJobId('welcome', studentId),
   tick: () => 'scheduler-tick',
   browserPrefix: (studentId: string) => `${joinJobId('sync', studentId)}__`,
 };
