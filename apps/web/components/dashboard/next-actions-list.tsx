@@ -1,6 +1,7 @@
 'use client';
 
 import type { NextActionDto } from '@tbd/shared/api';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Check, Clock, ListChecks } from 'lucide-react';
 import { DeadlineBadge } from '@/components/layout/deadline-badge';
@@ -12,7 +13,12 @@ import { clientApi } from '@/lib/api.client';
 
 const SNOOZE_HOURS = 24;
 
+/** How many actions to show before the student asks for the full list. */
+const INITIAL_VISIBLE = 8;
+
 export function NextActionsList({ actions }: { actions: NextActionDto[] }) {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? actions : actions.slice(0, INITIAL_VISIBLE);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -39,7 +45,7 @@ export function NextActionsList({ actions }: { actions: NextActionDto[] }) {
 
   return (
     <div className="space-y-2">
-      {actions.map((action) => (
+      {visible.map((action) => (
         <Card key={action.id}>
           <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0 space-y-1">
@@ -68,6 +74,11 @@ export function NextActionsList({ actions }: { actions: NextActionDto[] }) {
           </CardContent>
         </Card>
       ))}
+      {actions.length > INITIAL_VISIBLE ? (
+        <Button type="button" variant="ghost" className="w-full" onClick={() => setShowAll((v) => !v)}>
+          {showAll ? 'Show fewer' : `Show all ${actions.length}`}
+        </Button>
+      ) : null}
     </div>
   );
 }

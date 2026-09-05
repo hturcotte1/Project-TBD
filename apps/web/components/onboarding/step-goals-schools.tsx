@@ -63,7 +63,9 @@ function fromApplication(app: ApplicationDto): SchoolPick {
 }
 
 function fromSearchResult(school: SchoolWithRequirementsDto): SchoolPick {
-  const defaultPlan = school.requirements?.plans[0]?.plan ?? 'RD';
+  // Regular Decision by default: Early Decision is binding, so the student must choose it deliberately.
+  const plans = school.requirements?.plans ?? [];
+  const defaultPlan = plans.find((p) => p.plan === 'RD')?.plan ?? plans.find((p) => p.plan === 'EA')?.plan ?? plans[0]?.plan ?? 'RD';
   return {
     key: school.slug,
     schoolSlug: school.slug,
