@@ -1,17 +1,60 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["NODE_ENV", "CI"],
-  "globalPassThroughEnv": ["DATABASE_URL", "DATABASE_URL_TEST", "REDIS_URL", "PLAYWRIGHT_BROWSERS_PATH", "HTTPS_PROXY", "NO_PROXY", "no_proxy"],
+  "globalEnv": [
+    "NODE_ENV",
+    "CI"
+  ],
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "DATABASE_URL_TEST",
+    "REDIS_URL",
+    "PLAYWRIGHT_BROWSERS_PATH",
+    "HTTPS_PROXY",
+    "NO_PROXY",
+    "no_proxy",
+    "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH",
+    "LLM_PROVIDER",
+    "ANTHROPIC_API_KEY"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "env": ["NEXT_PUBLIC_*", "AUTH_MODE", "API_URL", "MOCK_COMMONAPP"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_*",
+        "AUTH_MODE",
+        "API_URL",
+        "MOCK_COMMONAPP"
+      ]
     },
-    "typecheck": { "dependsOn": ["^typecheck"] },
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ]
+    },
     "lint": {},
-    "test": { "dependsOn": ["^build"], "env": ["DATABASE_URL_TEST", "REDIS_URL", "LLM_PROVIDER"] },
-    "dev": { "cache": false, "persistent": true },
-    "clean": { "cache": false }
+    "test": {
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "DATABASE_URL_TEST",
+        "REDIS_URL",
+        "LLM_PROVIDER"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "cache": false
+    }
   }
 }

@@ -15,6 +15,7 @@ export class MemoryJobEnqueuer implements JobEnqueuer {
 
   async enqueue<N extends JobName>(name: N, payload: JobPayload<N>, opts: EnqueueOptions = {}): Promise<EnqueuedJob> {
     JobPayloads[name].parse(payload);
+    if (opts.jobId?.includes(':')) throw new Error(`job id "${opts.jobId}" contains ":" which BullMQ rejects; use jobIds helpers`);
     const id = opts.jobId ?? randomUUID();
     if (opts.jobId && this.jobs.some((j) => j.id === id && j.queue === queueOf(name))) {
       return { id, name, queue: queueOf(name) };

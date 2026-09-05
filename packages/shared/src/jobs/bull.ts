@@ -1,6 +1,6 @@
 import { Queue, type JobsOptions } from 'bullmq';
 import type { Redis } from 'ioredis';
-import { type EnqueueOptions, type EnqueuedJob, type JobEnqueuer, type JobName, type JobPayload, JobPayloads, QUEUES, queueOf, type QueueName } from './definitions';
+import { type EnqueueOptions, type EnqueuedJob, type JobEnqueuer, type JobName, type JobPayload, JobPayloads, QUEUES, queueOf, type QueueName, safeJobIdPart } from './definitions';
 
 export const DEFAULT_JOB_OPTIONS: JobsOptions = {
   attempts: 3,
@@ -28,7 +28,7 @@ export class BullJobEnqueuer implements JobEnqueuer {
     JobPayloads[name].parse(payload);
     const queue = queueOf(name);
     const job = await this.queue(queue).add(name, payload, {
-      jobId: opts.jobId,
+      jobId: opts.jobId === undefined ? undefined : safeJobIdPart(opts.jobId),
       delay: opts.delayMs,
       priority: opts.priority,
       attempts: opts.attempts ?? DEFAULT_JOB_OPTIONS.attempts,

@@ -856,7 +856,7 @@ export async function seedDemoStudent(db: Db, opts: { now?: Date } = {}): Promis
       channel: 'imessage',
       direction: 'outbound',
       kind: 'text',
-      body: "Quick heads up — Ms. Park hasn't submitted your Michigan letter yet; she was invited over a week ago and EA is Nov 1. Want me to send her a reminder?",
+      body: "Quick heads up — Ms. Park hasn't submitted your Michigan letter yet; she was invited over a week ago and EA is Nov 1. Want me to draft a reminder you can send her?",
       deliveryStatus: 'delivered',
       proactive: true,
       createdAt: new Date('2026-09-03T13:00:00Z'),

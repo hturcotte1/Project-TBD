@@ -77,16 +77,28 @@ export interface JobEnqueuer {
   cancelByPrefix(queue: QueueName, prefix: string): Promise<number>;
 }
 
+/**
+ * BullMQ custom ids must not contain ":" (except a legacy three-part form), so components are
+ * joined with "__" and any ":" inside a component (ISO timestamps, for example) becomes "-".
+ */
+export function safeJobIdPart(part: string): string {
+  return part.replace(/:/g, '-');
+}
+
+function joinJobId(...parts: string[]): string {
+  return parts.map(safeJobIdPart).join('__');
+}
+
 /** Stable job ids so re-ticks and retries never double-enqueue. */
 export const jobIds = {
-  sync: (studentId: string, bucket: string) => `sync:${studentId}:${bucket}`,
-  verify: (browserJobId: string) => `verify:${browserJobId}`,
-  fill: (approvalId: string) => `fill:${approvalId}`,
-  proactive: (studentId: string, bucket: string) => `proactive:${studentId}:${bucket}`,
-  inbound: (messageId: string) => `inbound:${messageId}`,
-  weekly: (studentId: string, weekStart: string) => `weekly:${studentId}:${weekStart}`,
-  extraction: (documentId: string) => `extract:${documentId}`,
-  essayFeedback: (runId: string) => `essay:${runId}`,
+  sync: (studentId: string, bucket: string) => joinJobId('sync', studentId, bucket),
+  verify: (browserJobId: string) => joinJobId('verify', browserJobId),
+  fill: (approvalId: string) => joinJobId('fill', approvalId),
+  proactive: (studentId: string, bucket: string) => joinJobId('proactive', studentId, bucket),
+  inbound: (messageId: string) => joinJobId('inbound', messageId),
+  weekly: (studentId: string, weekStart: string) => joinJobId('weekly', studentId, weekStart),
+  extraction: (documentId: string) => joinJobId('extract', documentId),
+  essayFeedback: (runId: string) => joinJobId('essay', runId),
   tick: () => 'scheduler-tick',
-  browserPrefix: (studentId: string) => `sync:${studentId}:`,
+  browserPrefix: (studentId: string) => `${joinJobId('sync', studentId)}__`,
 };
