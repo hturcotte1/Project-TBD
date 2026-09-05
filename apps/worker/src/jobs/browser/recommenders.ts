@@ -1,11 +1,11 @@
 /** `browser.check_recommenders`: a lighter sync — full capture (the client has no cheaper partial
  * capture), but only recommenders/assignments and the `teacher_rec`/`counselor_rec` items get
  * updated. No new `common_app_snapshots` row, no application status/deadline change. */
-import { scoped, studentsRepo } from '@tbd/shared/db';
-import type { JobPayload } from '@tbd/shared/jobs';
-import { BrowserJobResult } from '@tbd/shared/schemas';
-import { applyRecommenderUpdates } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import { scoped, studentsRepo } from '@apogee/shared/db';
+import type { JobPayload } from '@apogee/shared/jobs';
+import { BrowserJobResult } from '@apogee/shared/schemas';
+import { applyRecommenderUpdates } from '@apogee/shared/services';
+import { localDate } from '@apogee/shared/time';
 import type { WorkerDeps } from '../../deps';
 import { runBrowserJob } from './lifecycle';
 import { loginForJob } from './login';

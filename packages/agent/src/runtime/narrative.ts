@@ -1,7 +1,7 @@
 import { desc } from 'drizzle-orm';
-import { appendAudit, conversationsRepo, messagesRepo, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { StudentNarrative } from '@tbd/shared/schemas';
+import { appendAudit, conversationsRepo, messagesRepo, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { StudentNarrative } from '@apogee/shared/schemas';
 import { forExtraction } from '../llm/schema';
 import { INTERVIEW_TOPICS } from '../persona';
 import type { AgentDeps } from './deps';

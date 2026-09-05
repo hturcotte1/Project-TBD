@@ -32,6 +32,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@apogee/messaging':
+        specifier: workspace:*
+        version: link:../../packages/messaging
+      '@apogee/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@clerk/backend':
         specifier: ^2.33.0
         version: 2.33.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -50,12 +56,6 @@ importers:
       '@fastify/static':
         specifier: ^10.1.0
         version: 10.1.3
-      '@tbd/messaging':
-        specifier: workspace:*
-        version: link:../../packages/messaging
-      '@tbd/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       bullmq:
         specifier: ^5.81.0
         version: 5.81.4
@@ -105,6 +105,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@apogee/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@clerk/nextjs':
         specifier: ^6.39.0
         version: 6.39.6(next@15.5.25(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@22.20.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -150,9 +153,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.100.0
         version: 5.102.8(react@19.2.8)
-      '@tbd/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -226,16 +226,16 @@ importers:
 
   apps/worker:
     dependencies:
-      '@tbd/agent':
+      '@apogee/agent':
         specifier: workspace:*
         version: link:../../packages/agent
-      '@tbd/browser':
+      '@apogee/browser':
         specifier: workspace:*
         version: link:../../packages/browser
-      '@tbd/messaging':
+      '@apogee/messaging':
         specifier: workspace:*
         version: link:../../packages/messaging
-      '@tbd/shared':
+      '@apogee/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       bullmq:
@@ -284,7 +284,7 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.123.0
         version: 0.123.0(zod@3.25.76)
-      '@tbd/shared':
+      '@apogee/shared':
         specifier: workspace:*
         version: link:../shared
       drizzle-orm:
@@ -312,6 +312,9 @@ importers:
 
   packages/browser:
     dependencies:
+      '@apogee/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@browserbasehq/sdk':
         specifier: ^2.16.0
         version: 2.19.1
@@ -324,9 +327,6 @@ importers:
       '@fastify/formbody':
         specifier: ^9.0.0
         version: 9.0.0
-      '@tbd/shared':
-        specifier: workspace:*
-        version: link:../shared
       cheerio:
         specifier: ^1.2.0
         version: 1.2.0
@@ -364,7 +364,7 @@ importers:
 
   packages/messaging:
     dependencies:
-      '@tbd/shared':
+      '@apogee/shared':
         specifier: workspace:*
         version: link:../shared
       ioredis:

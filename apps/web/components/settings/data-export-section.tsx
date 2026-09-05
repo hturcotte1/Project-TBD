@@ -1,6 +1,6 @@
 'use client';
 
-import type { AgentRunDto } from '@tbd/shared/api';
+import type { AgentRunDto } from '@apogee/shared/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Download, FileJson, Loader2 } from 'lucide-react';
 import { useState } from 'react';

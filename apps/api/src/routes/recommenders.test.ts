@@ -1,4 +1,4 @@
-import { createTestStudent } from '@tbd/shared/testing';
+import { createTestStudent } from '@apogee/shared/testing';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 

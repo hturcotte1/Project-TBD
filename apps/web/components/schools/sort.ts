@@ -1,4 +1,4 @@
-import type { ApplicationDto } from '@tbd/shared/api';
+import type { ApplicationDto } from '@apogee/shared/api';
 
 /** Applications whose submission work is effectively done — grouped at the bottom of the list. */
 export function isSubmittedApplication(application: ApplicationDto): boolean {

@@ -1,7 +1,7 @@
 'use client';
 
-import type { SettingsDto } from '@tbd/shared/api';
-import type { NudgeIntensity } from '@tbd/shared/domain';
+import type { SettingsDto } from '@apogee/shared/api';
+import type { NudgeIntensity } from '@apogee/shared/domain';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { validateQuietHours } from '@/components/settings/quiet-hours';
@@ -149,11 +149,11 @@ export function NotificationsForm({ settings }: { settings: SettingsDto }) {
               <Input aria-label="Quiet hours end" type="time" value={quietEnd} onChange={(event) => setQuietEnd(event.target.value)} className="w-32" />
             </div>
             {quietHoursError ? <p className="text-xs text-destructive">{quietHoursError}</p> : null}
-            <p className="text-xs text-muted-foreground">Remy never texts during quiet hours — except the morning a deadline is actually due.</p>
+            <p className="text-xs text-muted-foreground">Vector never texts during quiet hours — except the morning a deadline is actually due.</p>
           </div>
 
           <div className="space-y-2">
-            <Label>How often should Remy check in?</Label>
+            <Label>How often should Vector check in?</Label>
             <div className="grid gap-2">
               {NUDGE_OPTIONS.map((option) => (
                 <button

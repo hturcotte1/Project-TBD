@@ -825,7 +825,7 @@ export async function seedDemoStudent(db: Db, opts: { now?: Date } = {}): Promis
     channel: 'imessage',
     direction: 'outbound',
     kind: 'text',
-    body: "Hi Dee — I'm Remy. I'll keep an eye on your Common App, track your deadlines, and text you when something needs your attention. Say hi anytime.",
+    body: "Hi Dee — I'm Vector. I'll keep an eye on your Common App, track your deadlines, and text you when something needs your attention. Say hi anytime.",
     deliveryStatus: 'delivered',
     createdAt: new Date('2026-09-01T15:05:00Z'),
   });

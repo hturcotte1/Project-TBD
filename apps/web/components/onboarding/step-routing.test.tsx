@@ -1,4 +1,4 @@
-import type { OnboardingStateDto } from '@tbd/shared/api';
+import type { OnboardingStateDto } from '@apogee/shared/api';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
@@ -38,7 +38,7 @@ function fakeOnboarding(step: number): OnboardingStateDto {
     applications: [],
     credentials: { provider: 'common_app', connected: false, status: null, username: null, verified_at: null, last_used_at: null, failure_count: 0 },
     agent_phone_number: '+15555550100',
-    agent_name: 'Remy',
+    agent_name: 'Vector',
     privacy_url: '/privacy',
   };
 }

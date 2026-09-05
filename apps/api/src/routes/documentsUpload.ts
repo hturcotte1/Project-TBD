@@ -4,10 +4,10 @@
  */
 import type { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
-import { scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { DOCUMENT_KINDS, type DocumentKind } from '@tbd/shared/domain';
-import { jobIds } from '@tbd/shared/jobs';
+import { scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { DOCUMENT_KINDS, type DocumentKind } from '@apogee/shared/domain';
+import { jobIds } from '@apogee/shared/jobs';
 import { mapDocument } from '../mappers';
 import type { ApiDeps } from '../deps';
 import type { AuthVerifier } from '../auth/verifier';

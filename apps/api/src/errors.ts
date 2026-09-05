@@ -1,4 +1,4 @@
-/** Shared error response shape (matches `ApiError` in `@tbd/shared/api/client`) and small helpers
+/** Shared error response shape (matches `ApiError` in `@apogee/shared/api/client`) and small helpers
  * for route handlers that need to fail with a specific HTTP status/code without throwing. */
 import type { FastifyReply } from 'fastify';
 

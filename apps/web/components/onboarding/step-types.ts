@@ -1,4 +1,4 @@
-import type { OnboardingStateDto } from '@tbd/shared/api';
+import type { OnboardingStateDto } from '@apogee/shared/api';
 
 export interface OnboardingStepProps {
   onboarding: OnboardingStateDto;

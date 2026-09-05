@@ -1,4 +1,4 @@
-import type { TimelineEntryDto } from '@tbd/shared/api';
+import type { TimelineEntryDto } from '@apogee/shared/api';
 import { describe, expect, it } from 'vitest';
 import { buildCalendarMonth, groupEntriesByMonth, shiftMonth } from '@/components/timeline/calendar';
 

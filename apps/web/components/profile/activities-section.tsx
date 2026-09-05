@@ -1,7 +1,7 @@
 'use client';
 
-import type { ActivityDto } from '@tbd/shared/api';
-import type { ActivityInput } from '@tbd/shared/schemas';
+import type { ActivityDto } from '@apogee/shared/api';
+import type { ActivityInput } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ActivitiesEditor } from '@/components/onboarding/activities-editor';

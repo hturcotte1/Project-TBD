@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { appendAudit, nudgesRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { IsoDate, IsoDateTime } from '@tbd/shared/schemas';
+import { appendAudit, nudgesRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { IsoDate, IsoDateTime } from '@apogee/shared/schemas';
 import { defineTool, fail, ok } from './types';
 import { bestMatch, matchItem, matchesSchool } from './util';
 

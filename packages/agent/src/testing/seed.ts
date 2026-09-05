@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
-import { scoped, type Db } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { createTestSchool, createTestStudent } from '@tbd/shared/testing';
+import { scoped, type Db } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { createTestSchool, createTestStudent } from '@apogee/shared/testing';
 
 export interface DemoStudentSeed {
   studentId: string;

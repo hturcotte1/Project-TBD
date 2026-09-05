@@ -83,10 +83,10 @@ export function buildIcs(entries: TimelineEntry[], opts: BuildIcsOptions): strin
   const cal = ical({ name: opts.calendarName });
   for (const entry of entries) {
     const uid = entry.applicationItemId
-      ? `item-${entry.applicationItemId}@tbd`
+      ? `item-${entry.applicationItemId}@apogee`
       : entry.applicationId
-        ? `application-${entry.applicationId}@tbd`
-        : `custom-${entry.kind}-${entry.date}-${entry.title.replace(/[^a-z0-9]+/gi, '-')}@tbd`;
+        ? `application-${entry.applicationId}@apogee`
+        : `custom-${entry.kind}-${entry.date}-${entry.title.replace(/[^a-z0-9]+/gi, '-')}@apogee`;
     cal.createEvent({
       id: uid,
       start: entry.date,

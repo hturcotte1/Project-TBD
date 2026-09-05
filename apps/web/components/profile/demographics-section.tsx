@@ -1,6 +1,6 @@
 'use client';
 
-import type { Demographics } from '@tbd/shared/schemas';
+import type { Demographics } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';

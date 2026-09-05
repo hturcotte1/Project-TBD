@@ -1,8 +1,8 @@
 /** `browser.verify_credentials`: login only, to confirm freshly-entered Common App credentials
  * work. On success, texts once and kicks off a full sync so the student sees real data quickly. */
-import { appendAudit, browserJobsRepo, conversationsRepo, messagesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import { jobIds, type JobPayload } from '@tbd/shared/jobs';
-import { BrowserJobResult } from '@tbd/shared/schemas';
+import { appendAudit, browserJobsRepo, conversationsRepo, messagesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import { jobIds, type JobPayload } from '@apogee/shared/jobs';
+import { BrowserJobResult } from '@apogee/shared/schemas';
 import type { WorkerDeps } from '../../deps';
 import { runBrowserJob } from './lifecycle';
 import { loginForJob } from './login';

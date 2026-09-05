@@ -1,7 +1,7 @@
 /**
  * Bearer-token resolution for the current request, in either auth mode.
  *
- * `AUTH_MODE=dev` reads a signed dev token straight out of the `tbd_dev_session` cookie (set by
+ * `AUTH_MODE=dev` reads a signed dev token straight out of the `apogee_dev_session` cookie (set by
  * `/dev/login`). `AUTH_MODE=clerk` asks Clerk for the current session's JWT. Server components and
  * route handlers should call `getToken()` / `requireStudent()`; never import this from a client
  * component (it uses `next/headers`, which only works on the server).
@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation';
 export type AuthMode = 'dev' | 'clerk';
 
 export const AUTH_MODE: AuthMode = process.env.AUTH_MODE === 'clerk' ? 'clerk' : 'dev';
-export const DEV_SESSION_COOKIE = 'tbd_dev_session';
+export const DEV_SESSION_COOKIE = 'apogee_dev_session';
 
 /** Where an unauthenticated visitor should land. */
 export function loginPath(): string {

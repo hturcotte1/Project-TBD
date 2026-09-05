@@ -1,5 +1,5 @@
-import type { ApplicationItemDto } from '@tbd/shared/api';
-import type { ItemKind } from '@tbd/shared/domain';
+import type { ApplicationItemDto } from '@apogee/shared/api';
+import type { ItemKind } from '@apogee/shared/domain';
 
 export const CHECKLIST_GROUP_NAMES = [
   'Common App sections',

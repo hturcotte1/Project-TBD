@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { ONBOARDING_STEP_COUNT } from '@tbd/shared/domain';
+import { ONBOARDING_STEP_COUNT } from '@apogee/shared/domain';
 import { ONBOARDING_STEPS } from '@/components/onboarding/step-config';
 import { Progress } from '@/components/ui/progress';
 

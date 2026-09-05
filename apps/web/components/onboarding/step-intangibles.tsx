@@ -1,6 +1,6 @@
 'use client';
 
-import type { StudentNarrative } from '@tbd/shared/schemas';
+import type { StudentNarrative } from '@apogee/shared/schemas';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -68,11 +68,11 @@ export function StepIntangibles({ onboarding, step }: OnboardingStepProps) {
     <div className="space-y-6">
       <div className="space-y-1.5">
         <h1 className="text-xl font-semibold tracking-tight">Getting to know you</h1>
-        <p className="text-sm text-muted-foreground">A short conversation — Remy uses this to write in your voice, not its own.</p>
+        <p className="text-sm text-muted-foreground">A short conversation — Vector uses this to write in your voice, not its own.</p>
       </div>
 
       <WhyWeAsk>
-        Essays and short answers land better when they draw on something real. Nothing here gets used word-for-word — it helps Remy ask
+        Essays and short answers land better when they draw on something real. Nothing here gets used word-for-word — it helps Vector ask
         better questions and give sharper feedback later.
       </WhyWeAsk>
 

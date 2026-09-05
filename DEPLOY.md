@@ -20,7 +20,7 @@ Also set `APP_URL` (the Vercel URL), `API_URL` (the Fly API URL), `ADMIN_EMAILS`
 
 ```bash
 DATABASE_URL=postgres://... pnpm db:migrate     # applies packages/shared/drizzle/*
-DATABASE_URL=postgres://... pnpm --filter @tbd/shared exec tsx src/seed/schools.ts   # loads the school dataset (no demo student)
+DATABASE_URL=postgres://... pnpm --filter @apogee/shared exec tsx src/seed/schools.ts   # loads the school dataset (no demo student)
 ```
 
 Migrations are also safe to run from the API container on boot (`node dist/index.js --migrate`), but running them from CI before deploy is the recommended path.
@@ -28,7 +28,7 @@ Migrations are also safe to run from the API container on boot (`node dist/index
 ## 2. API on Fly.io
 
 ```bash
-fly launch --no-deploy --dockerfile apps/api/Dockerfile --name tbd-api
+fly launch --no-deploy --dockerfile apps/api/Dockerfile --name apogee-api
 fly secrets set DATABASE_URL=... REDIS_URL=... ANTHROPIC_API_KEY=... SENDBLUE_API_KEY_ID=... SENDBLUE_API_SECRET_KEY=... SENDBLUE_PHONE_NUMBER=... SENDBLUE_WEBHOOK_SECRET=... CLERK_SECRET_KEY=... CREDENTIALS_ENCRYPTION_KEYS=... S3_ACCESS_KEY_ID=... S3_SECRET_ACCESS_KEY=...
 fly deploy --dockerfile apps/api/Dockerfile
 ```
@@ -38,7 +38,7 @@ fly deploy --dockerfile apps/api/Dockerfile
 ## 3. Worker on Fly.io
 
 ```bash
-fly launch --no-deploy --dockerfile apps/worker/Dockerfile --name tbd-worker
+fly launch --no-deploy --dockerfile apps/worker/Dockerfile --name apogee-worker
 fly secrets set <same secrets as the API plus> BROWSERBASE_API_KEY=... BROWSERBASE_PROJECT_ID=...
 fly deploy --dockerfile apps/worker/Dockerfile
 ```
@@ -47,7 +47,7 @@ The worker has no HTTP service. Run exactly one machine (the scheduler tick assu
 
 ## 4. Web on Vercel
 
-Import the repo, set root directory `apps/web`, framework Next.js, build command `pnpm --filter @tbd/web build`, install command `pnpm install --frozen-lockfile`. Env: `API_URL`, `APP_URL`, `AUTH_MODE=clerk`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `NEXT_PUBLIC_API_URL`.
+Import the repo, set root directory `apps/web`, framework Next.js, build command `pnpm --filter @apogee/web build`, install command `pnpm install --frozen-lockfile`. Env: `API_URL`, `APP_URL`, `AUTH_MODE=clerk`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `NEXT_PUBLIC_API_URL`.
 
 Clerk: add the Vercel domain to the Clerk app; in Clerk's JWT template leave the default (the API resolves the email through the Clerk backend SDK).
 

@@ -1,6 +1,6 @@
-import type { ApplicationItemDto } from '@tbd/shared/api';
-import type { ItemKind } from '@tbd/shared/domain';
-import { ITEM_KINDS } from '@tbd/shared/domain';
+import type { ApplicationItemDto } from '@apogee/shared/api';
+import type { ItemKind } from '@apogee/shared/domain';
+import { ITEM_KINDS } from '@apogee/shared/domain';
 import { describe, expect, it } from 'vitest';
 import { CHECKLIST_GROUP_NAMES, checklistGroupForKind, groupChecklistItems } from '@/components/schools/checklist-groups';
 

@@ -1,6 +1,6 @@
-import type { Env } from '@tbd/shared/config';
-import type { LLMProvider } from '@tbd/shared/adapters';
-import type { Logger } from '@tbd/shared/logging';
+import type { Env } from '@apogee/shared/config';
+import type { LLMProvider } from '@apogee/shared/adapters';
+import type { Logger } from '@apogee/shared/logging';
 import { AnthropicLLM } from './anthropic';
 import { RuleBasedFakeLLM } from './fake';
 

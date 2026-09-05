@@ -1,6 +1,6 @@
-import type { LLMToolResultBlock, LLMToolUseBlock } from '@tbd/shared/adapters';
-import { appendAudit } from '@tbd/shared/db';
-import type { ToolCallRecord } from '@tbd/shared/schemas';
+import type { LLMToolResultBlock, LLMToolUseBlock } from '@apogee/shared/adapters';
+import { appendAudit } from '@apogee/shared/db';
+import type { ToolCallRecord } from '@apogee/shared/schemas';
 import { authorizedByStudentText, originAllows } from './authorization';
 import { findTool } from './registry';
 import type { ToolContext, ToolResult } from './types';

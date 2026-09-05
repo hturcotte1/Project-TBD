@@ -8,9 +8,9 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 |---|---|---|---|---|
 | W0-1 | ARCHITECTURE.md, DECISIONS.md, TASKS.md | root | orchestrator | done |
 | W0-2 | Monorepo scaffold: pnpm workspaces, turbo, tsconfig, eslint, vitest, .env.example, docker-compose | root | orchestrator | done |
-| W0-3 | `@tbd/shared`: drizzle schema, zod JSONB schemas, domain types, enums | `packages/shared/src/db`, `src/schemas` | orchestrator | done |
-| W0-4 | `@tbd/shared`: adapter interfaces, api contract, job payloads, crypto, logger, config, time, dev auth | `packages/shared/src/{adapters,api,jobs,crypto,logging,config,time,auth}` | orchestrator | done |
-| W0-5 | `@tbd/shared`: student-scoped repositories + cross-student test + authz scan | `packages/shared/src/db/repos`, `src/testing` | orchestrator | done |
+| W0-3 | `@apogee/shared`: drizzle schema, zod JSONB schemas, domain types, enums | `packages/shared/src/db`, `src/schemas` | orchestrator | done |
+| W0-4 | `@apogee/shared`: adapter interfaces, api contract, job payloads, crypto, logger, config, time, dev auth | `packages/shared/src/{adapters,api,jobs,crypto,logging,config,time,auth}` | orchestrator | done |
+| W0-5 | `@apogee/shared`: student-scoped repositories + cross-student test + authz scan | `packages/shared/src/db/repos`, `src/testing` | orchestrator | done |
 
 ## Wave 1 — leaf packages (parallel)
 

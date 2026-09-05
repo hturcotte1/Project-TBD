@@ -1,6 +1,6 @@
 'use client';
 
-import type { ApprovalDto } from '@tbd/shared/api';
+import type { ApprovalDto } from '@apogee/shared/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClipboardCheck } from 'lucide-react';
 import { EmptyState } from '@/components/layout/empty-state';
@@ -19,7 +19,7 @@ export function ApprovalsCard({ approvals }: { approvals: ApprovalDto[] }) {
       void queryClient.invalidateQueries({ queryKey: ['approvals'] });
       toast({
         title: variables.approve ? 'Approved' : 'Rejected',
-        description: variables.approve ? 'Remy will act on this now.' : 'Remy will leave this alone.',
+        description: variables.approve ? 'Vector will act on this now.' : 'Vector will leave this alone.',
       });
     },
     onError: () => {
@@ -37,7 +37,7 @@ export function ApprovalsCard({ approvals }: { approvals: ApprovalDto[] }) {
           <EmptyState
             icon={ClipboardCheck}
             title="Nothing to approve"
-            description="When Remy drafts something that needs your yes — filling in activities, answering a college's questions — it shows up here first."
+            description="When Vector drafts something that needs your yes — filling in activities, answering a college's questions — it shows up here first."
           />
         ) : (
           <div className="space-y-3">

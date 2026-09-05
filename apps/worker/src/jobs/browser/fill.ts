@@ -1,14 +1,14 @@
 /** `browser.fill_fields`: the level-B writer. Fills exactly the approved payload, verifies it
  * stuck by re-reading the page, and never runs a submit/pay action — the runtime guard inside
- * `@tbd/browser` throws `SubmitGuardError` on any such attempt, which fails the job for good. */
+ * `@apogee/browser` throws `SubmitGuardError` on any such attempt, which fails the job for good. */
 import { eq } from 'drizzle-orm';
-import { SubmitGuardError } from '@tbd/browser';
+import { SubmitGuardError } from '@apogee/browser';
 import { UnrecoverableError } from 'bullmq';
-import { appendAudit, conversationsRepo, messagesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { summarizeFillPayload } from '@tbd/shared/domain';
-import type { JobPayload } from '@tbd/shared/jobs';
-import { BrowserJobResult, FillFieldsPayload } from '@tbd/shared/schemas';
+import { appendAudit, conversationsRepo, messagesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { summarizeFillPayload } from '@apogee/shared/domain';
+import type { JobPayload } from '@apogee/shared/jobs';
+import { BrowserJobResult, FillFieldsPayload } from '@apogee/shared/schemas';
 import type { WorkerDeps } from '../../deps';
 import { runBrowserJob } from './lifecycle';
 import { loginForJob } from './login';

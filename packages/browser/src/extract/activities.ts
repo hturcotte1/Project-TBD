@@ -1,4 +1,4 @@
-import { ACTIVITY_TYPES } from '@tbd/shared/domain';
+import { ACTIVITY_TYPES } from '@apogee/shared/domain';
 import { COMMONAPP_MAP } from '../commonapp-map';
 import { anchorConfidence, asEnum, loadHtml, makeExtracted, text, toBool, toFloatOrNull, toIntOrNull, type ExtractedResult } from './util';
 

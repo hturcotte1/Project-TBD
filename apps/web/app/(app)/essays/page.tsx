@@ -1,6 +1,6 @@
 'use client';
 
-import type { EssayDto } from '@tbd/shared/api';
+import type { EssayDto } from '@apogee/shared/api';
 import { useQuery } from '@tanstack/react-query';
 import { FileText } from 'lucide-react';
 import { EssayCard } from '@/components/essays/essay-card';

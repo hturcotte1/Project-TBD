@@ -10,9 +10,9 @@ import type {
   SendResult,
   Tapback,
   WebhookRequest,
-} from '@tbd/shared/adapters';
-import type { DeliveryStatus } from '@tbd/shared/domain';
-import { createLogger, type Logger } from '@tbd/shared/logging';
+} from '@apogee/shared/adapters';
+import type { DeliveryStatus } from '@apogee/shared/domain';
+import { createLogger, type Logger } from '@apogee/shared/logging';
 import { MessagingError } from './errors';
 
 const DEFAULT_BASE_URL = 'https://api.sendblue.com';

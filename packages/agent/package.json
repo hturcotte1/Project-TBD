@@ -1,5 +1,5 @@
 {
-  "name": "@tbd/agent",
+  "name": "@apogee/agent",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
-    "@tbd/shared": "workspace:*",
+    "@apogee/shared": "workspace:*",
     "drizzle-orm": "^0.45.0",
     "zod": "^3.25.76",
     "zod-to-json-schema": "^3.25.0"

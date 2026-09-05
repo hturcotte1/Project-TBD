@@ -1,8 +1,8 @@
 import { eq, inArray } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError, nudgesRepo, studentsRepo, type StudentDb } from '@tbd/shared/db';
-import { recomputeNextActions } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError, nudgesRepo, studentsRepo, type StudentDb } from '@apogee/shared/db';
+import { recomputeNextActions } from '@apogee/shared/services';
+import { localDate } from '@apogee/shared/time';
 import { mapNextAction } from '../mappers';
 import { authed, type Handlers } from './contract';
 

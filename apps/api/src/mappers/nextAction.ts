@@ -1,6 +1,6 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
-import { daysUntil } from '@tbd/shared/time';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
+import { daysUntil } from '@apogee/shared/time';
 
 export function mapNextAction(row: S.NextAction, schoolName: string | null, now: Date, timezone: string): D.NextActionDto {
   return {

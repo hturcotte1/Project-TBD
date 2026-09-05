@@ -46,7 +46,7 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
     onSuccess: () => {
       setPassword('');
       void queryClient.invalidateQueries({ queryKey: ['sync-status'] });
-      toast({ title: 'Connecting…', description: 'Remy is logging in and checking your Common App account.' });
+      toast({ title: 'Connecting…', description: 'Vector is logging in and checking your Common App account.' });
     },
     onError: () => toast({ title: 'Could not connect', description: 'Check the email and password and try again.', variant: 'destructive' }),
   });
@@ -95,7 +95,7 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
     >
       <div className="space-y-1.5">
         <h1 className="text-xl font-semibold tracking-tight">Connect</h1>
-        <p className="text-sm text-muted-foreground">Two ways Remy stays in the loop — Common App, and texting you directly.</p>
+        <p className="text-sm text-muted-foreground">Two ways Vector stays in the loop — Common App, and texting you directly.</p>
       </div>
 
       <Card>
@@ -104,7 +104,7 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
             <Lock className="h-4 w-4" /> Common App
           </CardTitle>
           <CardDescription>
-            Your password is encrypted at rest and decrypted only for a few seconds inside Remy&rsquo;s browser worker — to read your account and fill in what
+            Your password is encrypted at rest and decrypted only for a few seconds inside Vector&rsquo;s browser worker — to read your account and fill in what
             you approve. It is never used to submit anything. Disconnect any time from Settings and it&rsquo;s deleted immediately.{' '}
             <Link href="/privacy" className="text-primary underline underline-offset-2">
               Read the full privacy page
@@ -180,7 +180,7 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
             <ShieldCheck className="h-4 w-4" /> Gmail
           </CardTitle>
           <CardDescription>
-            {gmailEnabled ? 'Read-only access so Remy can catch recommender and portal emails.' : 'Coming soon — read-only access so Remy can catch recommender and portal emails.'}
+            {gmailEnabled ? 'Read-only access so Vector can catch recommender and portal emails.' : 'Coming soon — read-only access so Vector can catch recommender and portal emails.'}
           </CardDescription>
         </CardHeader>
         <CardContent>

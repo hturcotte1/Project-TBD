@@ -1,7 +1,7 @@
 'use client';
 
-import type { BrowserJobDto } from '@tbd/shared/api';
-import type { BrowserJobKind, BrowserJobStatus } from '@tbd/shared/domain';
+import type { BrowserJobDto } from '@apogee/shared/api';
+import type { BrowserJobKind, BrowserJobStatus } from '@apogee/shared/domain';
 import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, RefreshCw } from 'lucide-react';
 import { EmptyState } from '@/components/layout/empty-state';

@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
-import { appendAudit, conversationsRepo, messagesRepo, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { WeeklyPlan } from '@tbd/shared/schemas';
-import { isQuietNow } from '@tbd/shared/time';
+import { appendAudit, conversationsRepo, messagesRepo, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { WeeklyPlan } from '@apogee/shared/schemas';
+import { isQuietNow } from '@apogee/shared/time';
 import { loadStudentContext } from '../context';
 import { forExtraction } from '../llm/schema';
 import type { AgentDeps } from './deps';

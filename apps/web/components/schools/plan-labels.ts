@@ -1,4 +1,4 @@
-import type { ApplicationPlan, SelfAssessment } from '@tbd/shared/domain';
+import type { ApplicationPlan, SelfAssessment } from '@apogee/shared/domain';
 
 export const PLAN_LABELS: Record<ApplicationPlan, string> = {
   ED: 'Early Decision',

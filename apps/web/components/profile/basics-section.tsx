@@ -1,6 +1,6 @@
 'use client';
 
-import type { StudentDto } from '@tbd/shared/api';
+import type { StudentDto } from '@apogee/shared/api';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';

@@ -1,5 +1,5 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
 
 export interface RecommenderAssignmentInput {
   assignment: S.RecommenderAssignment;

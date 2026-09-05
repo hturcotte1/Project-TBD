@@ -1,6 +1,6 @@
 'use client';
 
-import type { Academics } from '@tbd/shared/schemas';
+import type { Academics } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ChipInput } from '@/components/onboarding/chip-input';

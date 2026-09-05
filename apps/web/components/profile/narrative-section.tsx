@@ -1,7 +1,7 @@
 'use client';
 
-import type { NarrativeDto } from '@tbd/shared/api';
-import type { StudentNarrative } from '@tbd/shared/schemas';
+import type { NarrativeDto } from '@apogee/shared/api';
+import type { StudentNarrative } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { BookOpen, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';

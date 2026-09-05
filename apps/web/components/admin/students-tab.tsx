@@ -1,6 +1,6 @@
 'use client';
 
-import type { AdminStudentDto } from '@tbd/shared/api';
+import type { AdminStudentDto } from '@apogee/shared/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { RefreshCw, Users } from 'lucide-react';
 import { EmptyState } from '@/components/layout/empty-state';

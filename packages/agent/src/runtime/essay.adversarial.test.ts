@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { getTestDb, truncateAll } from '@tbd/shared/testing';
-import type { Db } from '@tbd/shared/db';
+import { getTestDb, truncateAll } from '@apogee/shared/testing';
+import type { Db } from '@apogee/shared/db';
 import { ScriptedFakeLLM } from '../llm/fake';
 import { buildTestDeps, sendInboundText } from '../testing/deps';
 import { seedDemoStudent } from '../testing/seed';

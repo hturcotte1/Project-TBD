@@ -1,7 +1,7 @@
 'use client';
 
-import type { AgentRunDto } from '@tbd/shared/api';
-import type { StudentNarrative } from '@tbd/shared/schemas';
+import type { AgentRunDto } from '@apogee/shared/api';
+import type { StudentNarrative } from '@apogee/shared/schemas';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -71,7 +71,7 @@ export default function ProfileInterviewPage() {
 
   return (
     <div className="pb-8">
-      <PageHeader title="The interview" description="A short conversation — Remy uses this to write in your voice, not its own." />
+      <PageHeader title="The interview" description="A short conversation — Vector uses this to write in your voice, not its own." />
       <div className="space-y-4 px-4 py-5 sm:px-6 sm:max-w-2xl">
         {mode === 'chat' ? (
           <div className="space-y-4">

@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { appendAudit, browserJobsRepo } from '@tbd/shared/db';
-import { jobIds } from '@tbd/shared/jobs';
+import { appendAudit, browserJobsRepo } from '@apogee/shared/db';
+import { jobIds } from '@apogee/shared/jobs';
 import { defineTool, ok } from './types';
 
 export const RequestSyncInput = z.object({});

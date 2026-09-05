@@ -12,9 +12,9 @@ import type {
   SendResult,
   Tapback,
   WebhookRequest,
-} from '@tbd/shared/adapters';
-import { DELIVERY_STATUSES } from '@tbd/shared/domain';
-import { createLogger, type Logger } from '@tbd/shared/logging';
+} from '@apogee/shared/adapters';
+import { DELIVERY_STATUSES } from '@apogee/shared/domain';
+import { createLogger, type Logger } from '@apogee/shared/logging';
 
 const DEFAULT_PHONE_NUMBER = '+15555550000';
 const TYPING_TTL_SECONDS = 8;

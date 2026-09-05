@@ -1,5 +1,5 @@
 {
-  "name": "@tbd/web",
+  "name": "@apogee/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -28,7 +28,7 @@
     "@radix-ui/react-toast": "^1.2.0",
     "@radix-ui/react-tooltip": "^1.2.0",
     "@tanstack/react-query": "^5.100.0",
-    "@tbd/shared": "workspace:*",
+    "@apogee/shared": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

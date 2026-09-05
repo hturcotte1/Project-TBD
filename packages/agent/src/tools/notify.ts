@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { appendAudit } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { IsoDateTime } from '@tbd/shared/schemas';
-import { nextQuietHoursEnd } from '@tbd/shared/time';
+import { appendAudit } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { IsoDateTime } from '@apogee/shared/schemas';
+import { nextQuietHoursEnd } from '@apogee/shared/time';
 import { defineTool, ok } from './types';
 
 export const SendDashboardLinkInput = z.object({ page: z.string().min(1).max(100).optional() });

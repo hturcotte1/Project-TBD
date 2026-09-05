@@ -62,7 +62,7 @@ export function StepFirstSync({ onboarding }: OnboardingStepProps) {
     <div className="space-y-6">
       <div className="space-y-1.5 text-center">
         <h1 className="text-xl font-semibold tracking-tight">First sync</h1>
-        <p className="text-sm text-muted-foreground">Remy is reading your Common App account and building your plan.</p>
+        <p className="text-sm text-muted-foreground">Vector is reading your Common App account and building your plan.</p>
       </div>
 
       {finish.isError ? (

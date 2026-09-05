@@ -7,10 +7,10 @@
 import { randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { FakeMessagingProvider } from '@tbd/messaging';
-import { normalizePhone } from '@tbd/messaging';
-import { conversationsRepo, messagesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import { DEMO_STUDENT } from '@tbd/shared/seed';
+import { FakeMessagingProvider } from '@apogee/messaging';
+import { normalizePhone } from '@apogee/messaging';
+import { conversationsRepo, messagesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import { DEMO_STUDENT } from '@apogee/shared/seed';
 import { mapMessage } from '../mappers';
 import type { ApiDeps } from '../deps';
 import { sendError } from '../errors';

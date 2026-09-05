@@ -3,8 +3,8 @@
  * `req.auth`. `requireAdmin` is a second preHandler for `auth: 'admin'` routes.
  */
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { studentsRepo } from '@tbd/shared/db';
-import type { Role } from '@tbd/shared/domain';
+import { studentsRepo } from '@apogee/shared/db';
+import type { Role } from '@apogee/shared/domain';
 import type { ApiDeps } from '../deps';
 import type { AuthVerifier } from './verifier';
 

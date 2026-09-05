@@ -3,11 +3,11 @@
  * is authorized to that student. See `src/persona.ts` for how this gets rendered into a prompt.
  */
 import { asc, desc, eq, inArray } from 'drizzle-orm';
-import { approvalsRepo, AuthorizationError, browserJobsRepo, scoped, studentsRepo, type Db } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { Clock } from '@tbd/shared/time';
-import { daysUntil } from '@tbd/shared/time';
-import type { Env } from '@tbd/shared/config';
+import { approvalsRepo, AuthorizationError, browserJobsRepo, scoped, studentsRepo, type Db } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { Clock } from '@apogee/shared/time';
+import { daysUntil } from '@apogee/shared/time';
+import type { Env } from '@apogee/shared/config';
 
 export interface ApplicationView {
   application: S.Application;

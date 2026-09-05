@@ -3,9 +3,9 @@
  * `DevAuthVerifier` (AUTH_MODE=dev, HMAC token) and `ClerkAuthVerifier` (AUTH_MODE=clerk).
  */
 import { createClerkClient, verifyToken, type ClerkClient } from '@clerk/backend';
-import { verifyDevToken } from '@tbd/shared/auth';
-import type { Env } from '@tbd/shared/config';
-import type { Logger } from '@tbd/shared/logging';
+import { verifyDevToken } from '@apogee/shared/auth';
+import type { Env } from '@apogee/shared/config';
+import type { Logger } from '@apogee/shared/logging';
 
 export interface VerifiedAuth {
   authUserId: string;

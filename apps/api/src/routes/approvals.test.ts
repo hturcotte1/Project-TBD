@@ -1,7 +1,7 @@
-import { scoped, approvalsRepo } from '@tbd/shared/db';
-import { buildActivitiesFillPayload } from '@tbd/shared/domain';
-import * as S from '@tbd/shared/db/schema';
-import { createTestStudent } from '@tbd/shared/testing';
+import { scoped, approvalsRepo } from '@apogee/shared/db';
+import { buildActivitiesFillPayload } from '@apogee/shared/domain';
+import * as S from '@apogee/shared/db/schema';
+import { createTestStudent } from '@apogee/shared/testing';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 

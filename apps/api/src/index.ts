@@ -3,19 +3,19 @@
  * gracefully. This file does the wiring only — behavior lives in `app.ts` and `routes/`.
  */
 import { Redis } from 'ioredis';
-import { createMessagingProvider } from '@tbd/messaging';
-import { LocalDiskStorageProvider, RedisVerificationCodeChannel, S3StorageProvider } from '@tbd/shared/adapters';
-import { loadEnv } from '@tbd/shared/config';
-import { createDb } from '@tbd/shared/db';
-import { BullJobEnqueuer } from '@tbd/shared/jobs';
-import { createLogger } from '@tbd/shared/logging';
-import { SystemClock } from '@tbd/shared/time';
+import { createMessagingProvider } from '@apogee/messaging';
+import { LocalDiskStorageProvider, RedisVerificationCodeChannel, S3StorageProvider } from '@apogee/shared/adapters';
+import { loadEnv } from '@apogee/shared/config';
+import { createDb } from '@apogee/shared/db';
+import { BullJobEnqueuer } from '@apogee/shared/jobs';
+import { createLogger } from '@apogee/shared/logging';
+import { SystemClock } from '@apogee/shared/time';
 import { buildApp } from './app';
 import type { ApiDeps } from './deps';
 
 async function main(): Promise<void> {
   const env = loadEnv();
-  const logger = createLogger({ name: '@tbd/api', level: env.LOG_LEVEL, pretty: env.NODE_ENV !== 'production' });
+  const logger = createLogger({ name: '@apogee/api', level: env.LOG_LEVEL, pretty: env.NODE_ENV !== 'production' });
 
   const dbHandle = createDb(env.DATABASE_URL);
   const redis = new Redis(env.REDIS_URL, { maxRetriesPerRequest: null });

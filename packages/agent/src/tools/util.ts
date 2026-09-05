@@ -1,5 +1,5 @@
-import type * as S from '@tbd/shared/db/schema';
-import type { ItemKind } from '@tbd/shared/domain';
+import type * as S from '@apogee/shared/db/schema';
+import type { ItemKind } from '@apogee/shared/domain';
 
 export function normalizeForMatch(s: string): string {
   return s

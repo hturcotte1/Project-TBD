@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { studentsRepo } from '@tbd/shared/db';
-import { AuthorizationError } from '@tbd/shared/db';
+import { studentsRepo } from '@apogee/shared/db';
+import { AuthorizationError } from '@apogee/shared/db';
 import { mapStudent } from '../mappers';
 import { authed, type Handlers } from './contract';
 

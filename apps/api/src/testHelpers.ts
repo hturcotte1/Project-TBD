@@ -9,15 +9,15 @@ import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { FastifyInstance } from 'fastify';
-import { createDevToken } from '@tbd/shared/auth';
-import { LocalDiskStorageProvider, MemoryVerificationCodeChannel } from '@tbd/shared/adapters';
-import { loadEnv, resetEnvCache } from '@tbd/shared/config';
-import { studentsRepo } from '@tbd/shared/db';
-import { createLogger } from '@tbd/shared/logging';
-import { MemoryJobEnqueuer } from '@tbd/shared/jobs';
-import { createTestStudent, getTestDb, truncateAll } from '@tbd/shared/testing';
-import { FixedClock } from '@tbd/shared/time';
-import { FakeMessagingProvider } from '@tbd/messaging';
+import { createDevToken } from '@apogee/shared/auth';
+import { LocalDiskStorageProvider, MemoryVerificationCodeChannel } from '@apogee/shared/adapters';
+import { loadEnv, resetEnvCache } from '@apogee/shared/config';
+import { studentsRepo } from '@apogee/shared/db';
+import { createLogger } from '@apogee/shared/logging';
+import { MemoryJobEnqueuer } from '@apogee/shared/jobs';
+import { createTestStudent, getTestDb, truncateAll } from '@apogee/shared/testing';
+import { FixedClock } from '@apogee/shared/time';
+import { FakeMessagingProvider } from '@apogee/messaging';
 import { buildApp } from './app';
 import type { ApiDeps } from './deps';
 
@@ -62,7 +62,7 @@ export async function makeTestApp(opts: MakeTestAppOptions = {}): Promise<TestAp
   const db = await getTestDb();
   await truncateAll(db);
 
-  const tmpDir = await mkdtemp(join(tmpdir(), 'tbd-api-test-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'apogee-api-test-'));
   const storage = new LocalDiskStorageProvider(tmpDir, env.API_URL);
   const enqueuer = new MemoryJobEnqueuer();
   const codeChannel = new MemoryVerificationCodeChannel();

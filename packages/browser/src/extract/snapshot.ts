@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { CommonAppSnapshot as CommonAppSnapshotSchema } from '@tbd/shared/schemas';
+import { CommonAppSnapshot as CommonAppSnapshotSchema } from '@apogee/shared/schemas';
 import { extractActivities } from './activities';
 import { extractCollegeQuestions } from './collegeQuestions';
 import { extractCommonAppSections } from './commonAppSections';

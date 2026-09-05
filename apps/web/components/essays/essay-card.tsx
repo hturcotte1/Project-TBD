@@ -1,7 +1,7 @@
 'use client';
 
-import type { EssayDto } from '@tbd/shared/api';
-import type { ItemStatus } from '@tbd/shared/domain';
+import type { EssayDto } from '@apogee/shared/api';
+import type { ItemStatus } from '@apogee/shared/domain';
 import Link from 'next/link';
 import { useState } from 'react';
 import { wordCountLabel, wordProgressPercent } from '@/components/essays/word-count';

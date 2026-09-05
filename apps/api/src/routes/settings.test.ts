@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
-import { scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { buildAccountExport, deleteAccount } from '@tbd/shared/services';
-import { createTestStudent } from '@tbd/shared/testing';
+import { scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { buildAccountExport, deleteAccount } from '@apogee/shared/services';
+import { createTestStudent } from '@apogee/shared/testing';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 

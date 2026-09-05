@@ -1,7 +1,7 @@
 /**
  * `buildApp(deps)`: the Fastify instance with every plugin, every route, and the error handler
  * that guarantees a consistent `{ code, message, details }` shape (matching `ApiError` in
- * `@tbd/shared/api/client`) for every failure.
+ * `@apogee/shared/api/client`) for every failure.
  */
 import { randomUUID } from 'node:crypto';
 import cors from '@fastify/cors';
@@ -11,8 +11,8 @@ import rateLimit from '@fastify/rate-limit';
 import Fastify, { type FastifyBaseLogger, type FastifyError, type FastifyInstance } from 'fastify';
 import rawBody from 'fastify-raw-body';
 import { ZodError } from 'zod';
-import { AuthorizationError } from '@tbd/shared/db';
-import { DuplicateApplicationError, InvalidSchoolInputError } from '@tbd/shared/services';
+import { AuthorizationError } from '@apogee/shared/db';
+import { DuplicateApplicationError, InvalidSchoolInputError } from '@apogee/shared/services';
 import { buildAuthVerifier } from './auth/verifier';
 import type { ApiDeps } from './deps';
 import { HttpError, sendError } from './errors';

@@ -1,5 +1,5 @@
-import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import type { TriggerEvent } from '@tbd/shared/schemas';
+import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import type { TriggerEvent } from '@apogee/shared/schemas';
 import { factsMentioned, templateForTrigger } from '../integrations/shared-engines';
 import type { AgentDeps } from './deps';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import type { TestScores } from '@tbd/shared/schemas';
-import { TEST_OPTIONAL_STANCES } from '@tbd/shared/domain';
+import type { TestScores } from '@apogee/shared/schemas';
+import { TEST_OPTIONAL_STANCES } from '@apogee/shared/domain';
 import { useMutation } from '@tanstack/react-query';
 import { Plus, X } from 'lucide-react';
 import { useState } from 'react';

@@ -1,8 +1,8 @@
 import { desc, eq } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError } from '@tbd/shared/db';
-import type { Academics, TestScores } from '@tbd/shared/schemas';
-import { jobIds } from '@tbd/shared/jobs';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError } from '@apogee/shared/db';
+import type { Academics, TestScores } from '@apogee/shared/schemas';
+import { jobIds } from '@apogee/shared/jobs';
 import { mapActivity, mapDocument, mapProfile } from '../mappers';
 import { ensureProfile, replaceActivities } from './profileUtil';
 import { authed, type Handlers } from './contract';

@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { appendAudit } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { APPLICATION_PLANS, type ApplicationPlan } from '@tbd/shared/domain';
-import { createApplication, DuplicateApplicationError } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import { appendAudit } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { APPLICATION_PLANS, type ApplicationPlan } from '@apogee/shared/domain';
+import { createApplication, DuplicateApplicationError } from '@apogee/shared/services';
+import { localDate } from '@apogee/shared/time';
 import { findSchool } from '../integrations/shared-engines';
 import { defineTool, fail, ok } from './types';
 

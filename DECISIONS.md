@@ -2,8 +2,8 @@
 
 Judgment calls made during the build, with reasons. Newest at the bottom.
 
-1. **Package scope `@tbd/*`.** The repo is `Project-TBD`; the scope is short and won't collide. Rename is a find-and-replace.
-2. **Agent name: Remy.** Configurable via `AGENT_NAME`. Short, warm, gender-neutral, easy to type.
+1. **Package scope `@apogee/*`.** The repo is `Project-TBD`; the scope is short and won't collide. Rename is a find-and-replace.
+2. **Agent name: Vector.** Configurable via `AGENT_NAME`. Short, warm, gender-neutral, easy to type.
 3. **REST with a shared zod contract instead of tRPC.** The contract (`packages/shared/src/api/contract.ts`) is a list of route definitions with zod params/query/body/response. Fastify registers routes from it and the web app gets a typed client from it. This keeps the API callable from webhooks, curl, and the fake phone, and avoids tRPC's coupling to a React client.
 4. **Fastify over Hono.** Mature plugin ecosystem for rate limiting, multipart uploads, and static files, which the dev phone and upload flows need.
 5. **Clerk in production, dev-mode auth locally.** `AUTH_MODE=clerk` uses `@clerk/nextjs` on the web and `@clerk/backend` `verifyToken` on the API. `AUTH_MODE=dev` uses an HMAC-signed cookie and `/dev/login` so the entire product runs and is testable without vendor accounts. The API verifies bearer tokens through one `AuthVerifier` interface either way. Clerk could not be exercised in this sandbox (no keys); see KNOWN_GAPS.

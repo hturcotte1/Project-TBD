@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { z } from 'zod';
-import type { LLMAssistantContent, LLMExtractRequest, LLMGenerateRequest } from '@tbd/shared/adapters';
-import { EssayFeedback, PhotoExtraction, ResumeExtraction, StudentNarrative, TranscriptExtraction, WeeklyPlan } from '@tbd/shared/schemas';
+import type { LLMAssistantContent, LLMExtractRequest, LLMGenerateRequest } from '@apogee/shared/adapters';
+import { EssayFeedback, PhotoExtraction, ResumeExtraction, StudentNarrative, TranscriptExtraction, WeeklyPlan } from '@apogee/shared/schemas';
 import { RuleBasedFakeLLM, ScriptedFakeLLM } from './fake';
 import { forExtraction } from './schema';
 

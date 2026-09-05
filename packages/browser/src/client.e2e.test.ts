@@ -1,5 +1,5 @@
-import type { FillFieldsPayload } from '@tbd/shared/schemas';
-import { createLogger } from '@tbd/shared/logging';
+import type { FillFieldsPayload } from '@apogee/shared/schemas';
+import { createLogger } from '@apogee/shared/logging';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { COMMONAPP_MAP, resolveCollegePath } from './commonapp-map';
 import { createCommonAppClient } from './client';

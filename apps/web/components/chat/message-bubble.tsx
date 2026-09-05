@@ -1,4 +1,4 @@
-import type { MessageDto } from '@tbd/shared/api';
+import type { MessageDto } from '@apogee/shared/api';
 import { AlertCircle, Check, CheckCheck, Clock } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { MessageGroup } from '@/components/chat/chat-utils';

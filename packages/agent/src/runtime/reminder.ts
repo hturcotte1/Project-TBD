@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { appendAudit, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
+import { appendAudit, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
 import type { AgentDeps } from './deps';
 
 export interface RunReminderDraftInput {

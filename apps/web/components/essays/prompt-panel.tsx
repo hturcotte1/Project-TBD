@@ -1,4 +1,4 @@
-import type { EssayDetailDto } from '@tbd/shared/api';
+import type { EssayDetailDto } from '@apogee/shared/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { DeadlineBadge } from '@/components/layout/deadline-badge';
 import { formatDate } from '@/lib/format';

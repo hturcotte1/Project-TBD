@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { appendAudit, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { PhotoExtraction, ResumeExtraction, TranscriptExtraction } from '@tbd/shared/schemas';
+import { appendAudit, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { PhotoExtraction, ResumeExtraction, TranscriptExtraction } from '@apogee/shared/schemas';
 import { forExtraction } from '../llm/schema';
 import { wrapUntrusted } from './untrusted';
 import type { AgentDeps } from './deps';

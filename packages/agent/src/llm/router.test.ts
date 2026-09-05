@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadEnv, resetEnvCache } from '@tbd/shared/config';
+import { loadEnv, resetEnvCache } from '@apogee/shared/config';
 import { modelForTask } from './router';
 
 function testEnv() {

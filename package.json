@@ -1,5 +1,5 @@
 {
-  "name": "project-tbd",
+  "name": "apogee",
   "private": true,
   "packageManager": "pnpm@10.33.0",
   "engines": {
@@ -12,12 +12,12 @@
     "test:live": "LLM_PROVIDER=anthropic vitest run --config packages/agent/vitest.live.config.ts",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "db:generate": "pnpm --filter @tbd/shared db:generate",
-    "db:migrate": "pnpm --filter @tbd/shared db:migrate",
-    "db:seed": "pnpm --filter @tbd/shared db:seed",
-    "db:reset": "pnpm --filter @tbd/shared db:reset",
-    "db:ready": "pnpm --filter @tbd/shared db:ready",
-    "e2e": "pnpm --filter @tbd/e2e test",
+    "db:generate": "pnpm --filter @apogee/shared db:generate",
+    "db:migrate": "pnpm --filter @apogee/shared db:migrate",
+    "db:seed": "pnpm --filter @apogee/shared db:seed",
+    "db:reset": "pnpm --filter @apogee/shared db:reset",
+    "db:ready": "pnpm --filter @apogee/shared db:ready",
+    "e2e": "pnpm --filter @apogee/e2e test",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

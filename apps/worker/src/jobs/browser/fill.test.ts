@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { UnrecoverableError } from 'bullmq';
-import * as S from '@tbd/shared/db/schema';
-import { approvalsRepo, browserJobsRepo, scoped } from '@tbd/shared/db';
-import { buildActivitiesFillPayload } from '@tbd/shared/domain';
-import type { BrowserJobResult, FillFieldsPayload } from '@tbd/shared/schemas';
+import * as S from '@apogee/shared/db/schema';
+import { approvalsRepo, browserJobsRepo, scoped } from '@apogee/shared/db';
+import { buildActivitiesFillPayload } from '@apogee/shared/domain';
+import type { BrowserJobResult, FillFieldsPayload } from '@apogee/shared/schemas';
 import { dispatch } from '../../dispatch';
 import { closeTestDb, setupWorkerTest, type WorkerTestHarness } from '../../test-helpers';
 

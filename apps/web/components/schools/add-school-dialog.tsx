@@ -1,8 +1,8 @@
 'use client';
 
-import type { SchoolWithRequirementsDto } from '@tbd/shared/api';
-import type { ApplicationPlan, SelfAssessment } from '@tbd/shared/domain';
-import { APPLICATION_PLANS, SELF_ASSESSMENTS } from '@tbd/shared/domain';
+import type { SchoolWithRequirementsDto } from '@apogee/shared/api';
+import type { ApplicationPlan, SelfAssessment } from '@apogee/shared/domain';
+import { APPLICATION_PLANS, SELF_ASSESSMENTS } from '@apogee/shared/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Plus, School as SchoolIcon, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -164,7 +164,7 @@ export function AddSchoolDialog({ open, onOpenChange, excludedSlugs, timezone }:
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-muted-foreground">{resolvedDeadline ? `Due ${formatDate(resolvedDeadline, timezone)}` : 'Deadline unconfirmed — Remy will verify it once you connect Common App.'}</p>
+              <p className="text-xs text-muted-foreground">{resolvedDeadline ? `Due ${formatDate(resolvedDeadline, timezone)}` : 'Deadline unconfirmed — Vector will verify it once you connect Common App.'}</p>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="add-school-assessment">How does it feel — reach, target, or safety?</Label>

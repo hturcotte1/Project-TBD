@@ -1,12 +1,12 @@
 import { eq, inArray } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError, studentsRepo, type StudentDb } from '@tbd/shared/db';
-import { jobIds } from '@tbd/shared/jobs';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError, studentsRepo, type StudentDb } from '@apogee/shared/db';
+import { jobIds } from '@apogee/shared/jobs';
 import { mapEssay, mapEssayDetail, type EssayDetailInput, type EssaySummaryInput } from '../mappers';
 import { HttpError } from '../errors';
 import { authed, type Handlers } from './contract';
 
-/** Same rule as `@tbd/shared/seed`'s `wordCount`: trim, split on whitespace, count. */
+/** Same rule as `@apogee/shared/seed`'s `wordCount`: trim, split on whitespace, count. */
 function countWords(text: string): number {
   const trimmed = text.trim();
   return trimmed ? trimmed.split(/\s+/).length : 0;

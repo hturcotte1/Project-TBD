@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
-import { appendAudit, browserJobsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
+import { appendAudit, browserJobsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
 import { defineTool, fail, ok } from './types';
 
 export const AnswerVerificationCodeInput = z.object({ code: z.string().regex(/^\d{4,8}$/, 'expected a numeric code') });

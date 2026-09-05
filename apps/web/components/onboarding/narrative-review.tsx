@@ -1,6 +1,6 @@
 'use client';
 
-import type { StudentNarrative } from '@tbd/shared/schemas';
+import type { StudentNarrative } from '@apogee/shared/schemas';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

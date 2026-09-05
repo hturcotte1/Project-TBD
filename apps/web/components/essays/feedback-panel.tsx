@@ -1,7 +1,7 @@
 'use client';
 
-import type { EssayDetailDto } from '@tbd/shared/api';
-import type { EssayFeedback } from '@tbd/shared/schemas';
+import type { EssayDetailDto } from '@apogee/shared/api';
+import type { EssayFeedback } from '@apogee/shared/schemas';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -125,7 +125,7 @@ export function FeedbackPanel({ essay }: { essay: EssayDetailDto }) {
     } else {
       toast({
         title: "Feedback isn't available right now",
-        description: run.error ?? "Remy's model is unavailable at the moment — try again in a bit.",
+        description: run.error ?? "Vector's model is unavailable at the moment — try again in a bit.",
         variant: 'destructive',
       });
     }

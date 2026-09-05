@@ -1,6 +1,6 @@
 'use client';
 
-import type { NudgeIntensity } from '@tbd/shared/domain';
+import type { NudgeIntensity } from '@apogee/shared/domain';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -91,7 +91,7 @@ export function StepBasics({ onboarding, step }: OnboardingStepProps) {
     >
       <div className="space-y-1.5">
         <h1 className="text-xl font-semibold tracking-tight">The basics</h1>
-        <p className="text-sm text-muted-foreground">So Remy knows who it&rsquo;s texting, and when not to.</p>
+        <p className="text-sm text-muted-foreground">So Vector knows who it&rsquo;s texting, and when not to.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -122,7 +122,7 @@ export function StepBasics({ onboarding, step }: OnboardingStepProps) {
           placeholder="(555) 555-0100"
         />
         {phoneError ? <p className="text-xs text-destructive">{phoneError}</p> : null}
-        <WhyWeAsk>This is the number Remy texts. Nudges, reminders, and verification-code requests all come through this one thread.</WhyWeAsk>
+        <WhyWeAsk>This is the number Vector texts. Nudges, reminders, and verification-code requests all come through this one thread.</WhyWeAsk>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -160,11 +160,11 @@ export function StepBasics({ onboarding, step }: OnboardingStepProps) {
           <span className="text-sm text-muted-foreground">to</span>
           <Input aria-label="Quiet hours end" type="time" value={quietEnd} onChange={(event) => setQuietEnd(event.target.value)} className="w-32" />
         </div>
-        <WhyWeAsk>Remy never texts during quiet hours — except the morning a deadline is actually due.</WhyWeAsk>
+        <WhyWeAsk>Vector never texts during quiet hours — except the morning a deadline is actually due.</WhyWeAsk>
       </div>
 
       <div className="space-y-2">
-        <Label>How often should Remy check in?</Label>
+        <Label>How often should Vector check in?</Label>
         <div className="grid gap-2">
           {NUDGE_OPTIONS.map((option) => (
             <button

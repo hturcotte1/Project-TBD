@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { type CommonAppSections as CommonAppSectionsSchema, SectionStatus as SectionStatusSchema } from '@tbd/shared/schemas';
+import { type CommonAppSections as CommonAppSectionsSchema, SectionStatus as SectionStatusSchema } from '@apogee/shared/schemas';
 import { COMMONAPP_MAP } from '../commonapp-map';
 import { extractActivities } from './activities';
 import { anchorConfidence, asEnum, loadHtml, makeExtracted, text, type ExtractedResult } from './util';

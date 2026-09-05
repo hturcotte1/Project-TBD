@@ -1,6 +1,6 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
-import type { CredentialStatusView } from '@tbd/shared/db';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
+import type { CredentialStatusView } from '@apogee/shared/db';
 
 export function mapStudent(row: S.Student): D.StudentDto {
   return {

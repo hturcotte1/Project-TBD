@@ -1,5 +1,5 @@
 {
-  "name": "@tbd/api",
+  "name": "@apogee/api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -19,8 +19,8 @@
     "@fastify/multipart": "^10.1.0",
     "@fastify/rate-limit": "^11.2.0",
     "@fastify/static": "^10.1.0",
-    "@tbd/messaging": "workspace:*",
-    "@tbd/shared": "workspace:*",
+    "@apogee/messaging": "workspace:*",
+    "@apogee/shared": "workspace:*",
     "bullmq": "^5.81.0",
     "drizzle-orm": "^0.45.0",
     "fastify": "^5.12.0",

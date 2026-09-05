@@ -2,9 +2,9 @@ import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import * as cheerio from 'cheerio';
-import { ACTIVITY_TIMINGS, GRADE_LEVELS } from '@tbd/shared/domain';
-import type { Logger } from '@tbd/shared/logging';
-import type { CommonAppSnapshot, FillFieldsPayload, FillVerification as FillVerificationSchema } from '@tbd/shared/schemas';
+import { ACTIVITY_TIMINGS, GRADE_LEVELS } from '@apogee/shared/domain';
+import type { Logger } from '@apogee/shared/logging';
+import type { CommonAppSnapshot, FillFieldsPayload, FillVerification as FillVerificationSchema } from '@apogee/shared/schemas';
 import type { z } from 'zod';
 // The exact zod 4.4.3 Stagehand itself depends on — see fallback/stagehand.ts for why.
 import { z as z4 } from 'zod-stagehand';

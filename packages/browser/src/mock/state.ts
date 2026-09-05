@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, APPLICATION_PLANS, GRADE_LEVELS } from '@tbd/shared/domain';
+import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, APPLICATION_PLANS, GRADE_LEVELS } from '@apogee/shared/domain';
 
 /**
  * In-memory state for the mock Common App. Deliberately its own schema (not `CommonAppSnapshot`):

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { WebhookRequest } from '@tbd/shared/adapters';
+import type { WebhookRequest } from '@apogee/shared/adapters';
 import { MessagingError } from './errors';
 import { SendblueProvider, type SendblueConfig } from './sendblue';
 import { createMockSendblueFetch } from './test-utils/sendblue-fetch-mock';

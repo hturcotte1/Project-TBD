@@ -3,13 +3,13 @@
  * and follows up with the agent when anything worth telling the student changed. On three
  * consecutive failures it pauses syncing for the student and texts them once. */
 import { and, desc, eq } from 'drizzle-orm';
-import { diffSnapshots } from '@tbd/browser';
-import { appendAudit, browserJobsRepo, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { jobIds, type JobPayload } from '@tbd/shared/jobs';
-import { BrowserJobResult } from '@tbd/shared/schemas';
-import { applySnapshot } from '@tbd/shared/services';
-import { isQuietNow, localDate, nextQuietHoursEnd } from '@tbd/shared/time';
+import { diffSnapshots } from '@apogee/browser';
+import { appendAudit, browserJobsRepo, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { jobIds, type JobPayload } from '@apogee/shared/jobs';
+import { BrowserJobResult } from '@apogee/shared/schemas';
+import { applySnapshot } from '@apogee/shared/services';
+import { isQuietNow, localDate, nextQuietHoursEnd } from '@apogee/shared/time';
 import type { WorkerDeps } from '../../deps';
 import { runBrowserJob } from './lifecycle';
 import { loginForJob } from './login';

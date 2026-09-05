@@ -1,8 +1,8 @@
 'use client';
 
-import type { StudentProfileDto } from '@tbd/shared/api';
-import { TEST_OPTIONAL_STANCES } from '@tbd/shared/domain';
-import { Academics, TestScores } from '@tbd/shared/schemas';
+import type { StudentProfileDto } from '@apogee/shared/api';
+import { TEST_OPTIONAL_STANCES } from '@apogee/shared/domain';
+import { Academics, TestScores } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { Plus, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -147,7 +147,7 @@ export function StepAcademics({ onboarding, step }: OnboardingStepProps) {
           onChange={(event) => setAcademics((a) => ({ ...a, rigor_summary: event.target.value }))}
           placeholder="e.g. Most rigorous track my school offers — 7 APs by graduation."
         />
-        <WhyWeAsk>Colleges read your transcript in context. This helps Remy describe your rigor accurately when it drafts anything on your behalf.</WhyWeAsk>
+        <WhyWeAsk>Colleges read your transcript in context. This helps Vector describe your rigor accurately when it drafts anything on your behalf.</WhyWeAsk>
       </div>
 
       <div className="space-y-1.5">

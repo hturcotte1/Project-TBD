@@ -1,7 +1,7 @@
 'use client';
 
-import type { AgentRunDto } from '@tbd/shared/api';
-import type { RunOutcome, RunTrigger } from '@tbd/shared/domain';
+import type { AgentRunDto } from '@apogee/shared/api';
+import type { RunOutcome, RunTrigger } from '@apogee/shared/domain';
 import { useQuery } from '@tanstack/react-query';
 import { Bot } from 'lucide-react';
 import { EmptyState } from '@/components/layout/empty-state';

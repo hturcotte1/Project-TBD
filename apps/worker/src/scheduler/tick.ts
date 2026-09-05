@@ -8,13 +8,13 @@
  * (see `packages/shared/src/testing/authz-scan.test.ts`), same as `src/jobs/maintenance.ts`.
  */
 import { inArray } from 'drizzle-orm';
-import { approvalsRepo, browserJobsRepo, credentialsRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { ApplicationStatus } from '@tbd/shared/domain';
-import { jobIds } from '@tbd/shared/jobs';
-import { evaluateTriggers, shouldSync } from '@tbd/shared/proactive';
-import { loadTriggerState } from '@tbd/shared/services';
-import { daysUntil } from '@tbd/shared/time';
+import { approvalsRepo, browserJobsRepo, credentialsRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { ApplicationStatus } from '@apogee/shared/domain';
+import { jobIds } from '@apogee/shared/jobs';
+import { evaluateTriggers, shouldSync } from '@apogee/shared/proactive';
+import { loadTriggerState } from '@apogee/shared/services';
+import { daysUntil } from '@apogee/shared/time';
 import type { WorkerDeps } from '../deps';
 
 const OPEN_APPLICATION_STATUSES = new Set<ApplicationStatus>(['not_started', 'in_progress', 'ready_to_submit']);

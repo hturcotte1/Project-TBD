@@ -1,4 +1,4 @@
-import type { Env } from '@tbd/shared/config';
+import type { Env } from '@apogee/shared/config';
 import { BrowserbaseSessionProvider } from './browserbase';
 import { LocalChromiumSessionProvider } from './local';
 import type { BrowserSessionProvider } from './types';
@@ -7,7 +7,7 @@ export { BrowserbaseSessionProvider, type BrowserbaseSessionProviderOptions } fr
 export { LocalChromiumSessionProvider, type LocalChromiumSessionProviderOptions } from './local';
 export type { BrowserSessionHandle, BrowserSessionProvider } from './types';
 
-/** Picks the session provider from `Env.BROWSER_PROVIDER` (see `config/env.ts` in @tbd/shared). */
+/** Picks the session provider from `Env.BROWSER_PROVIDER` (see `config/env.ts` in @apogee/shared). */
 export function createBrowserSessionProvider(env: Env): BrowserSessionProvider {
   if (env.BROWSER_PROVIDER === 'browserbase') {
     if (!env.BROWSERBASE_API_KEY || !env.BROWSERBASE_PROJECT_ID) {

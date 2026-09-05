@@ -1,6 +1,6 @@
 import type { z } from 'zod';
-import type { StudentDb } from '@tbd/shared/db';
-import type { Logger } from '@tbd/shared/logging';
+import type { StudentDb } from '@apogee/shared/db';
+import type { Logger } from '@apogee/shared/logging';
 import type { StudentContext } from '../context';
 import type { AgentDeps } from '../runtime/deps';
 

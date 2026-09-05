@@ -1,8 +1,8 @@
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifyFormbody from '@fastify/formbody';
-import type { Logger } from '@tbd/shared/logging';
-import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@tbd/shared/domain';
+import type { Logger } from '@apogee/shared/logging';
+import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@apogee/shared/domain';
 import { COMMONAPP_MAP, PER_COLLEGE_PAGES, type PageName } from '../commonapp-map';
 import { MockActivityEntry, type MockAccountState, type MockCollege } from './state';
 import {

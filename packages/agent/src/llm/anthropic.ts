@@ -6,8 +6,8 @@ import type {
   StopReason as SdkStopReason,
   Tool as SdkTool,
 } from '@anthropic-ai/sdk/resources/messages';
-import type { Env } from '@tbd/shared/config';
-import type { Logger } from '@tbd/shared/logging';
+import type { Env } from '@apogee/shared/config';
+import type { Logger } from '@apogee/shared/logging';
 import type {
   LLMAssistantContent,
   LLMExtractRequest,
@@ -18,7 +18,7 @@ import type {
   LLMProvider,
   LLMStopReason,
   LLMUserContent,
-} from '@tbd/shared/adapters';
+} from '@apogee/shared/adapters';
 import { LLMExtractionError } from './errors';
 import { modelForTask } from './router';
 import { structuredOutputFormat, toJsonSchema } from './schema';

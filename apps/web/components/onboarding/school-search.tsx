@@ -1,6 +1,6 @@
 'use client';
 
-import type { SchoolWithRequirementsDto } from '@tbd/shared/api';
+import type { SchoolWithRequirementsDto } from '@apogee/shared/api';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';

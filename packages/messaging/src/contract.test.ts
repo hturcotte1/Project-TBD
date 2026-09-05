@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { MessagingProvider, WebhookRequest } from '@tbd/shared/adapters';
-import { DELIVERY_STATUSES } from '@tbd/shared/domain';
+import type { MessagingProvider, WebhookRequest } from '@apogee/shared/adapters';
+import { DELIVERY_STATUSES } from '@apogee/shared/domain';
 import { FakeMessagingProvider } from './fake';
 import { SendblueProvider } from './sendblue';
 import { createMockSendblueFetch } from './test-utils/sendblue-fetch-mock';

@@ -1,7 +1,7 @@
 import { eq, ilike, inArray } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError } from '@tbd/shared/db';
-import { findSchools } from '@tbd/shared/requirements';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError } from '@apogee/shared/db';
+import { findSchools } from '@apogee/shared/requirements';
 import { mapSchoolWithRequirements } from '../mappers';
 import { authed, type Handlers } from './contract';
 

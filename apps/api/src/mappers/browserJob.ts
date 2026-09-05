@@ -1,6 +1,6 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
-import type { StorageProvider } from '@tbd/shared/adapters';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
+import type { StorageProvider } from '@apogee/shared/adapters';
 
 export async function mapBrowserJob(row: S.BrowserJob, storage: StorageProvider): Promise<D.BrowserJobDto> {
   const screenshots = await Promise.all(

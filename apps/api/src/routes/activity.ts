@@ -1,5 +1,5 @@
 import { and, desc, eq, inArray, lt, or } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
+import * as S from '@apogee/shared/db/schema';
 import { mapAgentRun, mapAuditEntry, mapBrowserJob, mapSnapshotSummary } from '../mappers';
 import { authed, type Handlers } from './contract';
 

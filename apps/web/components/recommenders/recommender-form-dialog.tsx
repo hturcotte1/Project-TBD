@@ -1,8 +1,8 @@
 'use client';
 
-import type { ApplicationDto, RecommenderDto } from '@tbd/shared/api';
-import { RECOMMENDER_INVITE_STATUSES, RECOMMENDER_ROLES } from '@tbd/shared/domain';
-import type { RecommenderInviteStatus, RecommenderRole } from '@tbd/shared/domain';
+import type { ApplicationDto, RecommenderDto } from '@apogee/shared/api';
+import { RECOMMENDER_INVITE_STATUSES, RECOMMENDER_ROLES } from '@apogee/shared/domain';
+import type { RecommenderInviteStatus, RecommenderRole } from '@apogee/shared/domain';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus } from 'lucide-react';
 import { useState } from 'react';

@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { conversationsRepo, messagesRepo } from '@tbd/shared/db';
+import { scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { conversationsRepo, messagesRepo } from '@apogee/shared/db';
 import { describe, expect, it } from 'vitest';
 import { makeTestApp } from '../testHelpers';
 
@@ -71,7 +71,7 @@ describe('POST /webhooks/sendblue', () => {
       conversationId: conversation.id,
       channel: 'imessage',
       direction: 'outbound',
-      body: 'sent from remy',
+      body: 'sent from vector',
       providerMessageId: 'out-1',
       deliveryStatus: 'sent',
     });

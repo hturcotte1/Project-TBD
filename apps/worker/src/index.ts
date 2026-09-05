@@ -4,9 +4,9 @@
  * shuts down cleanly on SIGTERM.
  */
 import { Worker, type Job } from 'bullmq';
-import { loadEnv } from '@tbd/shared/config';
-import { QUEUES, type JobName } from '@tbd/shared/jobs';
-import { createLogger } from '@tbd/shared/logging';
+import { loadEnv } from '@apogee/shared/config';
+import { QUEUES, type JobName } from '@apogee/shared/jobs';
+import { createLogger } from '@apogee/shared/logging';
 import { createWorkerDeps } from './deps';
 import { dispatch } from './dispatch';
 

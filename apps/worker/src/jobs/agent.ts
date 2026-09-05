@@ -1,5 +1,5 @@
 /**
- * Every `agent.*` job. Most are thin passthroughs onto `@tbd/agent`'s runtime functions (which
+ * Every `agent.*` job. Most are thin passthroughs onto `@apogee/agent`'s runtime functions (which
  * already load their own context and record their own audit trail); `proactive_run` is the one
  * with real logic here — it turns the scheduler's raw trigger candidates into the nudge policy's
  * plan, phrases and sends what's sendable now, defers the rest, and special-cases the two batch
@@ -17,16 +17,16 @@ import {
   runWeeklyPlan,
   sendProactive,
   sendWelcome,
-} from '@tbd/agent';
-import { AuthorizationError, nudgesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { JobPayload } from '@tbd/shared/jobs';
-import { jobIds } from '@tbd/shared/jobs';
-import { sendCap } from '@tbd/shared/prioritize';
-import { planNudges } from '@tbd/shared/proactive';
-import type { TriggerEvent } from '@tbd/shared/schemas';
-import { countProactiveSentToday, loadSuppressedItemIds } from '@tbd/shared/services';
-import { addDays, localDate, weekStartOf } from '@tbd/shared/time';
+} from '@apogee/agent';
+import { AuthorizationError, nudgesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { JobPayload } from '@apogee/shared/jobs';
+import { jobIds } from '@apogee/shared/jobs';
+import { sendCap } from '@apogee/shared/prioritize';
+import { planNudges } from '@apogee/shared/proactive';
+import type { TriggerEvent } from '@apogee/shared/schemas';
+import { countProactiveSentToday, loadSuppressedItemIds } from '@apogee/shared/services';
+import { addDays, localDate, weekStartOf } from '@apogee/shared/time';
 import type { WorkerDeps } from '../deps';
 
 async function finalizeRun(deps: WorkerDeps, runId: string, outcome: 'completed' | 'failed', error?: string): Promise<void> {

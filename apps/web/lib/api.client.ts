@@ -1,12 +1,12 @@
 'use client';
 
 /**
- * Client-side typed API caller. Mirrors `createApiClient` from `@tbd/shared/api` but always hits
+ * Client-side typed API caller. Mirrors `createApiClient` from `@apogee/shared/api` but always hits
  * `/api/proxy/*` (same origin, no token in the browser) instead of the API directly.
  */
-import { ApiError, DocumentDto, api, buildPath } from '@tbd/shared/api';
-import type { RouteInput, RouteKey, RouteResponse } from '@tbd/shared/api';
-import type { DocumentKind } from '@tbd/shared/domain';
+import { ApiError, DocumentDto, api, buildPath } from '@apogee/shared/api';
+import type { RouteInput, RouteKey, RouteResponse } from '@apogee/shared/api';
+import type { DocumentKind } from '@apogee/shared/domain';
 
 interface ErrorBody {
   code?: string;

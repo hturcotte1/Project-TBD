@@ -1,4 +1,4 @@
-import type { OverviewDto } from '@tbd/shared/api';
+import type { OverviewDto } from '@apogee/shared/api';
 import { DeadlineBadge } from '@/components/layout/deadline-badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, relativeDays } from '@/lib/format';

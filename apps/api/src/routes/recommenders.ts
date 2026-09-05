@@ -1,6 +1,6 @@
 import { eq, inArray } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError, type StudentDb } from '@tbd/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError, type StudentDb } from '@apogee/shared/db';
 import { mapRecommender, type RecommenderAssignmentInput } from '../mappers';
 import { authed, type Handlers } from './contract';
 

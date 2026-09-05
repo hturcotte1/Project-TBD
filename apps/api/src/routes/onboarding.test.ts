@@ -1,4 +1,4 @@
-import { jobIds } from '@tbd/shared/jobs';
+import { jobIds } from '@apogee/shared/jobs';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 

@@ -1,5 +1,5 @@
-import { scoped, browserJobsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
+import { scoped, browserJobsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 

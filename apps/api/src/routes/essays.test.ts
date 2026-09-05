@@ -1,6 +1,6 @@
-import * as S from '@tbd/shared/db/schema';
-import { scoped, type Db } from '@tbd/shared/db';
-import { createTestStudent } from '@tbd/shared/testing';
+import * as S from '@apogee/shared/db/schema';
+import { scoped, type Db } from '@apogee/shared/db';
+import { createTestStudent } from '@apogee/shared/testing';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 

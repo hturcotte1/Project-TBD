@@ -1,5 +1,5 @@
 {
-  "name": "@tbd/browser",
+  "name": "@apogee/browser",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -19,7 +19,7 @@
     "@browserbasehq/stagehand": "^4.0.2",
     "@fastify/formbody": "^9.0.0",
     "@fastify/cookie": "^11.1.0",
-    "@tbd/shared": "workspace:*",
+    "@apogee/shared": "workspace:*",
     "cheerio": "^1.2.0",
     "domhandler": "^5.0.3",
     "fastify": "^5.12.0",

@@ -1,5 +1,5 @@
-import { conversationsRepo, messagesRepo } from '@tbd/shared/db';
-import { jobIds } from '@tbd/shared/jobs';
+import { conversationsRepo, messagesRepo } from '@apogee/shared/db';
+import { jobIds } from '@apogee/shared/jobs';
 import { mapMessage } from '../mappers';
 import { authed, type Handlers } from './contract';
 

@@ -4,8 +4,8 @@
  * of step (e.g. `submitted_at` set on a row whose `status` enum hasn't caught up yet) — so the
  * display status is derived defensively from all three rather than trusting `status` alone.
  */
-import type { RecommenderAssignmentDto } from '@tbd/shared/api';
-import type { RecommenderAssignmentStatus } from '@tbd/shared/domain';
+import type { RecommenderAssignmentDto } from '@apogee/shared/api';
+import type { RecommenderAssignmentStatus } from '@apogee/shared/domain';
 
 export type AssignmentBadgeVariant = 'success' | 'warn' | 'outline';
 

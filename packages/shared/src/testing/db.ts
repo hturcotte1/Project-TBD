@@ -11,7 +11,7 @@ let handle: DbHandle | null = null;
 let migrated = false;
 
 export function testDatabaseUrl(): string {
-  return process.env.DATABASE_URL_TEST ?? 'postgres://postgres:postgres@localhost:5432/tbd_test';
+  return process.env.DATABASE_URL_TEST ?? 'postgres://postgres:postgres@localhost:5432/apogee_test';
 }
 
 export async function getTestDb(): Promise<Db> {

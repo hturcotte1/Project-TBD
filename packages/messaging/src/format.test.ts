@@ -162,17 +162,17 @@ describe('buildVCard', () => {
 
   it('includes optional fields when provided', () => {
     const card = buildVCard({
-      firstName: 'Remy',
+      firstName: 'Vector',
       phone: '+15551234567',
       url: 'https://example.com',
       note: 'Your college agent',
-      org: 'TBD',
+      org: 'Apogee',
     });
-    expect(card).toContain('ORG:TBD\r\n');
+    expect(card).toContain('ORG:Apogee\r\n');
     expect(card).toContain('URL:https://example.com\r\n');
     expect(card).toContain('NOTE:Your college agent\r\n');
-    expect(card).toContain('FN:Remy\r\n');
-    expect(card).toContain('N:;Remy;;;\r\n');
+    expect(card).toContain('FN:Vector\r\n');
+    expect(card).toContain('N:;Vector;;;\r\n');
   });
 
   it('escapes commas, semicolons, and newlines in field values', () => {

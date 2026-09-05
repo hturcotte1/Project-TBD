@@ -1,8 +1,8 @@
-# College application agent
+# Apogee — an autonomous college-application agent
 
 An autonomous, proactive college-application agent for high-school seniors who don't have a paid counselor. It has two faces and one brain:
 
-- **An iMessage agent** ("Remy" by default). The student texts a real phone number. It texts first when something needs attention, reacts with tapbacks, shows a typing indicator, and handles photos in and out.
+- **An iMessage agent** ("Vector" by default). The student texts a real phone number. It texts first when something needs attention, reacts with tapbacks, shows a typing indicator, and handles photos in and out.
 - **A web dashboard**: every school, deadline, checklist item, essay, and recommender, plus a live feed of everything the agent did and saw.
 
 Behind both: a backend that holds deep context on the student from onboarding, logs into their Common App through a cloud browser to read real application state, diffs it against requirements and deadlines every few hours, and decides the student's next action.
@@ -90,7 +90,7 @@ Browser tests need `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` or a Playwright-install
 1. Open the right group file under `packages/shared/src/requirements/dataset/` (`ivy-plus`, `top-privates`, `flagships`, `lacs`, `rolling-safeties`).
 2. Add a `school({...})` entry: `slug` (stable, lowercase), `name`, `aliases` (what students call it), `common_app_member` (+ `portal_url` if not), and `requirements`: `plans` with deadlines, `supplements` with stable `id`s and word limits, `recommendations`, `test_policy`, `css_profile`, `interview_policy`, `midyear_report`, `portfolio`, `application_fee`, `fee_waiver_eligible`.
 3. Mark anything you have not confirmed with `needs_verification: true` at the field level (plans, supplements, css_profile) and at the entry level. Never present a guessed date as fact; the agent verifies flagged values against the school's Common App page during sync and clears the flag.
-4. Run `pnpm -F @tbd/shared test` (the dataset test validates every entry) and `pnpm db:seed` to upsert it.
+4. Run `pnpm -F @apogee/shared test` (the dataset test validates every entry) and `pnpm db:seed` to upsert it.
 
 ## Documents
 

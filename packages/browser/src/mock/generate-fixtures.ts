@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Generates fixtures/generated/*.html once from the mock site's own render functions, so the
 // extractor tests can run against realistic HTML with no browser at all. Run with:
-//   pnpm -F @tbd/browser exec tsx src/mock/generate-fixtures.ts
+//   pnpm -F @apogee/browser exec tsx src/mock/generate-fixtures.ts
 // and check the output into git — CI does not regenerate these on the fly.
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';

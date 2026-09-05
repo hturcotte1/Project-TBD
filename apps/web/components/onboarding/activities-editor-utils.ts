@@ -1,4 +1,4 @@
-import { MAX_ACTIVITIES } from '@tbd/shared/schemas';
+import { MAX_ACTIVITIES } from '@apogee/shared/schemas';
 
 /** Common App's activity description limit, enforced client-side to match `ActivityInput.description`. */
 export const DESCRIPTION_MAX_LENGTH = 150;

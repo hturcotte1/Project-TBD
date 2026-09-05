@@ -1,4 +1,4 @@
-import type { Tapback } from '@tbd/shared/adapters';
+import type { Tapback } from '@apogee/shared/adapters';
 
 /**
  * Strips common markdown syntax down to plain text suitable for an iMessage bubble: headers lose

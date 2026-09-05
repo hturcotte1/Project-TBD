@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError, credentialsRepo, studentsRepo } from '@tbd/shared/db';
-import { normalizePhone } from '@tbd/messaging';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError, credentialsRepo, studentsRepo } from '@apogee/shared/db';
+import { normalizePhone } from '@apogee/messaging';
 import { mapCredentialStatus } from '../mappers';
 import { HttpError } from '../errors';
 import { authed, type Handlers } from './contract';

@@ -10,7 +10,7 @@ export function GmailCard({ enabled }: { enabled: boolean }) {
           <ShieldCheck className="h-4 w-4" /> Gmail
         </CardTitle>
         <CardDescription>
-          {enabled ? 'Read-only access so Remy can catch recommender and portal emails.' : 'Coming soon — read-only access so Remy can catch recommender and portal emails.'}
+          {enabled ? 'Read-only access so Vector can catch recommender and portal emails.' : 'Coming soon — read-only access so Vector can catch recommender and portal emails.'}
         </CardDescription>
       </CardHeader>
       <CardContent>

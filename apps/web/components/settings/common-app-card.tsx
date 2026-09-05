@@ -1,6 +1,6 @@
 'use client';
 
-import type { CredentialStatusDto, SyncStatusDto } from '@tbd/shared/api';
+import type { CredentialStatusDto, SyncStatusDto } from '@apogee/shared/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Loader2, Lock } from 'lucide-react';
 import Link from 'next/link';
@@ -31,7 +31,7 @@ export function CommonAppCard({ credential, syncStatus }: { credential: Credenti
       setPassword('');
       void queryClient.invalidateQueries({ queryKey: ['sync-status'] });
       void queryClient.invalidateQueries({ queryKey: ['settings'] });
-      toast({ title: 'Connecting…', description: 'Remy is logging in and checking your Common App account.' });
+      toast({ title: 'Connecting…', description: 'Vector is logging in and checking your Common App account.' });
     },
     onError: () => toast({ title: 'Could not connect', description: 'Check the email and password and try again.', variant: 'destructive' }),
   });
@@ -68,7 +68,7 @@ export function CommonAppCard({ credential, syncStatus }: { credential: Credenti
           <Lock className="h-4 w-4" /> Common App
         </CardTitle>
         <CardDescription>
-          Your password is encrypted at rest and decrypted only for a few seconds inside Remy&rsquo;s browser worker — to read your account and fill in what you
+          Your password is encrypted at rest and decrypted only for a few seconds inside Vector&rsquo;s browser worker — to read your account and fill in what you
           approve. It is never used to submit anything. Disconnecting deletes it immediately.{' '}
           <Link href="/privacy" className="text-primary underline underline-offset-2">
             Read the full privacy page
@@ -110,7 +110,7 @@ export function CommonAppCard({ credential, syncStatus }: { credential: Credenti
           </div>
         ) : awaitingCode ? (
           <div className="space-y-2 rounded-md border border-border p-3">
-            <p className="text-sm">Common App just sent you a code — text it to Remy or enter it here.</p>
+            <p className="text-sm">Common App just sent you a code — text it to Vector or enter it here.</p>
             <div className="flex gap-2">
               <Input value={code} onChange={(event) => setCode(event.target.value)} placeholder="123456" maxLength={12} />
               <Button type="button" onClick={() => submitCode.mutate()} loading={submitCode.isPending} disabled={!code}>

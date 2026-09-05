@@ -1,6 +1,6 @@
 'use client';
 
-import type { ActivityInput } from '@tbd/shared/schemas';
+import type { ActivityInput } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { CheckCircle2, FileText, Loader2, Upload } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';

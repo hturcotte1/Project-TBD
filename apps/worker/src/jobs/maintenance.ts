@@ -5,12 +5,12 @@
  * `scoped()` — it is allow-listed in the authorization scan.
  */
 import { eq } from 'drizzle-orm';
-import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { ChecklistStudent } from '@tbd/shared/requirements';
-import type { JobPayload } from '@tbd/shared/jobs';
-import { buildAccountExport, deleteAccount, disconnectCommonApp, ensureStudentWideItems, recomputeNextActions } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { ChecklistStudent } from '@apogee/shared/requirements';
+import type { JobPayload } from '@apogee/shared/jobs';
+import { buildAccountExport, deleteAccount, disconnectCommonApp, ensureStudentWideItems, recomputeNextActions } from '@apogee/shared/services';
+import { localDate } from '@apogee/shared/time';
 import type { WorkerDeps } from '../deps';
 
 async function loadChecklistStudent(deps: WorkerDeps, studentId: string): Promise<ChecklistStudent> {

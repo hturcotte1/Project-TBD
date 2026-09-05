@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { scoped, type Db } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { getTestDb, truncateAll } from '@tbd/shared/testing';
+import { scoped, type Db } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { getTestDb, truncateAll } from '@apogee/shared/testing';
 import { loadStudentContext } from '../context';
 import { ScriptedFakeLLM } from '../llm/fake';
 import { executeToolCalls } from '../tools/executor';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createTestStudent } from '@tbd/shared/testing';
+import { createTestStudent } from '@apogee/shared/testing';
 import { authHeader, makeTestApp } from '../testHelpers';
 
 describe('documents', () => {

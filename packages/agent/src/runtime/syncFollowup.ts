@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
-import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { StateChange } from '@tbd/shared/schemas';
-import { isQuietNow } from '@tbd/shared/time';
+import { appendAudit, AuthorizationError, conversationsRepo, messagesRepo, nudgesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { StateChange } from '@apogee/shared/schemas';
+import { isQuietNow } from '@apogee/shared/time';
 import type { AgentDeps } from './deps';
 
 export interface RunSyncFollowupInput {

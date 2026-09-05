@@ -63,28 +63,28 @@ flowchart LR
 
 | Path | Package | Role |
 |---|---|---|
-| `apps/web` | `@tbd/web` | Next.js 15 App Router dashboard. Server components fetch from the API with the student's bearer token. Client components go through `/api/proxy/*`, a route handler that forwards to the API with the same token. Onboarding, dashboard pages, dashboard chat mirror, admin. |
-| `apps/api` | `@tbd/api` | Fastify 5. Every route is declared in the shared API contract (zod in, zod out). Auth (Clerk JWT or dev HMAC token). Sendblue webhook. Dev phone at `/dev/phone`. File uploads. Enqueues jobs; never runs agent or browser work in request handlers. |
-| `apps/worker` | `@tbd/worker` | BullMQ workers for the `browser`, `agent`, `scheduler`, and `maintenance` queues. Hosts the scheduler tick, the proactive engine dispatch, browser jobs (with the verification-code pause/resume state machine), agent runs, document extraction, weekly plans, account deletion. |
-| `packages/shared` | `@tbd/shared` | Single source of truth: drizzle schema + migrations, zod schemas for every JSONB payload, domain types, student-scoped repositories, API contract, job payloads, adapter interfaces, crypto, logger, config, time helpers, **requirements engine**, **checklist builder**, **prioritizer**, **trigger rules**, **nudge policy**, seed data. |
-| `packages/agent` | `@tbd/agent` | LLM adapters (`AnthropicLLM`, `FakeLLM`), `modelForTask()` router, persona + system prompts, tool registry, conversation runtime, essay feedback with ghostwriting boundaries, structured extractors (transcript, activities, narrative interview, photos/emails), untrusted-content wrapping. |
-| `packages/browser` | `@tbd/browser` | `commonapp-map.ts` (every selector and extraction schema), cheerio extractors over captured HTML (testable without a browser), `fullSync`, `fillFields`, `verifyCredentials`, session providers (`Browserbase`, `LocalChromium`), Stagehand fallback extractor, submit/payment guard, mock Common App site, recorded fixtures. |
-| `packages/messaging` | `@tbd/messaging` | `MessagingProvider` interface implementations: `SendblueProvider` and `FakeMessagingProvider` (in-memory + DB-backed thread for `/dev/phone`). Webhook parsing, signature verification, vCard. |
+| `apps/web` | `@apogee/web` | Next.js 15 App Router dashboard. Server components fetch from the API with the student's bearer token. Client components go through `/api/proxy/*`, a route handler that forwards to the API with the same token. Onboarding, dashboard pages, dashboard chat mirror, admin. |
+| `apps/api` | `@apogee/api` | Fastify 5. Every route is declared in the shared API contract (zod in, zod out). Auth (Clerk JWT or dev HMAC token). Sendblue webhook. Dev phone at `/dev/phone`. File uploads. Enqueues jobs; never runs agent or browser work in request handlers. |
+| `apps/worker` | `@apogee/worker` | BullMQ workers for the `browser`, `agent`, `scheduler`, and `maintenance` queues. Hosts the scheduler tick, the proactive engine dispatch, browser jobs (with the verification-code pause/resume state machine), agent runs, document extraction, weekly plans, account deletion. |
+| `packages/shared` | `@apogee/shared` | Single source of truth: drizzle schema + migrations, zod schemas for every JSONB payload, domain types, student-scoped repositories, API contract, job payloads, adapter interfaces, crypto, logger, config, time helpers, **requirements engine**, **checklist builder**, **prioritizer**, **trigger rules**, **nudge policy**, seed data. |
+| `packages/agent` | `@apogee/agent` | LLM adapters (`AnthropicLLM`, `FakeLLM`), `modelForTask()` router, persona + system prompts, tool registry, conversation runtime, essay feedback with ghostwriting boundaries, structured extractors (transcript, activities, narrative interview, photos/emails), untrusted-content wrapping. |
+| `packages/browser` | `@apogee/browser` | `commonapp-map.ts` (every selector and extraction schema), cheerio extractors over captured HTML (testable without a browser), `fullSync`, `fillFields`, `verifyCredentials`, session providers (`Browserbase`, `LocalChromium`), Stagehand fallback extractor, submit/payment guard, mock Common App site, recorded fixtures. |
+| `packages/messaging` | `@apogee/messaging` | `MessagingProvider` interface implementations: `SendblueProvider` and `FakeMessagingProvider` (in-memory + DB-backed thread for `/dev/phone`). Webhook parsing, signature verification, vCard. |
 
-Everything imports types from `@tbd/shared`. No type is defined twice.
+Everything imports types from `@apogee/shared`. No type is defined twice.
 
 ## Request and job flow
 
 ### Inbound iMessage
 1. Sendblue POSTs to `POST /webhooks/sendblue`. The API verifies the signature, records the provider message id in `webhook_events` (idempotency), stores the inbound `messages` row (downloading media into storage as a `documents` row), and enqueues `agent:inbound_message`.
-2. The worker runs `runConversationTurn()` from `@tbd/agent`: it loads full context (profile, narrative summary, school list, open items, next actions, last 30 messages, pending approvals), calls the LLM with the tool registry, executes tools against student-scoped repos, and sends outbound messages through `MessagingProvider` (typing indicator on, message, tapback where appropriate).
+2. The worker runs `runConversationTurn()` from `@apogee/agent`: it loads full context (profile, narrative summary, school list, open items, next actions, last 30 messages, pending approvals), calls the LLM with the tool registry, executes tools against student-scoped repos, and sends outbound messages through `MessagingProvider` (typing indicator on, message, tapback where appropriate).
 3. Every run is recorded in `agent_runs`, every message in `messages`, every side effect in `audit_log`.
 
 ### Dashboard chat
 Same path. The web app calls `POST /conversations/:kind/messages`; the API stores the message with `channel=dashboard` and enqueues the same job. The dashboard polls `GET /conversations/:kind/messages?after=` for the reply. iMessage and dashboard share one `main` conversation per student; the narrative interview is the `interview` conversation.
 
 ### Scheduled and proactive
-A repeatable `scheduler:tick` job runs every 5 minutes. For each active student it calls the deterministic `evaluateTriggers(state, now)` from `@tbd/shared/proactive`, which returns a list of trigger events (sync due, deadline countdown, recommender inactivity, essay staleness, morning plan, weekly plan) keyed by a stable `triggerKey`. The tick enqueues `browser:full_sync` and `agent:proactive_run` jobs with deterministic job ids so re-ticks never duplicate. The proactive run computes next actions, applies the nudge policy (quiet hours, daily caps by intensity, acknowledged/snoozed suppression via the `nudges` table), asks the LLM to phrase the top items, and sends.
+A repeatable `scheduler:tick` job runs every 5 minutes. For each active student it calls the deterministic `evaluateTriggers(state, now)` from `@apogee/shared/proactive`, which returns a list of trigger events (sync due, deadline countdown, recommender inactivity, essay staleness, morning plan, weekly plan) keyed by a stable `triggerKey`. The tick enqueues `browser:full_sync` and `agent:proactive_run` jobs with deterministic job ids so re-ticks never duplicate. The proactive run computes next actions, applies the nudge policy (quiet hours, daily caps by intensity, acknowledged/snoozed suppression via the `nudges` table), asks the LLM to phrase the top items, and sends.
 
 ### Sync and diff
 `browser:full_sync` opens a session (Browserbase in prod, local Chromium in dev/`MOCK_COMMONAPP`), logs in with decrypted credentials (decrypted only inside the worker, only for the duration of the job), visits every page in `commonapp-map.ts`, captures HTML + one screenshot per page, runs the extractors, stores a `common_app_snapshots` row, diffs it against the previous snapshot into `StateChange[]`, rebuilds `application_items` through `buildChecklist` + `reconcile`, recomputes `next_actions`, and enqueues `agent:sync_followup` if anything changed that the student should hear about.
@@ -103,7 +103,7 @@ Key tables: `students`, `student_profiles`, `student_narratives`, `activities`, 
 
 ## Adapters (every vendor sits behind one)
 
-| Interface (in `@tbd/shared`) | Real | Fake |
+| Interface (in `@apogee/shared`) | Real | Fake |
 |---|---|---|
 | `LLMProvider` | `AnthropicLLM` (`@anthropic-ai/sdk`) | `FakeLLM` (scripted + rule-based) |
 | `MessagingProvider` | `SendblueProvider` | `FakeMessagingProvider` (+ `/dev/phone`) |
@@ -128,7 +128,7 @@ Key tables: `students`, `student_profiles`, `student_narratives`, `activities`, 
 
 ## Model routing
 
-`modelForTask(task)` in `@tbd/agent`: conversation, extraction, prioritization phrasing → `LLM_DEFAULT_MODEL` (default `claude-sonnet-5`); essay feedback, weekly plan, ambiguous state reconciliation → `LLM_STRONG_MODEL` (default `claude-opus-5`). Every extraction and decision uses structured outputs (`messages.parse` + `zodOutputFormat`) or tool use; free text is never parsed for state.
+`modelForTask(task)` in `@apogee/agent`: conversation, extraction, prioritization phrasing → `LLM_DEFAULT_MODEL` (default `claude-sonnet-5`); essay feedback, weekly plan, ambiguous state reconciliation → `LLM_STRONG_MODEL` (default `claude-opus-5`). Every extraction and decision uses structured outputs (`messages.parse` + `zodOutputFormat`) or tool use; free text is never parsed for state.
 
 ## Local development
 

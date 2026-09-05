@@ -145,7 +145,7 @@ export const COMMONAPP_MAP = {
     },
     notes:
       'Common App tab, "Profile" section. Field names (`first_name`/`last_name`/`preferred_name`) ' +
-      'match the `profile.*` paths @tbd/shared\'s `buildProfileFillPayload` already emits — keep ' +
+      'match the `profile.*` paths @apogee/shared\'s `buildProfileFillPayload` already emits — keep ' +
       'them in sync. Only the name fields are wired for writing (level B never needs to write ' +
       'demographics or contact info). VERIFY: production splits Profile into several sub-pages ' +
       '(Personal Info / Contact Info / Demographics); confirm which one holds legal/preferred name.',
@@ -224,7 +224,7 @@ export const COMMONAPP_MAP = {
     },
     notes:
       'Common App tab, "Activities" section: up to 10 entries, each with the fields in ' +
-      '@tbd/shared ActivityInput. The mock exposes one add/edit form that upserts by a hidden ' +
+      '@apogee/shared ActivityInput. The mock exposes one add/edit form that upserts by a hidden ' +
       '"index" field (0-based; index === current length appends). VERIFY: production Common App ' +
       'edits one activity at a time via a modal or a dedicated "/activities/:n" route rather than ' +
       'an inline form — confirm the real write flow before enabling fillFields against it.',
@@ -243,7 +243,7 @@ export const COMMONAPP_MAP = {
     notes:
       'Common App tab, "Writing" section: the personal essay, one of seven fixed prompts, 650-word ' +
       'limit in production (the mock does not enforce a limit). Field names match the `writing.*` ' +
-      'paths `buildPersonalEssayFillPayload` in @tbd/shared emits (`writing.personal_essay` -> ' +
+      'paths `buildPersonalEssayFillPayload` in @apogee/shared emits (`writing.personal_essay` -> ' +
       'essay_text, `writing.prompt_index` -> prompt_index). VERIFY: production may show the prompt ' +
       'as a committed, non-editable choice rather than a <select> — confirm before writing it.',
   },
@@ -269,7 +269,7 @@ export const COMMONAPP_MAP = {
       'Per-college "Questions" tab: school-specific short questions (intended major, program ' +
       'interest, additional info). Field names (`q_intended_major`, `q_additional_info`) match the ' +
       '"questions.q_intended_major"-style path the FillFieldsPayload doc-comment in ' +
-      '@tbd/shared/schemas/approvals.ts illustrates. The mock only implements the two fields common ' +
+      '@apogee/shared/schemas/approvals.ts illustrates. The mock only implements the two fields common ' +
       'to most member colleges. VERIFY: production questions differ per college and are fetched ' +
       'from a college-specific question bank — this selector set is illustrative, not exhaustive; a ' +
       'real integration needs a per-college field map, not one fixed shape.',

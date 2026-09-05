@@ -10,7 +10,7 @@ import { type NextFetchEvent, type NextMiddleware, type NextRequest, NextRespons
  * Clerk keys configured.
  */
 const AUTH_MODE = process.env.AUTH_MODE === 'clerk' ? 'clerk' : 'dev';
-const DEV_SESSION_COOKIE = 'tbd_dev_session';
+const DEV_SESSION_COOKIE = 'apogee_dev_session';
 
 const PUBLIC_PREFIXES = ['/dev', '/sign-in', '/sign-up', '/privacy', '/api/proxy', '/api/vcard'];
 

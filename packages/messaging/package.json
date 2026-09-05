@@ -1,5 +1,5 @@
 {
-  "name": "@tbd/messaging",
+  "name": "@apogee/messaging",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,6 +13,6 @@
     "test": "vitest run",
     "clean": "rm -rf dist .turbo"
   },
-  "dependencies": { "@tbd/shared": "workspace:*", "ioredis": "^5.11.0", "zod": "^3.25.76" },
+  "dependencies": { "@apogee/shared": "workspace:*", "ioredis": "^5.11.0", "zod": "^3.25.76" },
   "devDependencies": { "@types/node": "^22.15.0", "eslint": "^9.39.0", "typescript": "^5.9.3", "vitest": "^3.2.7" }
 }

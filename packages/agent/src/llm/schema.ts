@@ -5,7 +5,7 @@ import { LLMExtractionError } from './errors';
 
 /**
  * `LLMExtractRequest<T>.schema` is typed `z.ZodType<T>`, whose `Input` type parameter defaults to
- * `T` itself (fully required). Every schema in `@tbd/shared/schemas` leans on `.default()` for
+ * `T` itself (fully required). Every schema in `@apogee/shared/schemas` leans on `.default()` for
  * most fields, so its real Input type is narrower than its Output type `T` — TS then refuses the
  * assignment even though `.parse`/`.safeParse` behave exactly as expected at runtime. This cast
  * only affects the type-level `Input` parameter; it changes nothing about how the schema parses.
@@ -23,7 +23,7 @@ export function toJsonSchema(schema: z.ZodTypeAny): Record<string, unknown> {
  * A zod-v3-compatible stand-in for `@anthropic-ai/sdk/helpers/zod`'s `zodOutputFormat`.
  *
  * That SDK helper calls zod v4's `z.toJSONSchema()` on the schema you pass it, which reads the
- * schema's internal `_zod` representation. `@tbd/shared`'s schemas are built with the classic
+ * schema's internal `_zod` representation. `@apogee/shared`'s schemas are built with the classic
  * "zod" package (v3.25, the default `zod` export — see `packages/shared/package.json`), whose
  * schema objects use the older `_def` representation and are not `instanceof` zod v4's `ZodType`.
  * Calling the SDK helper on them throws at runtime. `zod-to-json-schema` (already a dependency

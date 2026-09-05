@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { scoped, type Db } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { getTestDb, truncateAll } from '@tbd/shared/testing';
-import type { TriggerEvent } from '@tbd/shared/schemas';
+import { scoped, type Db } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { getTestDb, truncateAll } from '@apogee/shared/testing';
+import type { TriggerEvent } from '@apogee/shared/schemas';
 import { factsMentioned, templateForTrigger } from '../integrations/shared-engines';
 import { ScriptedFakeLLM } from '../llm/fake';
 import { buildTestDeps } from '../testing/deps';
@@ -12,7 +12,7 @@ import { seedDemoStudent } from '../testing/seed';
 import { phraseNudges, sendProactive } from './proactive';
 
 // Fact keys ("recommender", "school", "days_since_invite") match the real
-// `@tbd/shared/proactive` templateForTrigger/factsMentioned contract for this trigger kind.
+// `@apogee/shared/proactive` templateForTrigger/factsMentioned contract for this trigger kind.
 function makeTrigger(overrides: Partial<TriggerEvent> = {}): TriggerEvent {
   return {
     kind: 'recommender_inactivity',

@@ -5,9 +5,9 @@ import { randomUUID } from 'node:crypto';
 import { Queue, Worker, type Job } from 'bullmq';
 import Redis from 'ioredis';
 import { afterAll, describe, expect, it } from 'vitest';
-import { scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { JobName } from '@tbd/shared/jobs';
+import { scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { JobName } from '@apogee/shared/jobs';
 import { dispatch } from './dispatch';
 import { closeTestDb, setupWorkerTest } from './test-helpers';
 
@@ -20,7 +20,7 @@ describe('BullMQ smoke test', () => {
     const harness = await setupWorkerTest();
     const redisUrl = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
     const connection = new Redis(redisUrl, { maxRetriesPerRequest: null });
-    const prefix = `tbd-worker-smoke-${randomUUID().slice(0, 8)}`;
+    const prefix = `apogee-worker-smoke-${randomUUID().slice(0, 8)}`;
     const queue = new Queue('maintenance', { connection, prefix });
     const worker = new Worker(
       'maintenance',

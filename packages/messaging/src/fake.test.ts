@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { WebhookRequest } from '@tbd/shared/adapters';
+import type { WebhookRequest } from '@apogee/shared/adapters';
 import { FakeMessagingProvider } from './fake';
 
 function defined<T>(value: T | undefined): T {

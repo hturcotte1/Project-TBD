@@ -1,5 +1,5 @@
 {
-  "name": "@tbd/worker",
+  "name": "@apogee/worker",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,10 +13,10 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
-    "@tbd/agent": "workspace:*",
-    "@tbd/browser": "workspace:*",
-    "@tbd/messaging": "workspace:*",
-    "@tbd/shared": "workspace:*",
+    "@apogee/agent": "workspace:*",
+    "@apogee/browser": "workspace:*",
+    "@apogee/messaging": "workspace:*",
+    "@apogee/shared": "workspace:*",
     "bullmq": "^5.81.0",
     "drizzle-orm": "^0.45.0",
     "ioredis": "^5.11.0",

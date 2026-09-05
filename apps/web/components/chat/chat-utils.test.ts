@@ -1,4 +1,4 @@
-import type { MessageDto } from '@tbd/shared/api';
+import type { MessageDto } from '@apogee/shared/api';
 import { describe, expect, it } from 'vitest';
 import { groupMessages, reactionsByTarget, shouldShowTypingIndicator } from '@/components/chat/chat-utils';
 

@@ -1,4 +1,4 @@
-import type { ApplicationPlan } from '@tbd/shared/domain';
+import type { ApplicationPlan } from '@apogee/shared/domain';
 
 /** Real-world Common App plan rules a student can accidentally violate while building their list. */
 export function detectPlanConflicts(plans: ApplicationPlan[]): string[] {

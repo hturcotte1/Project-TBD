@@ -1,13 +1,13 @@
 /**
- * Logs a browser job into Common App: decrypts stored credentials, drives `@tbd/browser`'s
+ * Logs a browser job into Common App: decrypts stored credentials, drives `@apogee/browser`'s
  * `login()`, and implements the verification-code pause/resume state machine (DECISIONS.md #8) —
  * the job moves to `awaiting_verification_code`, texts the student once, and waits on the
  * `VerificationCodeChannel` for up to `deps.verificationTimeoutMs`. On success the session's
  * cookies are re-encrypted and stored so the next job can skip straight to a remembered device.
  */
 import { UnrecoverableError } from 'bullmq';
-import type { BrowserSessionHandle } from '@tbd/browser';
-import { appendAudit, browserJobsRepo, conversationsRepo, credentialsRepo, messagesRepo, scoped, studentsRepo } from '@tbd/shared/db';
+import type { BrowserSessionHandle } from '@apogee/browser';
+import { appendAudit, browserJobsRepo, conversationsRepo, credentialsRepo, messagesRepo, scoped, studentsRepo } from '@apogee/shared/db';
 import type { WorkerDeps } from '../../deps';
 
 export interface LoginForJobResult {

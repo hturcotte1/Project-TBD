@@ -1,11 +1,11 @@
 /** Every adapter a route handler needs, injected so tests can supply fakes/doubles. */
 import type { Redis } from 'ioredis';
-import type { MessagingProvider, StorageProvider, VerificationCodeChannel } from '@tbd/shared/adapters';
-import type { Env } from '@tbd/shared/config';
-import type { Db } from '@tbd/shared/db';
-import type { JobEnqueuer } from '@tbd/shared/jobs';
-import type { Logger } from '@tbd/shared/logging';
-import type { Clock } from '@tbd/shared/time';
+import type { MessagingProvider, StorageProvider, VerificationCodeChannel } from '@apogee/shared/adapters';
+import type { Env } from '@apogee/shared/config';
+import type { Db } from '@apogee/shared/db';
+import type { JobEnqueuer } from '@apogee/shared/jobs';
+import type { Logger } from '@apogee/shared/logging';
+import type { Clock } from '@apogee/shared/time';
 
 export interface ApiDeps {
   db: Db;

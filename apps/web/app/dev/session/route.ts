@@ -1,5 +1,5 @@
-import { loadEnv } from '@tbd/shared/config';
-import { createDevToken } from '@tbd/shared/auth';
+import { loadEnv } from '@apogee/shared/config';
+import { createDevToken } from '@apogee/shared/auth';
 import { type NextRequest, NextResponse } from 'next/server';
 import { AUTH_MODE, DEV_SESSION_COOKIE } from '@/lib/auth';
 

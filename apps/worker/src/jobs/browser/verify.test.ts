@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import * as S from '@tbd/shared/db/schema';
-import { browserJobsRepo, credentialsRepo, scoped } from '@tbd/shared/db';
-import type { BrowserJobResult } from '@tbd/shared/schemas';
+import * as S from '@apogee/shared/db/schema';
+import { browserJobsRepo, credentialsRepo, scoped } from '@apogee/shared/db';
+import type { BrowserJobResult } from '@apogee/shared/schemas';
 import { dispatch } from '../../dispatch';
 import { closeTestDb, setupWorkerTest, type WorkerTestHarness } from '../../test-helpers';
 

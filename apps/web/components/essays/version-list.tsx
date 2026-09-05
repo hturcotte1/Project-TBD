@@ -1,6 +1,6 @@
 'use client';
 
-import type { EssayDetailDto } from '@tbd/shared/api';
+import type { EssayDetailDto } from '@apogee/shared/api';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';

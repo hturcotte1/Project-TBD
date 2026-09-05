@@ -1,7 +1,7 @@
 'use client';
 
-import type { TimelineEntryDto } from '@tbd/shared/api';
-import { localDate } from '@tbd/shared/time';
+import type { TimelineEntryDto } from '@apogee/shared/api';
+import { localDate } from '@apogee/shared/time';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';

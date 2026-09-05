@@ -1,6 +1,6 @@
 'use client';
 
-import type { MessageDto } from '@tbd/shared/api';
+import type { MessageDto } from '@apogee/shared/api';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { ApprovalsBanner } from '@/components/chat/approvals-banner';

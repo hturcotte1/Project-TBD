@@ -1,4 +1,4 @@
-import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@tbd/shared/domain';
+import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@apogee/shared/domain';
 import type { MockAccountState, MockActivityEntry, MockCollege, MockRecommender, MockSupplement } from './state';
 
 /** HTML-escapes text before it is interpolated into a template literal. */

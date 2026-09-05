@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CommonAppSnapshot } from '@tbd/shared/schemas';
+import { CommonAppSnapshot } from '@apogee/shared/schemas';
 import { diffSnapshots } from './diff';
 
 function baseSnapshot(): CommonAppSnapshot {

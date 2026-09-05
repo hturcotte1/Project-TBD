@@ -1,7 +1,7 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
-import { applicationCommonAppUrl } from '@tbd/shared/requirements';
-import { daysUntil } from '@tbd/shared/time';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
+import { applicationCommonAppUrl } from '@apogee/shared/requirements';
+import { daysUntil } from '@apogee/shared/time';
 import { mapSchool } from './school';
 
 export function mapApplicationItem(row: S.ApplicationItem): D.ApplicationItemDto {

@@ -1,8 +1,8 @@
 'use client';
 
-import type { ApplicationDetailDto } from '@tbd/shared/api';
-import type { ApplicationPlan } from '@tbd/shared/domain';
-import { APPLICATION_PLANS } from '@tbd/shared/domain';
+import type { ApplicationDetailDto } from '@apogee/shared/api';
+import type { ApplicationPlan } from '@apogee/shared/domain';
+import { APPLICATION_PLANS } from '@apogee/shared/domain';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -86,7 +86,7 @@ export function ApplicationHeader({ application, timezone }: { application: Appl
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Remove {application.school.name}?</DialogTitle>
-            <DialogDescription>This deletes its checklist and stops Remy from tracking it. You can add it back later, but progress won&rsquo;t carry over.</DialogDescription>
+            <DialogDescription>This deletes its checklist and stops Vector from tracking it. You can add it back later, but progress won&rsquo;t carry over.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setConfirmOpen(false)}>

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { appendAudit, messagesRepo, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
+import { appendAudit, messagesRepo, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
 import type {
   LLMAssistantContent,
   LLMMessage,
@@ -9,9 +9,9 @@ import type {
   LLMToolResultBlock,
   LLMToolUseBlock,
   LLMUserContent,
-} from '@tbd/shared/adapters';
-import { PhotoExtraction, type ToolCallRecord } from '@tbd/shared/schemas';
-import type { ConversationKind } from '@tbd/shared/domain';
+} from '@apogee/shared/adapters';
+import { PhotoExtraction, type ToolCallRecord } from '@apogee/shared/schemas';
+import type { ConversationKind } from '@apogee/shared/domain';
 import { loadStudentContext } from '../context';
 import { forExtraction } from '../llm/schema';
 import { buildSystemPrompt } from '../persona';

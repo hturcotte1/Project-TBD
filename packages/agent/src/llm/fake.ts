@@ -26,8 +26,8 @@ import type {
   LLMGenerateResponse,
   LLMMessage,
   LLMProvider,
-} from '@tbd/shared/adapters';
-import { type EssayFeedback, PhotoExtraction, type ResumeExtraction, type StudentNarrative, type TranscriptExtraction, type WeeklyPlan } from '@tbd/shared/schemas';
+} from '@apogee/shared/adapters';
+import { type EssayFeedback, PhotoExtraction, type ResumeExtraction, type StudentNarrative, type TranscriptExtraction, type WeeklyPlan } from '@apogee/shared/schemas';
 import { SCHOOL_BY_SLUG } from '../integrations/shared-engines';
 import { ghostwritingRefusalText, isGhostwritingRequest } from '../runtime/essay';
 import { readUntrustedBlock } from '../runtime/untrusted';
@@ -216,7 +216,7 @@ function decidePhoto(ctx: ConversationCtx): Decision {
       ],
     };
   }
-  return { text: 'Thanks for sending that — got it.' };
+  return { text: 'Got it. Thanks for sending that.' };
 }
 
 function decideStatus(ctx: ConversationCtx, text: string): Decision {
@@ -236,7 +236,7 @@ function decideStressed(ctx: ConversationCtx): Decision {
   const prior = ctx.toolResults.get('listNextActions');
   if (!prior || prior.length === 0) return { toolCalls: [{ name: 'listNextActions', input: { limit: 3 } }] };
   const firstAction = (prior[0]?.content ?? '').split(';')[0]?.trim() || 'taking a five-minute break';
-  return { text: `Totally hear you — this is a lot. Just do one small thing: ${firstAction}.` };
+  return { text: `Understood — it is a lot. One small thing, and only that today: ${firstAction}.` };
 }
 
 const GENERIC_PHRASES = ['ever since i was young', 'passion', "in today's society", 'little did i know', 'i learned that', 'shaped who i am today'];
@@ -268,7 +268,7 @@ function decideConversation(ctx: ConversationCtx): Decision {
   if (ctx.hasImage) return decidePhoto(ctx);
 
   if (/\b(leave me alone|stop texting me)\b[\s\S]*\btonight\b/i.test(lower)) {
-    return toolThenRespond(ctx.toolResults, 'snoozeNotifications', { until: 'tomorrow_morning' }, () => "You got it — I'll leave you alone tonight.");
+    return toolThenRespond(ctx.toolResults, 'snoozeNotifications', { until: 'tomorrow_morning' }, () => "Done. Nothing more from me until the morning.");
   }
 
   if (/\b(stressed|overwhelmed)\b/i.test(lower)) return decideStressed(ctx);
@@ -309,7 +309,7 @@ function decideConversation(ctx: ConversationCtx): Decision {
     return toolThenRespond(ctx.toolResults, 'markItemDone', { query: extractDoneQuery(text) }, (r) => r[0]?.content ?? 'Marked that done.');
   }
 
-  return { text: 'Got it. Want your next actions, or a status update on a specific school?' };
+  return { text: 'Got it. Ask for your next actions, or for the status of a specific school.' };
 }
 
 function toGenerateResponse(decision: Decision): LLMGenerateResponse {
@@ -529,7 +529,7 @@ export class RuleBasedFakeLLM implements LLMProvider {
     const turn = findLatestStudentTurn(req.messages);
     const allCovered = /every topic has at least something captured/i.test(req.system);
     if (allCovered) {
-      return toGenerateResponse({ text: "I think I've got a real sense of you now. Want to wrap up here, or is there anything else on your mind?" });
+      return toGenerateResponse({ text: "I have a real sense of you now. Wrap up here, or is there anything else on your mind?" });
     }
     const nextMatch = /Next topic to ask about:\s*(.+)/i.exec(req.system);
     const nextPrompt = nextMatch?.[1]?.trim() || 'Tell me more about yourself.';

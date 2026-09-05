@@ -1,5 +1,5 @@
-import type { Env } from '@tbd/shared/config';
-import type { LLMTask } from '@tbd/shared/adapters';
+import type { Env } from '@apogee/shared/config';
+import type { LLMTask } from '@apogee/shared/adapters';
 
 /** Tasks routed to the strong model (DECISIONS.md #11): essay feedback, weekly plans, reconciling ambiguous state. */
 const STRONG_TASKS: ReadonlySet<LLMTask> = new Set<LLMTask>(['essay_feedback', 'weekly_plan', 'reconcile']);

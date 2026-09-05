@@ -1,9 +1,9 @@
 'use client';
 
-import type { ApplicationItemDto } from '@tbd/shared/api';
-import type { ItemStatus } from '@tbd/shared/domain';
-import { ITEM_STATUSES } from '@tbd/shared/domain';
-import { daysUntil } from '@tbd/shared/time';
+import type { ApplicationItemDto } from '@apogee/shared/api';
+import type { ItemStatus } from '@apogee/shared/domain';
+import { ITEM_STATUSES } from '@apogee/shared/domain';
+import { daysUntil } from '@apogee/shared/time';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -131,7 +131,7 @@ export function ChecklistItemRow({ item, timezone, now = new Date() }: { item: A
 
       {item.notes ? <p className="rounded-md bg-muted px-2 py-1.5 text-xs">{item.notes}</p> : null}
 
-      {ESSAY_KINDS.has(item.kind) && item.essay_id === null ? <p className="text-xs text-muted-foreground">Not linked to an essay yet — it will connect automatically once Remy sees it on Common App.</p> : null}
+      {ESSAY_KINDS.has(item.kind) && item.essay_id === null ? <p className="text-xs text-muted-foreground">Not linked to an essay yet — it will connect automatically once Vector sees it on Common App.</p> : null}
     </div>
   );
 }

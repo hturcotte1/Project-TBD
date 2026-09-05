@@ -7,8 +7,8 @@ FROM base AS build
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc turbo.json tsconfig.base.json ./
 COPY packages ./packages
 COPY apps/api ./apps/api
-RUN pnpm install --frozen-lockfile --filter @tbd/api... 
-RUN pnpm --filter @tbd/api build
+RUN pnpm install --frozen-lockfile --filter @apogee/api... 
+RUN pnpm --filter @apogee/api build
 
 FROM base AS runtime
 ENV NODE_ENV=production

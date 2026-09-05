@@ -1,6 +1,6 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
-import { daysUntil } from '@tbd/shared/time';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
+import { daysUntil } from '@apogee/shared/time';
 
 export function mapEssayDraft(row: S.EssayDraft): D.EssayDraftDto {
   return { id: row.id, version: row.version, content: row.content, word_count: row.wordCount, source: row.source, created_at: row.createdAt.toISOString() };

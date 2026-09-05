@@ -78,7 +78,7 @@ export function renderDevPhonePage(defaultPhone: string): string {
       var bubble = document.createElement('div');
       bubble.className = 'bubble';
       if (m.kind === 'reaction') {
-        bubble.textContent = (isOut ? 'Remy' : 'You') + ' reacted ' + (m.reaction || '');
+        bubble.textContent = (isOut ? 'Vector' : 'You') + ' reacted ' + (m.reaction || '');
       } else {
         if (m.body) bubble.appendChild(document.createTextNode(m.body));
         (m.media || []).forEach(function (media) {

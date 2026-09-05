@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { browserJobsRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import type { MemoryJobEnqueuer } from '@tbd/shared/jobs';
+import { browserJobsRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import type { MemoryJobEnqueuer } from '@apogee/shared/jobs';
 import { dispatch } from '../../dispatch';
 import { closeTestDb, setupWorkerTest } from '../../test-helpers';
 

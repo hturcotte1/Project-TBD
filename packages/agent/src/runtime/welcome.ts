@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
-import { appendAudit, conversationsRepo, messagesRepo, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
+import { appendAudit, conversationsRepo, messagesRepo, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
 import { AGENT_NAME } from '../persona';
 import { loadStudentContext } from '../context';
 import type { AgentDeps } from './deps';
@@ -20,9 +20,15 @@ export async function sendWelcome(deps: AgentDeps, input: SendWelcomeInput): Pro
   if (!ctx.student.phoneE164) return;
 
   const nearest = [...ctx.applications].sort((a, b) => (a.daysRemaining ?? Infinity) - (b.daysRemaining ?? Infinity))[0];
-  const deadlineNote = nearest ? ` Your nearest deadline is ${nearest.school.name}, ${nearest.application.deadline} — ${nearest.daysRemaining} days out.` : '';
-  const preferredName = ctx.student.preferredName || ctx.student.firstName;
-  const text = `hey${preferredName ? ` ${preferredName}` : ''} — it's ${AGENT_NAME}. I'm going to stick with you through this whole application process.${deadlineNote}`;
+  // The one dependency most worth naming: a recommender invited for the nearest school who has not submitted.
+  const pendingRec = nearest
+    ? ctx.recommenders.find((r) => r.assignments.some((a) => a.assignment.applicationId === nearest.application.id && a.assignment.status === 'invited'))
+    : undefined;
+  const firstThing = nearest
+    ? ` — first thing: ${nearest.school.name} ${nearest.application.plan} is in ${nearest.daysRemaining} days${pendingRec ? ` and ${pendingRec.recommender.name} hasn't submitted your rec yet` : ''}.`
+    : '.';
+  const connected = ctx.lastSyncedAt !== null;
+  const text = `It's ${AGENT_NAME}. ${connected ? "I'm connected to your Common App and I'll" : "Once your Common App is connected I'll"} text you when something needs you${firstThing}`;
 
   const conversation = await conversationsRepo.getOrCreate(sdb, 'main');
   const result = await deps.messaging.send({ to: ctx.student.phoneE164, body: text });
@@ -38,7 +44,7 @@ export async function sendWelcome(deps: AgentDeps, input: SendWelcomeInput): Pro
   try {
     // Sendblue can only attach media it can fetch, so the real provider gets the API's hosted vCard
     // URL; the fake provider accepts the vCard text directly.
-    const card = deps.messaging.name === 'sendblue' ? `${deps.env.API_URL.replace(/\/$/, '')}/public/agent.vcf` : vcard(AGENT_NAME, deps.messaging.phoneNumber);
+    const card = deps.messaging.name === 'sendblue' ? `${deps.env.API_URL.replace(/\/$/, '')}/public/vector.vcf` : vcard(AGENT_NAME, deps.messaging.phoneNumber);
     await deps.messaging.sendContactCard(ctx.student.phoneE164, card);
   } catch (err) {
     deps.logger.warn({ err: err instanceof Error ? err.message : String(err) }, 'welcome.contact_card_failed');

@@ -1,4 +1,4 @@
-import type { ApplicationDto } from '@tbd/shared/api';
+import type { ApplicationDto } from '@apogee/shared/api';
 import { describe, expect, it } from 'vitest';
 import { groupApplications, isSubmittedApplication, sortApplications } from '@/components/schools/sort';
 

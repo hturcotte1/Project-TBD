@@ -58,7 +58,7 @@ export function InterviewChat({ timezone }: { timezone: string }) {
         <div className="flex flex-col gap-3">
           {messages.length === 0 && !messagesQuery.isPending ? (
             <p className="py-8 text-center text-sm text-muted-foreground">
-              Remy will start with an easy question. Say hi, or just start typing whatever comes to mind.
+              Vector will start with an easy question. Say hi, or just start typing whatever comes to mind.
             </p>
           ) : null}
           {messages.map((message) => (

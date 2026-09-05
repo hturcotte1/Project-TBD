@@ -1,24 +1,24 @@
 /**
- * `WorkerDeps`: every adapter a job handler needs. Extends `@tbd/agent`'s `AgentDeps` (db, llm,
+ * `WorkerDeps`: every adapter a job handler needs. Extends `@apogee/agent`'s `AgentDeps` (db, llm,
  * messaging, enqueuer, storage, codeChannel, clock, logger, env) with the browser-automation
  * pieces only the worker uses. `createWorkerDeps` wires the real adapters for `src/index.ts`;
  * tests build a `WorkerDeps` by hand from fakes instead of calling this.
  */
 import Redis from 'ioredis';
-import type { AgentDeps } from '@tbd/agent';
-import { createLLMProvider } from '@tbd/agent';
-import type { BrowserSessionProvider, CommonAppClient, MockCommonAppHandle } from '@tbd/browser';
-import { createBrowserSessionProvider, createCommonAppClient, createFallbackExtractor, defaultMockState, startMockCommonApp } from '@tbd/browser';
-import { createDb } from '@tbd/shared/db';
-import { LocalDiskStorageProvider, RedisVerificationCodeChannel, S3StorageProvider } from '@tbd/shared/adapters';
-import type { StorageProvider } from '@tbd/shared/adapters';
-import { BullJobEnqueuer } from '@tbd/shared/jobs';
-import type { Env } from '@tbd/shared/config';
-import { parseKeyRing } from '@tbd/shared/crypto';
-import type { KeyRing } from '@tbd/shared/crypto';
-import { SystemClock } from '@tbd/shared/time';
-import type { Logger } from '@tbd/shared/logging';
-import { createMessagingProvider } from '@tbd/messaging';
+import type { AgentDeps } from '@apogee/agent';
+import { createLLMProvider } from '@apogee/agent';
+import type { BrowserSessionProvider, CommonAppClient, MockCommonAppHandle } from '@apogee/browser';
+import { createBrowserSessionProvider, createCommonAppClient, createFallbackExtractor, defaultMockState, startMockCommonApp } from '@apogee/browser';
+import { createDb } from '@apogee/shared/db';
+import { LocalDiskStorageProvider, RedisVerificationCodeChannel, S3StorageProvider } from '@apogee/shared/adapters';
+import type { StorageProvider } from '@apogee/shared/adapters';
+import { BullJobEnqueuer } from '@apogee/shared/jobs';
+import type { Env } from '@apogee/shared/config';
+import { parseKeyRing } from '@apogee/shared/crypto';
+import type { KeyRing } from '@apogee/shared/crypto';
+import { SystemClock } from '@apogee/shared/time';
+import type { Logger } from '@apogee/shared/logging';
+import { createMessagingProvider } from '@apogee/messaging';
 
 /** The verification-code wait is normally 10 minutes; tests override it to run fast. */
 export const DEFAULT_VERIFICATION_TIMEOUT_MS = 10 * 60 * 1000;

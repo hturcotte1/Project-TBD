@@ -1,5 +1,5 @@
-import type { AuditEntryDto } from '@tbd/shared/api';
-import type { AuditActor } from '@tbd/shared/domain';
+import type { AuditEntryDto } from '@apogee/shared/api';
+import type { AuditActor } from '@apogee/shared/domain';
 import { Bot, ExternalLink, ServerCog, ShieldCheck, User } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { humanizeAuditAction, redactDetails } from '@/components/activity/audit-utils';

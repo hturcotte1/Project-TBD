@@ -1,4 +1,4 @@
-import type { StateChange } from '@tbd/shared/schemas';
+import type { StateChange } from '@apogee/shared/schemas';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 

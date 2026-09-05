@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import type { CollegeSnapshot as CollegeSnapshotSchema, CommonAppSnapshot as CommonAppSnapshotSchema, RecommenderEntry as RecommenderEntrySchema, StateChange as StateChangeSchema } from '@tbd/shared/schemas';
+import type { CollegeSnapshot as CollegeSnapshotSchema, CommonAppSnapshot as CommonAppSnapshotSchema, RecommenderEntry as RecommenderEntrySchema, StateChange as StateChangeSchema } from '@apogee/shared/schemas';
 
 type CommonAppSnapshotT = z.infer<typeof CommonAppSnapshotSchema>;
 type CollegeSnapshotT = z.infer<typeof CollegeSnapshotSchema>;

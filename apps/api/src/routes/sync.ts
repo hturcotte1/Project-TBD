@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { appendAudit, browserJobsRepo, credentialsRepo, studentsRepo, AuthorizationError } from '@tbd/shared/db';
-import { disconnectCommonApp } from '@tbd/shared/services';
-import { jobIds } from '@tbd/shared/jobs';
-import { parseKeyRing } from '@tbd/shared/crypto';
+import * as S from '@apogee/shared/db/schema';
+import { appendAudit, browserJobsRepo, credentialsRepo, studentsRepo, AuthorizationError } from '@apogee/shared/db';
+import { disconnectCommonApp } from '@apogee/shared/services';
+import { jobIds } from '@apogee/shared/jobs';
+import { parseKeyRing } from '@apogee/shared/crypto';
 import { mapBrowserJob, mapCredentialStatus } from '../mappers';
 import { HttpError } from '../errors';
 import { authed, type Handlers } from './contract';

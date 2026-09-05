@@ -1,4 +1,4 @@
-import type { ApplicationItemDto } from '@tbd/shared/api';
+import type { ApplicationItemDto } from '@apogee/shared/api';
 import { ChecklistItemRow } from '@/components/schools/checklist-item-row';
 
 export function ChecklistSection({ title, items, timezone }: { title: string; items: ApplicationItemDto[]; timezone: string }) {

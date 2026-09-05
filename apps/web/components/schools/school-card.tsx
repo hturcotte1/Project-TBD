@@ -1,4 +1,4 @@
-import type { ApplicationDto } from '@tbd/shared/api';
+import type { ApplicationDto } from '@apogee/shared/api';
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { PLAN_LABELS } from '@/components/schools/plan-labels';

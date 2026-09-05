@@ -1,8 +1,8 @@
 'use client';
 
-import type { Goals } from '@tbd/shared/schemas';
-import { COST_SENSITIVITIES, SCHOOL_SIZES } from '@tbd/shared/domain';
-import type { CostSensitivity, SchoolSize } from '@tbd/shared/domain';
+import type { Goals } from '@apogee/shared/schemas';
+import { COST_SENSITIVITIES, SCHOOL_SIZES } from '@apogee/shared/domain';
+import type { CostSensitivity, SchoolSize } from '@apogee/shared/domain';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ChipInput } from '@/components/onboarding/chip-input';

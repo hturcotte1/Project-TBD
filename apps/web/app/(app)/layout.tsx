@@ -1,4 +1,4 @@
-import { ApiError } from '@tbd/shared/api';
+import { ApiError } from '@apogee/shared/api';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { AppShell } from '@/components/layout/app-shell';

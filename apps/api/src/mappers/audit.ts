@@ -1,5 +1,5 @@
-import type * as S from '@tbd/shared/db/schema';
-import type * as D from '@tbd/shared/api';
+import type * as S from '@apogee/shared/db/schema';
+import type * as D from '@apogee/shared/api';
 
 /** `replayUrlByBrowserJobId` is precomputed by the caller (one bulk lookup for a page of rows). */
 export function mapAuditEntry(row: S.AuditEntry, replayUrlByBrowserJobId: Map<string, string | null>): D.AuditEntryDto {

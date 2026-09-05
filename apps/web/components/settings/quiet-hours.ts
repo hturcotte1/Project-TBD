@@ -4,7 +4,7 @@
  * has no opinion on the pair, since an overnight window (e.g. 22:00 to 07:00) is valid and in fact
  * the common case. This only rejects a window that cannot mean anything: identical start and end.
  */
-import type { QuietHours } from '@tbd/shared/schemas';
+import type { QuietHours } from '@apogee/shared/schemas';
 
 const HHMM_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
 

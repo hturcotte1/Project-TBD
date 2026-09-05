@@ -1,6 +1,6 @@
 'use client';
 
-import type { ApprovalDto } from '@tbd/shared/api';
+import type { ApprovalDto } from '@apogee/shared/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClipboardCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';

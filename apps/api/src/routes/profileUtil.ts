@@ -1,7 +1,7 @@
-import * as S from '@tbd/shared/db/schema';
-import type { StudentDb } from '@tbd/shared/db';
-import { Academics, type ActivityList, Demographics, Goals, TestScores } from '@tbd/shared/schemas';
-import type { ChecklistStudent } from '@tbd/shared/requirements';
+import * as S from '@apogee/shared/db/schema';
+import type { StudentDb } from '@apogee/shared/db';
+import { Academics, type ActivityList, Demographics, Goals, TestScores } from '@apogee/shared/schemas';
+import type { ChecklistStudent } from '@apogee/shared/requirements';
 import type { z } from 'zod';
 
 /** The requirements engine's view of a student, derived from the (possibly absent) profile row. */

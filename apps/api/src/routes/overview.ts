@@ -1,8 +1,8 @@
 import { desc, gt, inArray } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { approvalsRepo, AuthorizationError, browserJobsRepo, studentsRepo } from '@tbd/shared/db';
-import type * as D from '@tbd/shared/api';
-import { daysUntil, localDate } from '@tbd/shared/time';
+import * as S from '@apogee/shared/db/schema';
+import { approvalsRepo, AuthorizationError, browserJobsRepo, studentsRepo } from '@apogee/shared/db';
+import type * as D from '@apogee/shared/api';
+import { daysUntil, localDate } from '@apogee/shared/time';
 import { authed, type Handlers } from './contract';
 
 const CLOSED_APPLICATION_STATUSES = new Set<S.Application['status']>(['submitted', 'decision_received']);

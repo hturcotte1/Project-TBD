@@ -1,5 +1,5 @@
-import type { Env } from '@tbd/shared/config';
-import type { Logger } from '@tbd/shared/logging';
+import type { Env } from '@apogee/shared/config';
+import type { Logger } from '@apogee/shared/logging';
 // Stagehand v4 bundles its own zod 4.4.3 and types `extract()`'s schema parameter against that
 // exact package, not any zod-4-compatible lookalike. The environment notes for this task suggest
 // `zod/v4` (the forward-compatible v4 API zod 3.25 ships at that subpath) — that *runs* fine, but
@@ -29,7 +29,7 @@ export interface PageExtractorFallback {
  */
 export const STAGEHAND_FALLBACK_CONFIDENCE = 0.75;
 
-/** Matches Env's default `LLM_DEFAULT_MODEL` ("claude-sonnet-5") — see @tbd/shared/config/env.ts. */
+/** Matches Env's default `LLM_DEFAULT_MODEL` ("claude-sonnet-5") — see @apogee/shared/config/env.ts. */
 const STAGEHAND_MODEL_NAME = 'anthropic/claude-sonnet-5' as const;
 
 /**

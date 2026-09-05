@@ -1,4 +1,4 @@
-import type { SchoolRequirementsData } from '@tbd/shared/schemas';
+import type { SchoolRequirementsData } from '@apogee/shared/schemas';
 import type { ReactNode } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -48,7 +48,7 @@ export function RequirementsSummary({ requirements }: { requirements: SchoolRequ
           {fee === null ? 'Amount unconfirmed' : fee === 0 ? 'No fee' : `$${fee}`}
           {requirements.fee_waiver_eligible ? ' · fee waivers available' : ''}
         </Field>
-        {requirements.needs_verification ? <Field label="Note">Some of these details are unverified — Remy will confirm them on the next sync.</Field> : null}
+        {requirements.needs_verification ? <Field label="Note">Some of these details are unverified — Vector will confirm them on the next sync.</Field> : null}
       </CardContent>
     </Card>
   );

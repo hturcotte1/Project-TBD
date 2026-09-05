@@ -1,7 +1,7 @@
-import { AuthorizationError, studentsRepo } from '@tbd/shared/db';
-import type * as D from '@tbd/shared/api';
-import { buildIcs, buildTimeline, type TimelineEntry } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import { AuthorizationError, studentsRepo } from '@apogee/shared/db';
+import type * as D from '@apogee/shared/api';
+import { buildIcs, buildTimeline, type TimelineEntry } from '@apogee/shared/services';
+import { localDate } from '@apogee/shared/time';
 import { authed, type Handlers } from './contract';
 
 function toDto(entry: TimelineEntry): D.TimelineEntryDto {

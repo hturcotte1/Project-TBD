@@ -1,7 +1,7 @@
 'use client';
 
-import type { ActivityInput } from '@tbd/shared/schemas';
-import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@tbd/shared/domain';
+import type { ActivityInput } from '@apogee/shared/schemas';
+import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@apogee/shared/domain';
 import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react';
 import { DESCRIPTION_MAX_LENGTH, MAX_ACTIVITIES, canAddActivity, descriptionRemaining } from '@/components/onboarding/activities-editor-utils';
 import { Button } from '@/components/ui/button';

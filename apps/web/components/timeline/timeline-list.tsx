@@ -1,4 +1,4 @@
-import type { TimelineEntryDto } from '@tbd/shared/api';
+import type { TimelineEntryDto } from '@apogee/shared/api';
 import Link from 'next/link';
 import { groupEntriesByMonth } from '@/components/timeline/calendar';
 import { TIMELINE_KIND_DOT_CLASS, TIMELINE_KIND_LABELS } from '@/components/timeline/kind-meta';

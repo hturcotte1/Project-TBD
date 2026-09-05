@@ -13,17 +13,17 @@ import {
   startMockCommonApp,
   type MockAccountState,
   type MockCommonAppHandle,
-} from '@tbd/browser';
-import { RuleBasedFakeLLM } from '@tbd/agent';
-import { FakeMessagingProvider } from '@tbd/messaging';
-import { loadEnv } from '@tbd/shared/config';
-import { parseKeyRing } from '@tbd/shared/crypto';
-import { LocalDiskStorageProvider, MemoryVerificationCodeChannel } from '@tbd/shared/adapters';
-import { MemoryJobEnqueuer } from '@tbd/shared/jobs';
-import { createLogger } from '@tbd/shared/logging';
-import { DEMO_STUDENT, seedDemoStudent } from '@tbd/shared/seed';
-import { closeTestDb, getTestDb, truncateAll } from '@tbd/shared/testing';
-import { FixedClock } from '@tbd/shared/time';
+} from '@apogee/browser';
+import { RuleBasedFakeLLM } from '@apogee/agent';
+import { FakeMessagingProvider } from '@apogee/messaging';
+import { loadEnv } from '@apogee/shared/config';
+import { parseKeyRing } from '@apogee/shared/crypto';
+import { LocalDiskStorageProvider, MemoryVerificationCodeChannel } from '@apogee/shared/adapters';
+import { MemoryJobEnqueuer } from '@apogee/shared/jobs';
+import { createLogger } from '@apogee/shared/logging';
+import { DEMO_STUDENT, seedDemoStudent } from '@apogee/shared/seed';
+import { closeTestDb, getTestDb, truncateAll } from '@apogee/shared/testing';
+import { FixedClock } from '@apogee/shared/time';
 import type { WorkerDeps } from './deps';
 
 export const DEMO_SEED_NOW = new Date('2026-09-01T15:00:00Z');
@@ -132,7 +132,7 @@ async function buildHarness(opts: SetupOptions, releaseDbLock: () => void): Prom
   const enqueuer = new MemoryJobEnqueuer();
   const codeChannel = new MemoryVerificationCodeChannel();
   const messaging = new FakeMessagingProvider({ logger });
-  const tmpDir = await mkdtemp(join(tmpdir(), 'tbd-worker-test-'));
+  const tmpDir = await mkdtemp(join(tmpdir(), 'apogee-worker-test-'));
   const storage = new LocalDiskStorageProvider(tmpDir, 'http://localhost:4000');
   const llm = new RuleBasedFakeLLM();
   const keyRing = parseKeyRing(env.CREDENTIALS_ENCRYPTION_KEYS, env.CREDENTIALS_ENCRYPTION_KEY_VERSION);

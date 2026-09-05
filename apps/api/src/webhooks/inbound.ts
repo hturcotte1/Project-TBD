@@ -5,12 +5,12 @@
  */
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
-import type { DeliveryStatusEvent, InboundEvent, InboundMessageEvent, ReactionEvent } from '@tbd/shared/adapters';
-import { conversationsRepo, messagesRepo, scoped, studentsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { jobIds } from '@tbd/shared/jobs';
-import { normalizePhone } from '@tbd/messaging';
-import type { MediaRef } from '@tbd/shared/schemas';
+import type { DeliveryStatusEvent, InboundEvent, InboundMessageEvent, ReactionEvent } from '@apogee/shared/adapters';
+import { conversationsRepo, messagesRepo, scoped, studentsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { jobIds } from '@apogee/shared/jobs';
+import { normalizePhone } from '@apogee/messaging';
+import type { MediaRef } from '@apogee/shared/schemas';
 import type { ApiDeps } from '../deps';
 import { EXT_BY_MIME, MAX_UPLOAD_BYTES } from '../util/mime';
 

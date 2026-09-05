@@ -1,10 +1,10 @@
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { appendAudit, approvalsRepo, browserJobsRepo } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { buildActivitiesFillPayload, buildPersonalEssayFillPayload, buildProfileFillPayload, summarizeFillPayload } from '@tbd/shared/domain';
-import type { FillFieldsPayload } from '@tbd/shared/schemas';
-import { jobIds } from '@tbd/shared/jobs';
+import { appendAudit, approvalsRepo, browserJobsRepo } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { buildActivitiesFillPayload, buildPersonalEssayFillPayload, buildProfileFillPayload, summarizeFillPayload } from '@apogee/shared/domain';
+import type { FillFieldsPayload } from '@apogee/shared/schemas';
+import { jobIds } from '@apogee/shared/jobs';
 import { defineTool, fail, ok } from './types';
 
 export const ProposeFillFieldsInput = z.object({

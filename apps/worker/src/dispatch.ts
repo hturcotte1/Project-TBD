@@ -3,7 +3,7 @@
  * and routes to the handler. The BullMQ processors in `src/index.ts` call this, and so do the
  * tests — handlers are exercised without Redis or a running queue.
  */
-import { JobPayloads, type JobName, type JobPayload } from '@tbd/shared/jobs';
+import { JobPayloads, type JobName, type JobPayload } from '@apogee/shared/jobs';
 import { runCheckRecommenders } from './jobs/browser/recommenders';
 import { runFillFields } from './jobs/browser/fill';
 import { runFullSync } from './jobs/browser/sync';

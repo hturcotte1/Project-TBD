@@ -1,4 +1,4 @@
-import type { TimelineEntryDto } from '@tbd/shared/api';
+import type { TimelineEntryDto } from '@apogee/shared/api';
 
 export interface CalendarDay {
   /** YYYY-MM-DD */

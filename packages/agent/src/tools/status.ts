@@ -1,6 +1,6 @@
 import { asc, eq } from 'drizzle-orm';
 import { z } from 'zod';
-import * as S from '@tbd/shared/db/schema';
+import * as S from '@apogee/shared/db/schema';
 import { findSchool } from '../integrations/shared-engines';
 import { defineTool, fail, ok } from './types';
 import { matchesSchool } from './util';

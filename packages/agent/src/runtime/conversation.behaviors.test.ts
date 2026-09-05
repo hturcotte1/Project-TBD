@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { browserJobsRepo, nudgesRepo, scoped, type Db } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import { getTestDb, truncateAll } from '@tbd/shared/testing';
-import type { MemoryJobEnqueuer } from '@tbd/shared/jobs';
+import { browserJobsRepo, nudgesRepo, scoped, type Db } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import { getTestDb, truncateAll } from '@apogee/shared/testing';
+import type { MemoryJobEnqueuer } from '@apogee/shared/jobs';
 import { buildTestDeps, sendInboundText } from '../testing/deps';
 import { type InMemoryMessagingProvider } from '../testing/messaging';
 import { seedDemoStudent } from '../testing/seed';

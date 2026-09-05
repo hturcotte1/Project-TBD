@@ -3,7 +3,7 @@
  * visual groups (so the thread reads like iMessage, not a log), mapping tapback reactions onto the
  * message they react to, and deciding when to show the "…" typing indicator.
  */
-import type { MessageDto } from '@tbd/shared/api';
+import type { MessageDto } from '@apogee/shared/api';
 
 export interface MessageGroup {
   direction: MessageDto['direction'];

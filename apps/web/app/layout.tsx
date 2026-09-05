@@ -10,7 +10,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: { default: 'TBD', template: '%s · TBD' },
+  title: { default: 'Apogee', template: '%s · Apogee' },
   description: 'Your college application, handled — a next action every day, drafted for your approval, never submitted without it.',
 };
 

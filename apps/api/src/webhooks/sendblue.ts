@@ -1,6 +1,6 @@
 /** `POST /webhooks/sendblue` — signature-checked, idempotent inbound webhook. */
 import type { FastifyInstance } from 'fastify';
-import type { WebhookRequest } from '@tbd/shared/adapters';
+import type { WebhookRequest } from '@apogee/shared/adapters';
 import type { ApiDeps } from '../deps';
 import { sendError } from '../errors';
 import { handleInboundEvents } from './inbound';

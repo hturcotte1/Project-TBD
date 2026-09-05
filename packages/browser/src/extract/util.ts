@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import type { Cheerio, CheerioAPI } from 'cheerio';
 import type { AnyNode } from 'domhandler';
 
-/** The shape every extractor returns for a piece of extracted data (mirrors `@tbd/shared`'s `Extracted`). */
+/** The shape every extractor returns for a piece of extracted data (mirrors `@apogee/shared`'s `Extracted`). */
 export interface ExtractedResult<T> {
   value: T;
   confidence: number;

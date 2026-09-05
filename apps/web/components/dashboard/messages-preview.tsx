@@ -1,4 +1,4 @@
-import type { MessageDto } from '@tbd/shared/api';
+import type { MessageDto } from '@apogee/shared/api';
 import { MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { EmptyState } from '@/components/layout/empty-state';
@@ -22,13 +22,13 @@ export function MessagesPreview({ messages }: { messages: MessageDto[] }) {
           <EmptyState
             icon={MessageCircle}
             title="No messages yet"
-            description="Text Remy or send a message from the chat page — replies show up here and over iMessage."
+            description="Text Vector or send a message from the chat page — replies show up here and over iMessage."
           />
         ) : (
           recent.map((message) => (
             <div key={message.id} className="space-y-0.5 text-sm">
               <p className="text-xs text-muted-foreground">
-                {message.direction === 'outbound' ? 'Remy' : 'You'} · {relativeTimeFromNow(message.created_at)}
+                {message.direction === 'outbound' ? 'Vector' : 'You'} · {relativeTimeFromNow(message.created_at)}
               </p>
               <p className="line-clamp-2">{message.body}</p>
             </div>

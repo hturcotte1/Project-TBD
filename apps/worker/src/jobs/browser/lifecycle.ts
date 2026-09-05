@@ -5,14 +5,14 @@
  * sibling files; this file only owns bookkeeping every job kind shares.
  */
 import { eq } from 'drizzle-orm';
-import type { CaptureHooks, BrowserSessionHandle } from '@tbd/browser';
-import { appendAudit, browserJobsRepo, credentialsRepo, scoped } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
-import type { BrowserJobKind } from '@tbd/shared/domain';
-import type { BrowserJobResult, ScreenshotRef } from '@tbd/shared/schemas';
+import type { CaptureHooks, BrowserSessionHandle } from '@apogee/browser';
+import { appendAudit, browserJobsRepo, credentialsRepo, scoped } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
+import type { BrowserJobKind } from '@apogee/shared/domain';
+import type { BrowserJobResult, ScreenshotRef } from '@apogee/shared/schemas';
 import type { WorkerDeps } from '../../deps';
 
-/** Hooks handed to a job's work function: the same `onPage` screenshot hook `@tbd/browser` calls,
+/** Hooks handed to a job's work function: the same `onPage` screenshot hook `@apogee/browser` calls,
  * plus a live view of every screenshot taken so far this job (for confirmation media, audit, ...). */
 export interface JobHooks extends CaptureHooks {
   readonly screenshots: ScreenshotRef[];

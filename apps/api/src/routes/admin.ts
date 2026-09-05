@@ -4,10 +4,10 @@
  */
 import { Queue } from 'bullmq';
 import { desc, eq, gt, inArray, ne } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError, browserJobsRepo, scoped } from '@tbd/shared/db';
-import type * as D from '@tbd/shared/api';
-import { QUEUES, jobIds, type QueueName } from '@tbd/shared/jobs';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError, browserJobsRepo, scoped } from '@apogee/shared/db';
+import type * as D from '@apogee/shared/api';
+import { QUEUES, jobIds, type QueueName } from '@apogee/shared/jobs';
 import { estimateLlmCostUsd, mapAdminStudent, mapBrowserJob, mapDriftAlert, mapQueueHealth } from '../mappers';
 import type { AdminStudentAggregate } from '../mappers';
 import type { ApiDeps } from '../deps';

@@ -18,11 +18,11 @@ export const EnvSchema = z.object({
   APP_URL: z.string().url().default('http://localhost:3000'),
   API_URL: z.string().url().default('http://localhost:4000'),
   API_PORT: z.coerce.number().int().default(4000),
-  AGENT_NAME: z.string().min(1).default('Remy'),
+  AGENT_NAME: z.string().min(1).default('Vector'),
   AUTONOMY_LEVEL: z.enum(AUTONOMY_LEVELS).default('B'),
 
-  DATABASE_URL: z.string().default('postgres://postgres:postgres@localhost:5432/tbd'),
-  DATABASE_URL_TEST: z.string().default('postgres://postgres:postgres@localhost:5432/tbd_test'),
+  DATABASE_URL: z.string().default('postgres://postgres:postgres@localhost:5432/apogee'),
+  DATABASE_URL_TEST: z.string().default('postgres://postgres:postgres@localhost:5432/apogee_test'),
   REDIS_URL: z.string().default('redis://localhost:6379'),
 
   AUTH_MODE: z.enum(['dev', 'clerk']).default('dev'),

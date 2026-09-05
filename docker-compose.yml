@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: tbd
+      POSTGRES_DB: apogee
     ports: ["5432:5432"]
     volumes: ["pgdata:/var/lib/postgresql/data"]
   redis:

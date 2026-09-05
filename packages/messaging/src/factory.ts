@@ -1,7 +1,7 @@
 import type { Redis } from 'ioredis';
-import type { MessagingProvider } from '@tbd/shared/adapters';
-import type { Env } from '@tbd/shared/config';
-import { createLogger, type Logger } from '@tbd/shared/logging';
+import type { MessagingProvider } from '@apogee/shared/adapters';
+import type { Env } from '@apogee/shared/config';
+import { createLogger, type Logger } from '@apogee/shared/logging';
 import { FakeMessagingProvider } from './fake';
 import { SendblueProvider } from './sendblue';
 

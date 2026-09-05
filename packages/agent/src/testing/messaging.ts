@@ -1,4 +1,4 @@
-import type { InboundEvent, MessagingProvider, OutboundMedia, OutboundMessage, SendResult, Tapback, WebhookRequest } from '@tbd/shared/adapters';
+import type { InboundEvent, MessagingProvider, OutboundMedia, OutboundMessage, SendResult, Tapback, WebhookRequest } from '@apogee/shared/adapters';
 
 export interface RecordedReaction {
   to: string;

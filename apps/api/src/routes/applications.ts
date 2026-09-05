@@ -1,8 +1,8 @@
 import { eq, inArray } from 'drizzle-orm';
-import * as S from '@tbd/shared/db/schema';
-import { AuthorizationError, studentsRepo, type StudentDb } from '@tbd/shared/db';
-import { changePlan, createApplication, deleteApplication, DuplicateApplicationError, InvalidSchoolInputError } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import * as S from '@apogee/shared/db/schema';
+import { AuthorizationError, studentsRepo, type StudentDb } from '@apogee/shared/db';
+import { changePlan, createApplication, deleteApplication, DuplicateApplicationError, InvalidSchoolInputError } from '@apogee/shared/services';
+import { localDate } from '@apogee/shared/time';
 import { mapApplication, mapApplicationDetail } from '../mappers';
 import type { ApiDeps } from '../deps';
 import { HttpError } from '../errors';

@@ -22,7 +22,7 @@ export function SettingsView({ authMode }: { authMode: AuthMode }) {
 
   return (
     <div className="pb-8">
-      <PageHeader title="Settings" description="How Remy reaches you, what it's connected to, and your data." />
+      <PageHeader title="Settings" description="How Vector reaches you, what it's connected to, and your data." />
       <div className="space-y-4 px-4 py-5 sm:px-6">
         {!settings || settingsQuery.isPending ? (
           <div className="space-y-4">

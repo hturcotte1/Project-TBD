@@ -1,6 +1,6 @@
 'use client';
 
-import type { NextActionDto } from '@tbd/shared/api';
+import type { NextActionDto } from '@apogee/shared/api';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Check, Clock, ListChecks } from 'lucide-react';
@@ -38,7 +38,7 @@ export function NextActionsList({ actions }: { actions: NextActionDto[] }) {
       <EmptyState
         icon={ListChecks}
         title="Nothing pending"
-        description="Remy queues up the next concrete step here as soon as there's one to take — after your first sync, or once a new deadline needs attention."
+        description="Vector queues up the next concrete step here as soon as there's one to take — after your first sync, or once a new deadline needs attention."
       />
     );
   }

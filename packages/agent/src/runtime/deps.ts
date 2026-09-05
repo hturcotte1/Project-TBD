@@ -1,11 +1,11 @@
-import type { Db } from '@tbd/shared/db';
-import type { LLMProvider, MessagingProvider, StorageProvider, VerificationCodeChannel } from '@tbd/shared/adapters';
-import type { JobEnqueuer } from '@tbd/shared/jobs';
-import type { Clock } from '@tbd/shared/time';
-import type { Logger } from '@tbd/shared/logging';
-import type { Env } from '@tbd/shared/config';
-import type { RunOutcome } from '@tbd/shared/domain';
-import type { ToolCallRecord } from '@tbd/shared/schemas';
+import type { Db } from '@apogee/shared/db';
+import type { LLMProvider, MessagingProvider, StorageProvider, VerificationCodeChannel } from '@apogee/shared/adapters';
+import type { JobEnqueuer } from '@apogee/shared/jobs';
+import type { Clock } from '@apogee/shared/time';
+import type { Logger } from '@apogee/shared/logging';
+import type { Env } from '@apogee/shared/config';
+import type { RunOutcome } from '@apogee/shared/domain';
+import type { ToolCallRecord } from '@apogee/shared/schemas';
 
 /** Every adapter a runtime function needs, injected so tests can supply fakes/doubles. */
 export interface AgentDeps {

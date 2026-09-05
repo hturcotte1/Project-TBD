@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { loadEnv } from '@tbd/shared/config';
-import { createLogger } from '@tbd/shared/logging';
+import { loadEnv } from '@apogee/shared/config';
+import { createLogger } from '@apogee/shared/logging';
 import { defaultMockState } from './state';
 import { startMockCommonApp } from './server';
 

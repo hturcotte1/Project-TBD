@@ -20,8 +20,8 @@ async function ensureDatabase(url: string): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  const url = process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/tbd';
-  const testUrl = process.env.DATABASE_URL_TEST ?? 'postgres://postgres:postgres@localhost:5432/tbd_test';
+  const url = process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/apogee';
+  const testUrl = process.env.DATABASE_URL_TEST ?? 'postgres://postgres:postgres@localhost:5432/apogee_test';
   await ensureDatabase(url);
   await ensureDatabase(testUrl);
   await runMigrations(url);

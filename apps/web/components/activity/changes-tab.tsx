@@ -1,6 +1,6 @@
 'use client';
 
-import type { SnapshotSummaryDto } from '@tbd/shared/api';
+import type { SnapshotSummaryDto } from '@apogee/shared/api';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, History } from 'lucide-react';
 import { EmptyState } from '@/components/layout/empty-state';

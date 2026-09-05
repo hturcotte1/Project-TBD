@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { appendAudit } from '@tbd/shared/db';
-import * as S from '@tbd/shared/db/schema';
+import { appendAudit } from '@apogee/shared/db';
+import * as S from '@apogee/shared/db/schema';
 import { defineTool, fail, ok } from './types';
 import { bestMatch, matchesSchoolName } from './util';
 

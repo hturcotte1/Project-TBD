@@ -1,9 +1,9 @@
 'use client';
 
-import type { ApplicationDto, SchoolWithRequirementsDto } from '@tbd/shared/api';
-import type { ApplicationPlan, CostSensitivity, SchoolSize, SelfAssessment } from '@tbd/shared/domain';
-import { APPLICATION_PLANS, COST_SENSITIVITIES, SCHOOL_SIZES, SELF_ASSESSMENTS } from '@tbd/shared/domain';
-import type { Demographics, Goals, SchoolRequirementsData } from '@tbd/shared/schemas';
+import type { ApplicationDto, SchoolWithRequirementsDto } from '@apogee/shared/api';
+import type { ApplicationPlan, CostSensitivity, SchoolSize, SelfAssessment } from '@apogee/shared/domain';
+import { APPLICATION_PLANS, COST_SENSITIVITIES, SCHOOL_SIZES, SELF_ASSESSMENTS } from '@apogee/shared/domain';
+import type { Demographics, Goals, SchoolRequirementsData } from '@apogee/shared/schemas';
 import { useMutation } from '@tanstack/react-query';
 import { AlertTriangle, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -296,7 +296,7 @@ export function StepGoalsSchools({ onboarding, step }: OnboardingStepProps) {
         </div>
       </div>
 
-      <WhyWeAsk>Adding schools now lets Remy build your checklist and timeline the moment you connect Common App in the next step.</WhyWeAsk>
+      <WhyWeAsk>Adding schools now lets Vector build your checklist and timeline the moment you connect Common App in the next step.</WhyWeAsk>
 
       <StepActions step={step} loading={save.isPending} />
     </form>

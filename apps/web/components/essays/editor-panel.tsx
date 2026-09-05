@@ -1,7 +1,7 @@
 'use client';
 
-import type { EssayDetailDto } from '@tbd/shared/api';
-import { ApiError } from '@tbd/shared/api';
+import type { EssayDetailDto } from '@apogee/shared/api';
+import { ApiError } from '@apogee/shared/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { useAutosave } from '@/components/essays/use-autosave';

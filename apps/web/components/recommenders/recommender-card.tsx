@@ -1,7 +1,7 @@
 'use client';
 
-import type { AgentRunDto, ApplicationDto, RecommenderDto } from '@tbd/shared/api';
-import type { RecommenderRole } from '@tbd/shared/domain';
+import type { AgentRunDto, ApplicationDto, RecommenderDto } from '@apogee/shared/api';
+import type { RecommenderRole } from '@apogee/shared/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Mail, MessageSquareText, Trash2 } from 'lucide-react';
 import { useState } from 'react';
