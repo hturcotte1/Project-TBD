@@ -1,3 +1,4 @@
+import { jobIds } from '@tbd/shared/jobs';
 import { describe, expect, it } from 'vitest';
 import { authHeader, makeTestApp } from '../testHelpers';
 
@@ -112,7 +113,7 @@ describe('onboarding', () => {
     const purdue = state.applications.find((a: { school: { slug: string } }) => a.school.slug === 'purdue');
     expect(purdue).toBeTruthy();
     expect(purdue.counts.total).toBeGreaterThan(0);
-    expect(deps.enqueuer.ofName('agent.welcome').some((j) => j.id === `welcome:${studentId}`)).toBe(true);
+    expect(deps.enqueuer.ofName('agent.welcome').some((j) => j.id === jobIds.welcome(studentId))).toBe(true);
 
     // step 6
     const step6 = await app.inject({ method: 'POST', url: '/onboarding/step', headers, payload: { step: 6, data: { acknowledged: true } } });
