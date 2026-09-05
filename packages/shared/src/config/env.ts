@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { dirname, isAbsolute, resolve } from 'node:path';
 import { z } from 'zod';
 import { AUTONOMY_LEVELS } from '../domain/enums';
 import { applyDotEnv } from './dotenv';
@@ -75,6 +77,18 @@ export type Env = z.infer<typeof EnvSchema>;
 
 let cached: Env | null = null;
 
+/** The monorepo root (the directory holding pnpm-workspace.yaml), so relative paths mean the same thing in every process. */
+export function repoRoot(from: string = process.cwd()): string {
+  let dir = resolve(from);
+  for (let i = 0; i < 8; i++) {
+    if (existsSync(resolve(dir, 'pnpm-workspace.yaml'))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return resolve(from);
+}
+
 /** Parse process.env once. Throws a readable error listing every invalid variable. */
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   if (cached && source === process.env) return cached;
@@ -86,6 +100,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   }
   const env = parsed.data;
   if (env.MOCK_COMMONAPP) env.COMMONAPP_BASE_URL = `http://localhost:${env.COMMONAPP_MOCK_PORT}`;
+  if (!isAbsolute(env.STORAGE_LOCAL_DIR)) env.STORAGE_LOCAL_DIR = resolve(repoRoot(), env.STORAGE_LOCAL_DIR);
   if (source === process.env) cached = env;
   return env;
 }

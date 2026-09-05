@@ -110,9 +110,10 @@ export class FakeMessagingProvider implements MessagingProvider {
     this.logger = opts.logger ?? createLogger({ name: 'fake-messaging-provider' });
   }
 
+  /** Unique across processes and restarts: outbound ids are stored under a unique index. */
   private nextId(): string {
     this.counter += 1;
-    return `fake-${this.counter}`;
+    return `fake-${this.counter}-${randomUUID().slice(0, 8)}`;
   }
 
   private async record(to: string, body: string, mediaUrl: string | null, kind: FakeSentKind): Promise<SendResult> {

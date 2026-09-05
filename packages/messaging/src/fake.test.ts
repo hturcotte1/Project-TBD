@@ -13,10 +13,10 @@ describe('FakeMessagingProvider memory behavior', () => {
     const r1 = await provider.send({ to: '+15551234567', body: 'hi' });
     const r2 = await provider.send({ to: '+15551234567', body: 'again' });
 
-    expect(r1).toEqual({ providerMessageId: 'fake-1', status: 'delivered' });
-    expect(r2).toEqual({ providerMessageId: 'fake-2', status: 'delivered' });
+    expect(r1).toMatchObject({ providerMessageId: expect.stringMatching(/^fake-1-[0-9a-f]{8}$/), status: 'delivered' });
+    expect(r2).toMatchObject({ providerMessageId: expect.stringMatching(/^fake-2-[0-9a-f]{8}$/), status: 'delivered' });
     expect(provider.sent).toHaveLength(2);
-    expect(provider.sent[0]).toMatchObject({ id: 'fake-1', to: '+15551234567', body: 'hi', mediaUrl: null, kind: 'text' });
+    expect(provider.sent[0]).toMatchObject({ id: expect.stringMatching(/^fake-1-/), to: '+15551234567', body: 'hi', mediaUrl: null, kind: 'text' });
     expect(defined(provider.sent[0]).at).toBeInstanceOf(Date);
   });
 
@@ -24,7 +24,7 @@ describe('FakeMessagingProvider memory behavior', () => {
     const provider = new FakeMessagingProvider();
     const result = await provider.sendMedia({ to: '+15551234567', body: 'look', mediaUrl: 'https://example.com/a.png' });
     expect(provider.sent[0]).toMatchObject({ mediaUrl: 'https://example.com/a.png', kind: 'media', body: 'look' });
-    expect(result.providerMessageId).toBe('fake-1');
+    expect(result.providerMessageId).toMatch(/^fake-1-/);
   });
 
   it('records vCard sends with kind vcard', async () => {
