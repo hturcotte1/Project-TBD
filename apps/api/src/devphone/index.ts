@@ -21,7 +21,11 @@ import { renderDevPhonePage } from './page';
 const SendBody = z.object({ phone: z.string().min(1), body: z.string().default(''), mediaUrls: z.array(z.string()).default([]) });
 
 export function registerDevPhone(app: FastifyInstance, deps: ApiDeps): void {
-  if (deps.env.MESSAGING_PROVIDER === 'fake') {
+  const production = deps.env.NODE_ENV === 'production';
+  if (production && (deps.env.MESSAGING_PROVIDER === 'fake' || deps.env.STORAGE_PROVIDER === 'local')) {
+    deps.logger.warn('dev-only providers configured in production; /dev routes stay disabled');
+  }
+  if (!production && deps.env.MESSAGING_PROVIDER === 'fake') {
     app.get('/dev/phone', async (req, reply) => {
       const query = req.query as { phone?: string };
       reply.header('content-type', 'text/html; charset=utf-8');
@@ -76,7 +80,7 @@ export function registerDevPhone(app: FastifyInstance, deps: ApiDeps): void {
     });
   }
 
-  if (deps.env.STORAGE_PROVIDER === 'local') {
+  if (!production && deps.env.STORAGE_PROVIDER === 'local') {
     app.get('/dev/storage/*', async (req, reply) => {
       const key = (req.params as Record<string, string>)['*'];
       if (!key) return sendError(reply, 404, 'not_found', 'not found');

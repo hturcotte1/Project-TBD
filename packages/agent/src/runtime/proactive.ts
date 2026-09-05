@@ -34,6 +34,12 @@ export async function phraseNudges(deps: AgentDeps, input: PhraseNudgesInput): P
       `FACTS_JSON: ${JSON.stringify(facts)}`,
     ].join('\n');
 
+    // Custom triggers carry their exact message (e.g. a held reconnect notice); the model never rewrites them.
+    if (batch.every((t) => t.kind === 'custom')) {
+      out.push({ batch, text: batch.map((t) => templateForTrigger(t)).join(' '), source: 'template' });
+      continue;
+    }
+
     let text = '';
     try {
       const response = await deps.llm.generate({
@@ -75,6 +81,9 @@ export async function sendProactive(deps: AgentDeps, input: SendProactiveInput):
   let sent = 0;
   for (const { batch, text } of input.phrased) {
     if (!text) continue;
+    // A retried job must not text twice: skip batches whose triggers were all already recorded.
+    const alreadySent = await Promise.all(batch.map((t) => nudgesRepo.wasSent(sdb, t.trigger_key)));
+    if (alreadySent.every(Boolean)) continue;
     const result = await deps.messaging.send({ to: student.phoneE164, body: text });
     const row = await messagesRepo.append(sdb, {
       conversationId: conversation.id,

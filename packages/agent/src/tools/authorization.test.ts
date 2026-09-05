@@ -77,9 +77,10 @@ describe('tool authorization matrix', () => {
     expect(authorizedByStudentText(t, 'hello there', {})).toBe(false);
   });
 
-  it('a null studentText (e.g. a dashboard approval click) authorizes student_text tools', () => {
+  it('a null studentText (a photo-only message) never authorizes student_text tools', () => {
     const t = tool('approveProposal');
-    expect(authorizedByStudentText(t, null, {})).toBe(true);
+    expect(authorizedByStudentText(t, null, {})).toBe(false);
+    expect(authorizedByStudentText(t, '   ', {})).toBe(false);
   });
 
   it('every tool name is unique', () => {

@@ -56,7 +56,8 @@ export async function executeToolCalls(tc: ToolContext, toolCalls: LLMToolUseBlo
       continue;
     }
 
-    const authorized = originAllows(tool, tc.run.origin) && authorizedByStudentText(tool, tc.run.studentText, parsed.data);
+    const authorized =
+      originAllows(tool, tc.run.origin) && (tc.run.origin === 'approval' || authorizedByStudentText(tool, tc.run.studentText, parsed.data));
     if (!authorized) {
       await appendAudit(tc.sdb, {
         actor: 'agent',

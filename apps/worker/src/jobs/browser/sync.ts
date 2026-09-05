@@ -9,7 +9,7 @@ import * as S from '@tbd/shared/db/schema';
 import { jobIds, type JobPayload } from '@tbd/shared/jobs';
 import { BrowserJobResult } from '@tbd/shared/schemas';
 import { applySnapshot } from '@tbd/shared/services';
-import { localDate } from '@tbd/shared/time';
+import { isQuietNow, localDate, nextQuietHoursEnd } from '@tbd/shared/time';
 import type { WorkerDeps } from '../../deps';
 import { runBrowserJob } from './lifecycle';
 import { loginForJob } from './login';
@@ -55,8 +55,39 @@ async function handleRepeatedFailure(deps: WorkerDeps, studentId: string): Promi
   const nudgeKey = `sync_paused:${today}`;
   if (await nudgesRepo.wasSent(sdb, nudgeKey)) return;
 
-  const conversation = await conversationsRepo.getOrCreate(sdb, 'main');
   const text = `I couldn't get into your Common App — did your password change? Reconnect here: ${deps.env.APP_URL}/settings`;
+  const now = deps.clock.now();
+  const quiet = { start: student.quietHoursStart, end: student.quietHoursEnd };
+  if (isQuietNow(now, student.timezone, quiet)) {
+    // Not an emergency: hold the text until quiet hours end, through the normal proactive path.
+    const deliverAt = nextQuietHoursEnd(now, student.timezone, quiet);
+    await deps.enqueuer.enqueue(
+      'agent.proactive_run',
+      {
+        studentId,
+        tickAt: now.toISOString(),
+        triggers: [
+          {
+            kind: 'custom',
+            trigger_key: nudgeKey,
+            application_id: null,
+            application_item_id: null,
+            recommender_id: null,
+            essay_id: null,
+            due_date: null,
+            days_remaining: null,
+            facts: { message: text },
+            always_send: false,
+            priority: 80,
+          },
+        ],
+      },
+      { jobId: jobIds.proactive(studentId, `sync-paused-${today}`), delayMs: Math.max(0, deliverAt.getTime() - now.getTime()) },
+    );
+    await appendAudit(sdb, { actor: 'system', action: 'sync.paused', entityType: 'student', entityId: studentId, details: { failures, deferredUntil: deliverAt.toISOString() } });
+    return;
+  }
+  const conversation = await conversationsRepo.getOrCreate(sdb, 'main');
   const sent = await deps.messaging.send({ to: student.phoneE164, body: text });
   const row = await messagesRepo.append(sdb, {
     conversationId: conversation.id,
@@ -100,7 +131,11 @@ export async function runFullSync(deps: WorkerDeps, payload: JobPayload<'browser
 
       const hasNoteworthyChange = changes.some((c) => c.significance === 'important' || c.significance === 'notable');
       if (hasNoteworthyChange) {
-        await deps.enqueuer.enqueue('agent.sync_followup', { studentId: payload.studentId, snapshotId: applied.snapshotId, browserJobId: payload.browserJobId });
+        await deps.enqueuer.enqueue(
+          'agent.sync_followup',
+          { studentId: payload.studentId, snapshotId: applied.snapshotId, browserJobId: payload.browserJobId },
+          { jobId: jobIds.syncFollowup(applied.snapshotId) },
+        );
       }
 
       await recordDriftAlerts(deps, payload.browserJobId, capture.normalized.low_confidence_sections, capture.normalized.confidence);

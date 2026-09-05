@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import * as cheerio from 'cheerio';
@@ -106,6 +107,20 @@ function splitCsv(value: string): string[] {
     .split(',')
     .map((s) => s.trim())
     .filter((s) => s.length > 0);
+}
+
+const LONG_VALUE_CHARS = 200;
+
+/** Replaces a long value (essay prose) with a length + hash fingerprint that still proves what was written. */
+export function fingerprintValue(value: string): string {
+  const words = value.trim().split(/\s+/).filter(Boolean).length;
+  return `[${words} words, ${value.length} chars, sha256:${createHash('sha256').update(value).digest('hex').slice(0, 12)}]`;
+}
+
+export function redactLongVerification(v: FillVerificationT): FillVerificationT {
+  const isLong = v.expected.length > LONG_VALUE_CHARS || (v.observed !== null && v.observed.length > LONG_VALUE_CHARS) || /essay/i.test(v.path);
+  if (!isLong) return v;
+  return { ...v, expected: fingerprintValue(v.expected), observed: v.observed === null ? null : fingerprintValue(v.observed) };
 }
 
 export function createCommonAppClient(opts: CreateCommonAppClientOptions): CommonAppClient {
@@ -496,6 +511,8 @@ export function createCommonAppClient(opts: CreateCommonAppClientOptions): Commo
           result = await fillCollegeQuestions(safePage, payload.school_slug, payload.fields, hooks);
           break;
       }
+      // Long values (essay text) are never persisted: audit rows and API responses get a fingerprint.
+      result = { ...result, verifications: result.verifications.map(redactLongVerification) };
       return { ok: result.verifications.every((v) => v.matched), verifications: result.verifications, pagesVisited: result.pagesVisited };
     },
   };

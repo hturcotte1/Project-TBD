@@ -34,7 +34,8 @@ function buildUpdate(existing: ApplicationItem, fresh: ChecklistItemSpec): Parti
   if (existing.description !== fresh.description) set.description = fresh.description;
   if (existing.kind !== fresh.kind) set.kind = fresh.kind;
   if (existing.source !== fresh.source) set.source = fresh.source;
-  if (existing.dueDate !== fresh.dueDate) set.dueDate = fresh.dueDate;
+  // A student-corrected due date survives a sync, like their status and notes.
+  if (!existing.studentEdited && existing.dueDate !== fresh.dueDate) set.dueDate = fresh.dueDate;
   if (existing.importance !== fresh.importance) set.importance = fresh.importance;
   if (existing.effort !== fresh.effort) set.effort = fresh.effort;
   if (existing.dependsOnOthers !== fresh.dependsOnOthers) set.dependsOnOthers = fresh.dependsOnOthers;

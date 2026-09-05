@@ -28,3 +28,12 @@ Judgment calls made during the build, with reasons. Newest at the bottom.
 24. **Teacher-recommendation slots follow the invitations.** One item per required letter plus one per extra teacher actually invited (capped at the school's max), so an optional second letter is tracked once the student asks for it.
 25. **Tests run serially at the root.** All packages share `DATABASE_URL_TEST`; Turbo's default parallelism made them truncate each other's tables.
 26. **Sunday's weekly plan is enqueued for the coming week.** The trigger fires Sunday evening; the worker computes the following Monday as `week_start`.
+27. **Admin role follows `ADMIN_EMAILS` on every request.** Grant and revoke are symmetric; removing an email demotes the row on the next authenticated request (found by the adversarial review).
+28. **Essay text never lands in verifications.** Fill verifications longer than 200 characters (and every essay path) are stored as `[N words, M chars, sha256:…]`; the match verdict is computed before redaction, so audit rows and API responses prove what was written without holding the prose.
+29. **No student words, no action.** A photo-only message or an extraction run has no student text, so text-gated tools are refused outright; only an approval-origin run (a dashboard Approve click) skips the text check.
+30. **Inbound media is fetched defensively.** Production accepts only public HTTPS hosts, follows no redirects, times out at 20 s, and aborts downloads over the 20 MB cap while streaming; the fake provider's local URLs are allowed outside production only.
+31. **Dev routes never mount in production.** `/dev/phone` and `/dev/storage` require `NODE_ENV !== 'production'` in addition to the fake/local providers.
+32. **Idempotency markers are released on failure.** A webhook event's marker row is deleted if processing throws, so the provider's retry is handled instead of dropped; unknown senders are recorded (masked) in the audit feed rather than discarded silently.
+33. **The "reconnect your account" text obeys quiet hours.** It is held as a custom trigger in a delayed proactive run until quiet hours end; only day-of-deadline alerts bypass quiet hours.
+34. **Proactive sends check the nudge ledger before texting.** A retried job skips batches whose triggers were already recorded, so a crash after sending cannot double-text.
+35. **Nudges about recommenders and essays carry their item id.** Acknowledging or snoozing the item suppresses the recurring weekly nudge, as the spec requires.

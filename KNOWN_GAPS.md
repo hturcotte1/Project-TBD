@@ -15,6 +15,12 @@ What could not be completed or verified in this build, stated plainly. Everythin
 
 Every selector, page path, and extraction anchor in `packages/browser/src/commonapp-map.ts` was written against the mock site in `packages/browser/src/mock`, because the real Common App DOM was not reachable. The reader, writer, diff, guard, verification-code flow, and fixtures all work against that model. Before a real sync, a human must record the real pages (`RECORD_FIXTURES=true`) and adjust the map. NEXT_STEPS.md lists the pages in order of risk.
 
+## Findings from the adversarial review that were fixed
+
+An adversarial review (six reviewers, two refuters per finding) confirmed 13 defects and 4 contested ones; all were fixed in the same pass (DECISIONS.md #27–35): admin revocation, essay text in fill verifications, photo-only tool authorization, untrusted-tag escape variants, webhook marker-before-processing, delivery-status regression, media SSRF/size, unknown senders, dev routes in production, non-idempotent proactive sends, quiet-hours violation on the reconnect text, ack/snooze not suppressing recommender/essay nudges, queued-sync duplicates, student due dates overwritten by sync, and the missing recommender-invite guard patterns. One finding (the review-page URL allowlist) was refuted: selector and visible-text checks still apply on that page.
+
+Still open from that review: Sendblue's documentation defines no webhook payload for tapback reactions, so reactions the student sends are not recorded as `reaction` messages from the real provider (they are with the fake provider).
+
 ## Product scope not built
 
 - **Gmail read-only connector.** The feature flag, env vars, and settings card exist; the OAuth flow and mail parsing were not built.

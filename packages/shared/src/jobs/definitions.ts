@@ -100,6 +100,7 @@ export const jobIds = {
   extraction: (documentId: string) => joinJobId('extract', documentId),
   essayFeedback: (runId: string) => joinJobId('essay', runId),
   welcome: (studentId: string) => joinJobId('welcome', studentId),
+  syncFollowup: (snapshotId: string) => joinJobId('followup', snapshotId),
   tick: () => 'scheduler-tick',
   browserPrefix: (studentId: string) => `${joinJobId('sync', studentId)}__`,
 };

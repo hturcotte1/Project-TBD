@@ -23,6 +23,9 @@ export interface PrioritizeItem {
   notes: string;
   /** Short human-readable state, e.g. "143/550 words" or "invited Sep 2". Null when there is none. */
   evidenceText: string | null;
+  /** Linked recommender / essay, so nudges about them can be acknowledged or snoozed through the item. */
+  recommenderId?: string | null;
+  essayId?: string | null;
 }
 
 /** A flattened `applications` row. */

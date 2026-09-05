@@ -57,6 +57,8 @@ export async function loadTriggerState(sdb: StudentDb, student: S.Student, now: 
     blocking: item.blocking,
     notes: item.notes,
     evidenceText: item.evidence?.text ?? null,
+    recommenderId: item.recommenderId ?? null,
+    essayId: item.essayId ?? null,
   }));
 
   const recommenderRows = await sdb.select(S.recommenders);

@@ -114,11 +114,12 @@ export function evaluateTriggers(state: TriggerState, now: Date): TriggerEvent[]
       if (daysRemaining >= RECOMMENDER_INACTIVITY_DEADLINE_WINDOW_DAYS) continue;
 
       const key = `recommender_inactivity:${rec.id}:${assignment.applicationId}:${weekBucket}`;
+      const recItem = state.items.find((i) => i.applicationId === assignment.applicationId && i.recommenderId === rec.id) ?? null;
       emit(key, () => ({
         kind: 'recommender_inactivity',
         trigger_key: key,
         application_id: assignment.applicationId,
-        application_item_id: null,
+        application_item_id: recItem?.id ?? null,
         recommender_id: rec.id,
         essay_id: null,
         due_date: app.deadline,
@@ -155,11 +156,12 @@ export function evaluateTriggers(state: TriggerState, now: Date): TriggerEvent[]
     if (!stale) continue;
 
     const key = `essay_staleness:${essay.id}:${weekBucket}`;
+    const essayItem = state.items.find((i) => i.essayId === essay.id) ?? null;
     emit(key, () => ({
       kind: 'essay_staleness',
       trigger_key: key,
       application_id: essay.applicationId,
-      application_item_id: null,
+      application_item_id: essayItem?.id ?? null,
       recommender_id: null,
       essay_id: essay.id,
       due_date: app.deadline,

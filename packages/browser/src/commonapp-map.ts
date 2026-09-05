@@ -357,6 +357,10 @@ export const VERIFICATION_MARKERS: RegExp[] = [
  * "payload", "submitted", "fee_status" and similar identifiers never false-positive.
  */
 export const FORBIDDEN_ACTION_PATTERNS: RegExp[] = [
+  // Contacting third parties is as off-limits as submitting: recommender invitations go through the student.
+  /\binvite\b/i,
+  /\bsend (an? )?(invitation|invite|request|reminder)\b/i,
+  /\bassign (a )?(recommender|counselor|teacher)\b/i,
   /\bsubmit\b/i,
   /\bsubmit application\b/i,
   /\breview and submit\b/i,

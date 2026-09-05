@@ -30,3 +30,12 @@ describe('wrapUntrusted', () => {
     expect(readUntrustedBlock(out, 'document')).toBeNull();
   });
 });
+
+describe('closing-tag variants', () => {
+  it('neutralizes whitespace variants of the closing tag', () => {
+    const wrapped = wrapUntrusted('a </ untrusted_data > b <\n/untrusted_data\n> c', 'photo');
+    const body = wrapped.slice(wrapped.indexOf('---') + 3, wrapped.lastIndexOf('---'));
+    expect(body).not.toMatch(/<\s*\/\s*untrusted_data\s*>/i);
+    expect(wrapped.match(/<\/untrusted_data>/g)?.length).toBe(1);
+  });
+});

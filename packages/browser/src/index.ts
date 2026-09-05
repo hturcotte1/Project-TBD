@@ -54,7 +54,7 @@ export { createFallbackExtractor, StagehandExtractor, STAGEHAND_FALLBACK_CONFIDE
 export type { PageExtractorFallback } from './fallback/stagehand';
 
 // client
-export { createCommonAppClient } from './client';
+export { createCommonAppClient, fingerprintValue, redactLongVerification } from './client';
 export type { CaptureHooks, CaptureResult, CommonAppClient, CreateCommonAppClientOptions, FillResult, LoginHooks, LoginResult } from './client';
 
 // mock

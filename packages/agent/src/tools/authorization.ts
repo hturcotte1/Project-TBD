@@ -23,7 +23,9 @@ const SYNC_WORDS = /\b(sync|check|refresh|look)\b/i;
  */
 export function authorizedByStudentText(tool: AgentTool<z.ZodTypeAny>, studentText: string | null, input: unknown): boolean {
   if (tool.authorization === 'any') return true;
-  if (studentText === null) return true;
+  // No words from the student (a photo-only text, an extraction run) can never authorize an action;
+  // approval-origin runs are exempted by the executor, not here.
+  if (studentText === null || studentText.trim().length === 0) return false;
   const text = studentText.toLowerCase();
   switch (tool.name) {
     case 'markItemDone':

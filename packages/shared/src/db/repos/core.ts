@@ -28,8 +28,10 @@ export const studentsRepo = {
   async upsertFromAuth(db: DbOrTx, input: { authUserId: string; email: string; isAdmin: boolean }): Promise<S.Student> {
     const existing = await studentsRepo.findByAuthUserId(db, input.authUserId);
     if (existing) {
-      if (input.isAdmin && existing.role !== 'admin') {
-        const [updated] = await db.update(S.students).set({ role: 'admin' }).where(eq(S.students.id, existing.id)).returning();
+      // ADMIN_EMAILS is the source of truth on every request: grant and revoke both follow it.
+      const desiredRole = input.isAdmin ? 'admin' : 'student';
+      if (existing.role !== desiredRole) {
+        const [updated] = await db.update(S.students).set({ role: desiredRole }).where(eq(S.students.id, existing.id)).returning();
         return updated ?? existing;
       }
       return existing;

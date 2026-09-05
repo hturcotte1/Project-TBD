@@ -48,3 +48,4 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 | W3-9 | Fill-fields flow + submit guard tests | done — live: propose → approval → fill job → 72/72 verified → screenshot in audit → mock state updated; guard tests (unit, grep-level, runtime) |
 | W3-10 | Authz, webhook signature, prompt-injection tests | done — StudentDb cross-student tests, authz scan, API cross-student 404s, forged webhook 401, injection fixture + origin guard tests |
 | W3-11 | README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY | done — README, DEPLOY, DECISIONS, KNOWN_GAPS, NEXT_STEPS, PRIVACY |
+| W3-12 | Adversarial review (6 reviewers × 2 refuters, 21 findings) and fixes | done — 13 confirmed + 4 contested fixed with tests (DECISIONS #27–35); 1 refuted; 1 documented in KNOWN_GAPS |

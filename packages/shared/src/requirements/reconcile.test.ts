@@ -90,7 +90,7 @@ describe('reconcile', () => {
     expect(withCoincidentalKey.toUpdate).toHaveLength(0);
   });
 
-  it('a student-edited row keeps its status, but evidence/dueDate/title/description still refresh', () => {
+  it('a student-edited row keeps its status and due date, but evidence/title/description still refresh', () => {
     const existing = row({
       status: 'in_progress',
       studentEdited: true,
@@ -113,7 +113,7 @@ describe('reconcile', () => {
     expect(update.set.status).toBeUndefined(); // status is not part of the diff — it was preserved
     expect(update.set.title).toBe('FERPA release (updated)');
     expect(update.set.description).toBe('Sign the updated FERPA waiver.');
-    expect(update.set.dueDate).toBe('2026-11-05');
+    expect(update.set.dueDate).toBeUndefined(); // the student's own due date wins
     expect(update.set.evidence?.text).toBe('FERPA status unknown');
   });
 

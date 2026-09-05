@@ -51,7 +51,7 @@ export async function runTick(deps: WorkerDeps, now: Date = deps.clock.now()): P
     const decision = shouldSync(state.student, now, nearestDeadlineDays);
     if (decision.due) {
       const credentialStatus = await credentialsRepo.status(sdb, 'common_app');
-      const activeJob = await sdb.selectOne(S.browserJobs, inArray(S.browserJobs.status, ['running', 'awaiting_verification_code']));
+      const activeJob = await sdb.selectOne(S.browserJobs, inArray(S.browserJobs.status, ['queued', 'running', 'awaiting_verification_code']));
       if (credentialStatus?.status === 'active' && !activeJob) {
         const job = await browserJobsRepo.create(sdb, { kind: 'full_sync', provider: deps.sessions.provider });
         await deps.enqueuer.enqueue(

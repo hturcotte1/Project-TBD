@@ -3,7 +3,7 @@ import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import * as S from '../schema';
 import { closeTestDb, createTestSchool, createTestStudent, getTestDb, truncateAll } from '../../testing/db';
 import { AuthorizationError, scoped } from './scoped';
-import { appendAudit, conversationsRepo, credentialsRepo, messagesRepo, nudgesRepo } from './core';
+import { appendAudit, conversationsRepo, credentialsRepo, messagesRepo, nudgesRepo, studentsRepo } from './core';
 import { generateKeyBase64, parseKeyRing } from '../../crypto/credentials';
 
 describe('StudentDb row-level authorization', () => {
@@ -98,5 +98,14 @@ describe('StudentDb row-level authorization', () => {
 
     const entry = await appendAudit(sdb, { actor: 'agent', action: 'test' });
     expect(entry.studentId).toBe(s.id);
+  });
+
+  it('grants and revokes admin from ADMIN_EMAILS on every login', async () => {
+    const db = await getTestDb();
+    const a = await studentsRepo.upsertFromAuth(db, { authUserId: 'dev:coach', email: 'coach@example.com', isAdmin: true });
+    expect(a.role).toBe('admin');
+    const b = await studentsRepo.upsertFromAuth(db, { authUserId: 'dev:coach', email: 'coach@example.com', isAdmin: false });
+    expect(b.id).toBe(a.id);
+    expect(b.role).toBe('student');
   });
 });
