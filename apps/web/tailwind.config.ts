@@ -92,6 +92,9 @@ const config: Config = {
         'slide-in-right': { from: { transform: 'translateX(16px)', opacity: '0' }, to: { transform: 'translateX(0)', opacity: '1' } },
         'slide-in-up': { from: { transform: 'translateY(16px)', opacity: '0' }, to: { transform: 'translateY(0)', opacity: '1' } },
         'progress-slide': { from: { transform: 'translateX(-100%)' }, to: { transform: 'translateX(300%)' } },
+        // Button `loading` spinner. Tailwind's own `animate-spin` isn't part of this app's
+        // replaced animation scale, so it needs its own entry here.
+        spin: { from: { transform: 'rotate(0deg)' }, to: { transform: 'rotate(360deg)' } },
       },
       animation: {
         'typing-dot': 'typing-dot 1.2s ease-in-out infinite',
@@ -99,6 +102,7 @@ const config: Config = {
         'slide-in-right': 'slide-in-right var(--dur-open) var(--ease-out)',
         'slide-in-up': 'slide-in-up var(--dur-open) var(--ease-out)',
         'progress-slide': 'progress-slide 1.2s var(--ease-settle) infinite',
+        spin: 'spin 0.6s linear infinite',
       },
     },
   },
