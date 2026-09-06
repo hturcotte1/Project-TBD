@@ -6,5 +6,5 @@ import type { ReactNode } from 'react';
  * for one more line simply omit it.
  */
 export function WhyWeAsk({ children }: { children: ReactNode }) {
-  return <p className="text-12 text-fg-3">Why we ask — {children}</p>;
+  return <p className="text-12 text-fg-3">{children}</p>;
 }

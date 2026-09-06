@@ -10,6 +10,11 @@ import { cn } from '@/lib/utils';
 
 const TERMINAL_RUN_OUTCOMES = new Set(['completed', 'failed', 'refused', 'no_action']);
 
+/** Caps the auto-growing textarea at roughly 5 lines of text-14 (20px line height, 16px vertical
+ * padding, 2px border) before it scrolls internally instead of pushing the thread further up.
+ * Mirrors `components/chat/composer.tsx`, the other half of this same thread pattern. */
+const MAX_TEXTAREA_HEIGHT_PX = 118;
+
 function TypingIndicator() {
   return (
     <div className="flex w-fit items-center gap-1.5 rounded-lg bg-s2 px-3 py-2.5">
@@ -60,8 +65,8 @@ export function InterviewChat({ timezone }: { timezone: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex h-80 flex-col gap-3 overflow-y-auto rounded border border-line p-3">
+    <div className="flex flex-col">
+      <div className="mb-3 flex h-80 flex-col gap-3 overflow-y-auto rounded bg-s1 p-3">
         {messages.length === 0 && !messagesQuery.isPending ? (
           <p className="py-8 text-center text-14 text-fg-2">Vector will start with an easy question. Say hi, or just start typing whatever comes to mind.</p>
         ) : null}
@@ -80,13 +85,11 @@ export function InterviewChat({ timezone }: { timezone: string }) {
         <div ref={bottomRef} />
       </div>
 
-      <form
-        className="flex items-end gap-2"
-        onSubmit={(event) => {
-          event.preventDefault();
-          submit();
-        }}
-      >
+      {/* A plain row, not a `<form>`: on the onboarding step this renders inside
+          `QuestionLayout`'s own `<form>` (its "I'm done talking" submit), and a nested `<form>`
+          is invalid HTML that breaks hydration. Enter-to-send and the button below call `submit()`
+          directly instead of relying on a submit event. */}
+      <div className="flex items-end gap-2 border-t border-line pt-3">
         <Textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
@@ -96,15 +99,17 @@ export function InterviewChat({ timezone }: { timezone: string }) {
               submit();
             }
           }}
-          placeholder="Type your answer"
-          rows={2}
+          autoResize
+          rows={1}
           maxLength={5000}
-          className="flex-1"
+          placeholder="Type your answer"
+          className="flex-1 bg-s2"
+          style={{ maxHeight: MAX_TEXTAREA_HEIGHT_PX }}
         />
-        <Button type="submit" variant="primary" iconOnly aria-label="Send" disabled={!draft.trim()} loading={send.isPending}>
+        <Button type="button" variant="primary" iconOnly aria-label="Send" disabled={!draft.trim()} loading={send.isPending} onClick={submit}>
           <PaperPlaneRight />
         </Button>
-      </form>
+      </div>
     </div>
   );
 }

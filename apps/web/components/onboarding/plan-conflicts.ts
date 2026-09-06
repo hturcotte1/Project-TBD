@@ -7,10 +7,10 @@ export function detectPlanConflicts(plans: ApplicationPlan[]): string[] {
   const reaCount = plans.filter((p) => p === 'REA').length;
 
   if (edCount > 1) {
-    warnings.push('More than one Early Decision plan is selected — ED is binding, so you can only commit to one school.');
+    warnings.push('More than one Early Decision plan is selected. ED is binding, so you can only commit to one school.');
   }
   if (edCount > 0 && reaCount > 0) {
-    warnings.push('Early Decision and Restrictive Early Action together often aren’t allowed — check both schools’ policies before applying this way.');
+    warnings.push('Early Decision and Restrictive Early Action together often aren’t allowed. Check both schools’ policies before applying this way.');
   }
   return warnings;
 }

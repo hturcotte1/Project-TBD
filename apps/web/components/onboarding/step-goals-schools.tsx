@@ -232,8 +232,8 @@ export function StepGoalsSchools({ onboarding, step }: OnboardingStepProps) {
     return (
       <QuestionLayout
         question="Anything colleges should know?"
-        context="Entirely optional — share only what you want."
-        whyWeAsk={<WhyWeAsk>This can help with fee waivers and finding the right fit — Vector only mentions it where you say it is okay to.</WhyWeAsk>}
+        context="Entirely optional. Share only what you want."
+        whyWeAsk={<WhyWeAsk>This can help with fee waivers and finding the right fit. Vector only mentions it where you say it is okay to.</WhyWeAsk>}
         onSubmit={(event) => {
           event.preventDefault();
           nav.goNext();
@@ -286,7 +286,7 @@ export function StepGoalsSchools({ onboarding, step }: OnboardingStepProps) {
       {schoolsError ? <ErrorNote>{schoolsError}</ErrorNote> : null}
 
       <div className="flex flex-col gap-2">
-        {picks.length === 0 ? <p className="text-14 text-fg-2">No schools added yet — search above to get started.</p> : null}
+        {picks.length === 0 ? <p className="text-14 text-fg-2">No schools added yet. Search above to get started.</p> : null}
         {picks.map((pick) => {
           const deadline = resolveDeadline(pick);
           return (

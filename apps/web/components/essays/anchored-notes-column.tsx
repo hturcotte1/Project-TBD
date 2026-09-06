@@ -14,19 +14,34 @@ const NOTE_GAP_PX = 8;
  * width and font metrics as the textarea, one child per paragraph — and reads each paragraph's
  * `offsetTop` off it. Notes anchored to the same (or a nearby) paragraph would otherwise overlap,
  * so a second pass pushes each one down past the bottom of the note above it once note heights are
- * known. Recalculates on resize and whenever the paragraphs or notes change (new content, new
- * feedback round).
+ * known.
+ *
+ * The mirror's own top is not the textarea's top: this column starts below the request button and,
+ * once feedback exists, the verdict/next-steps summary — content with no counterpart beside the
+ * editor. Every wanted position is corrected by the live gap between this column's top and the
+ * textarea's (both read with `getBoundingClientRect` on every pass) so a note ends up level with
+ * its paragraph no matter how tall whatever precedes the column is. Recalculates on resize,
+ * whenever the paragraphs or notes change (new content, new feedback round), and via a
+ * `ResizeObserver` on the summary (`summaryRef`) for the cases that change its height without
+ * touching paragraphs or notes — the request button's label changing while a previous round's
+ * notes are still on screen, an error note appearing or clearing.
  */
 export function AnchoredNotesColumn({
   editorRef,
+  summaryRef,
   paragraphs,
   notes,
 }: {
   editorRef: RefObject<HTMLTextAreaElement | null>;
+  /** Whatever renders above this column in the same margin column — observed for size changes
+   * that don't come with new paragraphs or notes. Optional: without it, positions still recompute
+   * on resize and on paragraph/note changes, just not on a summary-only height change. */
+  summaryRef?: RefObject<HTMLElement | null>;
   paragraphs: string[];
   /** Only notes with a resolved `paragraphIndex` — general notes render elsewhere. */
   notes: PlacedNote[];
 }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const mirrorRef = useRef<HTMLDivElement | null>(null);
   const noteRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [tops, setTops] = useState<number[]>([]);
@@ -38,13 +53,19 @@ export function AnchoredNotesColumn({
     function measure() {
       const editor = editorRef.current;
       const mirror = mirrorRef.current;
-      if (!editor || !mirror) return;
+      const container = containerRef.current;
+      if (!editor || !mirror || !container) return;
       mirror.style.width = `${editor.clientWidth}px`;
+
+      // How far this column's top has drifted below the textarea's top — subtracted back out of
+      // every paragraph offset below so notes align with the real textarea, not with the mirror's
+      // position inside a column that starts lower on the page.
+      const drift = container.getBoundingClientRect().top - editor.getBoundingClientRect().top;
 
       const mirrorTop = mirror.getBoundingClientRect().top;
       const paragraphTops = Array.from(mirror.querySelectorAll<HTMLElement>('[data-paragraph]')).map((el) => el.getBoundingClientRect().top - mirrorTop);
 
-      const wanted = notes.map((note) => (note.paragraphIndex !== null ? (paragraphTops[note.paragraphIndex] ?? 0) : 0));
+      const wanted = notes.map((note) => (note.paragraphIndex !== null ? (paragraphTops[note.paragraphIndex] ?? 0) : 0) - drift);
       const order = notes.map((_, index) => index).sort((a, b) => wanted[a]! - wanted[b]!);
       const nextTops = new Array<number>(notes.length).fill(0);
       let cursor = 0;
@@ -67,17 +88,30 @@ export function AnchoredNotesColumn({
       measure();
     }
     window.addEventListener('resize', onResize);
+
+    // Covers a summary height change that isn't accompanied by new paragraphs or notes (the
+    // request button swapping its label while stale notes from a previous round are still shown).
+    const summaryEl = summaryRef?.current;
+    const summaryObserver = summaryEl && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    if (summaryEl && summaryObserver) summaryObserver.observe(summaryEl);
+
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
+      summaryObserver?.disconnect();
     };
-  }, [editorRef, paragraphs, notes]);
+  }, [editorRef, summaryRef, paragraphs, notes]);
 
   if (notes.length === 0) return null;
 
   return (
-    <div className="relative" style={{ minHeight: columnHeight }}>
-      <div ref={mirrorRef} aria-hidden className="invisible absolute left-0 top-0 -z-10 px-3 py-2 font-ui text-17 leading-[1.6]">
+    <div ref={containerRef} className="relative" style={{ minHeight: columnHeight }}>
+      {/* Font classes must match `EssayEditor`'s textarea exactly, `lg:` prefix included: at the
+          `lg` breakpoint the responsive `lg:text-17` rule (compiled into a later stylesheet block)
+          overrides the plain `leading-[1.6]` rule's line-height with `text-17`'s own bundled one,
+          and the mirror has to land on that same value or its paragraph offsets drift from the
+          real textarea's by a few pixels per line. */}
+      <div ref={mirrorRef} aria-hidden className="invisible absolute left-0 top-0 -z-10 px-3 py-2 font-ui text-14 leading-[1.6] lg:text-17">
         {paragraphs.map((paragraph, index) => (
           <div key={index}>
             <div data-paragraph className="whitespace-pre-wrap break-words">

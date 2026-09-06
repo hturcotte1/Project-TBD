@@ -1,6 +1,6 @@
 /**
  * Pure fill computation for the onboarding layout's 7-segment progress bar (see
- * `onboarding-progress.tsx`). No "Step 3 of 7" text and no step titles per the spec — the only
+ * `progress-segments.tsx`). No "Step 3 of 7" text and no step titles per the spec — the only
  * thing rendered is how much of each segment is filled.
  */
 import { getQuestionCount } from '@/components/onboarding/step-questions';

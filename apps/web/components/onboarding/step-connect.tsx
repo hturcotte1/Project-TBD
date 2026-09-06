@@ -103,8 +103,8 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
       >
         <Prose>
           <p>
-            Vector reads your Common App account — what is filled in, in progress, or missing — and, with your approval field by field,
-            fills in what you ask it to. It never submits anything. Your password is encrypted at rest and decrypted only for a few
+            Vector reads your Common App account: what is filled in, in progress, or missing. Then, with your approval field by field,
+            it fills in what you ask it to. It never submits anything. Your password is encrypted at rest and decrypted only for a few
             seconds inside Vector's browser worker.{' '}
             <TextLink href="/privacy">Read the full privacy page</TextLink>.
           </p>
@@ -129,7 +129,7 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
     return (
       <QuestionLayout
         question="What's the code Common App sent you?"
-        context={`Common App just sent a code — text it to ${onboarding.agent_name} or enter it here.`}
+        context={`Common App just sent a code. Text it to ${onboarding.agent_name} or enter it here.`}
         onSubmit={(event) => {
           event.preventDefault();
           submitCode.mutate();

@@ -77,12 +77,8 @@ export function StepIntangibles({ onboarding, step }: OnboardingStepProps) {
     return (
       <QuestionLayout
         question="Tell Vector about yourself."
-        context="A short conversation — Vector uses this to write in your voice, not its own."
-        whyWeAsk={
-          <WhyWeAsk>
-            Essays and short answers land better when they draw on something real — nothing here is used word-for-word.
-          </WhyWeAsk>
-        }
+        context="A short conversation. Vector uses it to write in your voice, not its own."
+        whyWeAsk={<WhyWeAsk>Essays land better when they draw on something real. Nothing here is used word for word.</WhyWeAsk>}
         onSubmit={(event) => {
           event.preventDefault();
           summarize.mutate();

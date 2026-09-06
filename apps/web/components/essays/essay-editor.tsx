@@ -2,7 +2,7 @@
 
 import type { EssayDetailDto } from '@apogee/shared/api';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 import { useAutosave } from '@/components/essays/use-autosave';
 import type { AutosaveState } from '@/components/essays/use-autosave';
@@ -36,9 +36,26 @@ export function EssayEditor({
   textareaRef?: RefObject<HTMLTextAreaElement | null>;
   className?: string;
 }) {
+  const localRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // `autoResize` on `Textarea` grows the box from its own `onInput` handler, which only ever fires
+  // for the user typing — a draft arriving into the controlled `value` (the initial load, a
+  // restored version) never dispatches a native input event, so without this the box stays at its
+  // `min-h-[50vh]` floor and everything past it is clipped by `overflow-hidden`. Runs whenever
+  // `content` changes so both of those cases end up the right height too.
+  useEffect(() => {
+    const el = localRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [content]);
+
   return (
     <Textarea
-      ref={textareaRef}
+      ref={(el) => {
+        localRef.current = el;
+        if (textareaRef) textareaRef.current = el;
+      }}
       value={content}
       onChange={(event) => onChange(event.target.value)}
       autoResize

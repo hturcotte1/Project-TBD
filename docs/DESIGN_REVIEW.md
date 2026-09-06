@@ -50,3 +50,19 @@ Findings and fixes:
 Verified after the fixes (re-shot `today`, `today-menu`, `palette`, `schools`, `schools-expanded`, `school`, `essays`, `essay`, `essay-feedback-sheet`, `recommenders`, `recommenders-expanded`, `timeline`, `timeline-deadlines`): the rail has one hairline; queue sentences read "Finish the Extended essay (0 words, not started)" with the days figure once; at 390px a queue row is the sentence, the figure and one menu; "Nov 1" and "57" are two columns on Schools, Essays and Recommenders; one-column mobile tables have no header; the essay editor starts under the gauge with the summary and a normal-width button in the margin; recommenders at 390px show "3 schools: 3 invited" under each name; the timeline at 390px marks done rows with a check.
 
 Carried into pass 3: the essay margin notes are offset by the height of the summary that now sits above them (the anchoring assumes the notes column starts level with the textarea); the Schools table's days figure is set at body size in Bricolage rather than the 43px the type scale named, which was the right call for a 40px row, so the scale's description was corrected instead.
+
+## Pass 3, full review of every screen
+
+Reviewed every shot in `docs/screenshots` at both widths and both themes after the pass-2 fixes landed: `activity`, `settings`, `profile`, `admin`, `signin`, `onboarding-1` to `onboarding-7`, plus the re-shot `essay`, `essay-feedback-sheet` and the pages from pass 2.
+
+Findings and fixes:
+
+- Activity: unknown audit actions fell back to title-cased keys ("Browser Job Full Sync Succeeded", "Seed Demo Student"). Fix: the label map names every action the backend emits, browser job outcomes are matched by shape, and the fallback is sentence case.
+- Onboarding: spaced em dashes in the interface copy ("A short conversation — Vector uses this…", "Why we ask — …"), a hairline box around the interview thread, and a textarea with a resize handle. Fix: sentences and colons instead of dashes; the why-we-ask line is the bare sentence; the thread sits on Surface 1 with the one allowed hairline above the composer; no resize handle.
+- Onboarding step 4 showed Next's dev "issues" badge. Two real bugs behind it: the API raced itself creating the student row on a new account's first page load (fixed in `packages/shared`, DECISIONS #44), and the interview composer was a form nested inside the question's form, which is invalid HTML and failed hydration. Fix: the composer is a plain block whose send button calls submit. The onboarding shots now fail if any console error or page error fires.
+- Essay editor at 1280: the anchored margin notes sat below their paragraphs by the height of the summary above them, and the hidden text mirror used a different line height from the textarea at `lg`, so paragraph offsets drifted. Fix: the drift between the notes column and the textarea is measured and subtracted, the mirror carries the textarea's exact responsive classes, and a ResizeObserver on the summary re-measures when it changes. The seeded "i learned that" notes now sit level with paragraph 2.
+- Essay editor at 390: the auto-growing textarea only grew on typing, so a loaded draft was clipped at its minimum height. Fix: it re-measures whenever the content prop changes.
+- Privacy page: prose em dashes rewritten as sentences, commas and parentheses.
+- The onboarding progress component still carried the old "OnboardingProgress" name from the numbered stepper it replaced. Fix: renamed to `ProgressSegments`.
+
+Passed: Settings, Profile and Admin are plain dense sections and tables with one primary per screen; Activity is one stream with one filter and a day divider; the sign-in page is the wordmark, a sentence, a field and a button; every onboarding screen is one question under the seven-segment bar with the current segment partly filled; both themes hold on every screen; no page scrolls horizontally at 390px.

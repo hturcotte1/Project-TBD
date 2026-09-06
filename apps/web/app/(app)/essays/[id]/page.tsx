@@ -102,6 +102,9 @@ function EssayDetail({
 }) {
   const autosave = useEssayAutosave(essay, content);
   const feedback = useEssayFeedback(essay, selectedFeedbackId, () => setSelectedFeedbackId(null));
+  // Observed by the anchored notes column so a height change here (busy label, error note) that
+  // isn't accompanied by new paragraphs or notes still corrects their vertical offset.
+  const summaryRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -148,11 +151,15 @@ function EssayDetail({
             position below `lg`, where it trails the editor as the "bottom button" ahead of the
             feedback sheet. The desktop notes are hidden below `lg:` (the sheet covers that case),
             nested here rather than as a sibling grid item so they stay stacked under the summary
-            in the same column instead of claiming a row of their own. */}
+            in the same column instead of claiming a row of their own. `summaryRef` wraps just the
+            summary (kept as its own flex column so the button's `self-start` still sees a flex
+            parent) so the notes below can measure how much it pushes them down and correct for it. */}
         <div className="flex flex-col gap-4">
-          <FeedbackHeader state={feedback} hasDraft={essay.current_draft !== null} />
+          <div ref={summaryRef} className="flex flex-col gap-4">
+            <FeedbackHeader state={feedback} hasDraft={essay.current_draft !== null} />
+          </div>
           <div className="hidden lg:block">
-            <FeedbackNotesDesktop state={feedback} editorRef={textareaRef} />
+            <FeedbackNotesDesktop state={feedback} editorRef={textareaRef} summaryRef={summaryRef} />
           </div>
         </div>
         <div className="lg:hidden">

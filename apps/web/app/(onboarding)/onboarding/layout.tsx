@@ -2,7 +2,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import type { ReactNode } from 'react';
-import { OnboardingProgress } from '@/components/onboarding/onboarding-progress';
+import { ProgressSegments } from '@/components/onboarding/progress-segments';
 import { GlobalProgress } from '@/components/system';
 import { serverApi } from '@/lib/api.server';
 import { requireStudent } from '@/lib/auth';
@@ -29,7 +29,7 @@ export default async function OnboardingLayout({ children }: { children: ReactNo
           {/* useSearchParams (via useQuestionNav) requires a Suspense boundary so the segment
               doesn't fully de-opt to client rendering. */}
           <Suspense fallback={<div className="flex h-1 gap-1" />}>
-            <OnboardingProgress currentStep={state.step} />
+            <ProgressSegments currentStep={state.step} />
           </Suspense>
         </div>
         <div className="flex-1 text-left">{children}</div>

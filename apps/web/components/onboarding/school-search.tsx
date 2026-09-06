@@ -48,7 +48,7 @@ export function SchoolSearch({ excludedSlugs, onAdd, onAddFreeText }: SchoolSear
               className="flex h-row-touch w-full items-center justify-between gap-2 rounded px-3 text-left text-14 hover:bg-s2 focus-inset lg:h-row"
             >
               <span className="truncate">
-                {school.name} <span className="text-fg-2">— {school.city}, {school.state}</span>
+                {school.name}, <span className="text-fg-2">{school.city}, {school.state}</span>
               </span>
               <Plus className="shrink-0 text-fg-3" />
             </button>

@@ -93,7 +93,7 @@ export function TranscriptUpload({ onApplied }: { onApplied: (profile: StudentPr
       {draft ? (
         <div className="flex flex-col gap-3 rounded border border-line px-3 py-3">
           <p className="text-12 text-fg-2">
-            Extracted from your transcript{draft.school_name ? ` (${draft.school_name})` : ''} — check it over on the next screen before it is saved.
+            Extracted from your transcript{draft.school_name ? ` (${draft.school_name})` : ''}. Check it over on the next screen before it is saved.
           </p>
           {applied ? (
             <OkNote>Applied to your profile</OkNote>

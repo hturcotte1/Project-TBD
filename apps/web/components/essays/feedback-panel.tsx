@@ -91,12 +91,23 @@ export function FeedbackHeader({ state, hasDraft }: { state: EssayFeedbackState;
 }
 
 /** Desktop margin column: general notes in normal flow, then the paragraph-anchored ones
- * positioned beside the paragraph they're about. */
-export function FeedbackNotesDesktop({ state, editorRef }: { state: EssayFeedbackState; editorRef: RefObject<HTMLTextAreaElement | null> }) {
+ * positioned beside the paragraph they're about. `summaryRef` points at the request button and
+ * summary that sits above this column (see `EssayDetail`) — the anchored notes watch it so a
+ * height change there (a busy label swap, an error note appearing) still corrects their offset
+ * even when it happens without new paragraphs or notes. */
+export function FeedbackNotesDesktop({
+  state,
+  editorRef,
+  summaryRef,
+}: {
+  state: EssayFeedbackState;
+  editorRef: RefObject<HTMLTextAreaElement | null>;
+  summaryRef?: RefObject<HTMLElement | null>;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <GeneralNotes notes={state.general} />
-      <AnchoredNotesColumn editorRef={editorRef} paragraphs={state.paragraphs} notes={state.anchored} />
+      <AnchoredNotesColumn editorRef={editorRef} summaryRef={summaryRef} paragraphs={state.paragraphs} notes={state.anchored} />
     </div>
   );
 }

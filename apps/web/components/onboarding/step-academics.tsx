@@ -139,7 +139,7 @@ export function StepAcademics({ onboarding, step }: OnboardingStepProps) {
     return (
       <QuestionLayout
         question="What's your GPA?"
-        whyWeAsk={<WhyWeAsk>Colleges read your transcript in context — this helps Vector describe your rigor accurately when it drafts anything on your behalf.</WhyWeAsk>}
+        whyWeAsk={<WhyWeAsk>Colleges read your transcript in context. This helps Vector describe your rigor accurately when it drafts anything on your behalf.</WhyWeAsk>}
         onSubmit={(event) => {
           event.preventDefault();
           nav.goNext();
@@ -166,7 +166,7 @@ export function StepAcademics({ onboarding, step }: OnboardingStepProps) {
           </Field>
         </div>
         <Field label="Course rigor, in your own words">
-          <Textarea rows={3} maxLength={1000} value={academics.rigor_summary} onChange={(event) => setAcademics((a) => ({ ...a, rigor_summary: event.target.value }))} placeholder="Most rigorous track my school offers — 7 APs by graduation." />
+          <Textarea rows={3} maxLength={1000} value={academics.rigor_summary} onChange={(event) => setAcademics((a) => ({ ...a, rigor_summary: event.target.value }))} placeholder="Most rigorous track my school offers, 7 APs by graduation." />
         </Field>
       </QuestionLayout>
     );

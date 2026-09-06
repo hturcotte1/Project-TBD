@@ -57,7 +57,7 @@ export function StepActivities({ onboarding, step }: OnboardingStepProps) {
   return (
     <QuestionLayout
       question="What do you spend your time on?"
-      context="Up to 10, in the order they matter most to you — Common App's own limit."
+      context="Up to 10, in the order they matter most to you. That's Common App's own limit."
       onSubmit={(event) => {
         event.preventDefault();
         save.mutate();

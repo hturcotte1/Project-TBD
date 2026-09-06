@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
  * both the step and the question index come from the current URL, not the server-rendered state
  * that was current when the layout itself first rendered.
  */
-export function OnboardingProgress({ currentStep }: { currentStep: number }) {
+export function ProgressSegments({ currentStep }: { currentStep: number }) {
   const params = useParams<{ step?: string }>();
   const searchParams = useSearchParams();
 

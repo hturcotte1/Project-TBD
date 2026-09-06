@@ -15,9 +15,9 @@ import { clientApi } from '@/lib/api.client';
 import { formatUsPhoneAsYouType, isValidE164, toE164 } from '@/lib/phone';
 
 const NUDGE_OPTIONS: Array<{ value: NudgeIntensity; label: string; description: string }> = [
-  { value: 'chill', label: 'Chill', description: 'Only the essentials — deadlines and anything urgent.' },
+  { value: 'chill', label: 'Chill', description: 'Only the essentials: deadlines and anything urgent.' },
   { value: 'normal', label: 'Normal', description: 'Regular check-ins and reminders, most weeks.' },
-  { value: 'intense', label: 'Intense', description: "Daily nudges — nothing slips." },
+  { value: 'intense', label: 'Intense', description: 'Daily nudges, nothing slips.' },
 ];
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -162,7 +162,7 @@ export function StepBasics({ onboarding, step }: OnboardingStepProps) {
     return (
       <QuestionLayout
         question="What number should Vector text?"
-        whyWeAsk={<WhyWeAsk>This is the number Vector texts — nudges, reminders and verification-code requests all come through this one thread.</WhyWeAsk>}
+        whyWeAsk={<WhyWeAsk>This is the number Vector texts. Nudges, reminders and verification-code requests all come through this one thread.</WhyWeAsk>}
         onSubmit={(event) => {
           event.preventDefault();
           const e164 = toE164(phoneDisplay);
@@ -227,7 +227,7 @@ export function StepBasics({ onboarding, step }: OnboardingStepProps) {
 
   if (questionId === 'timezone') {
     return (
-      <QuestionLayout question="What time zone are you in?" context="Detected automatically — change it if you'll be somewhere else this fall." onSubmit={advance} onBack={nav.goBack}>
+      <QuestionLayout question="What time zone are you in?" context="Detected automatically. Change it if you'll be somewhere else this fall." onSubmit={advance} onBack={nav.goBack}>
         <Field label="Time zone">
           <Select value={timezone} onValueChange={setTimezone}>
             <SelectTrigger>

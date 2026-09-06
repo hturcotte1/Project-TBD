@@ -1,4 +1,4 @@
-import type { Page } from 'playwright';
+import type { ConsoleMessage, Page } from 'playwright';
 import { getQuestions } from '../../components/onboarding/step-questions';
 import type { Shot } from './types';
 
@@ -59,11 +59,35 @@ async function freshDevSignIn(page: Page, origin: string): Promise<void> {
   if (!warmup.ok()) throw new Error(`warm-up GET /me failed for a freshly signed-in student: ${warmup.status()}`);
 }
 
+/**
+ * Watches for any browser-side console error or uncaught exception from here until `stop()` is
+ * called, throwing if one occurred. A first-visit race used to surface as a step-4 API 500 and the
+ * Next.js dev "issues" badge; that race is fixed, but this guard keeps any regression (there or on
+ * any other onboarding step) from silently passing a screenshot.
+ */
+function watchForPageErrors(page: Page): { stop: () => void } {
+  const errors: string[] = [];
+  const onConsole = (message: ConsoleMessage) => {
+    if (message.type() === 'error') errors.push(`console error: ${message.text()}`);
+  };
+  const onPageError = (error: Error) => errors.push(`uncaught page error: ${error.message}`);
+  page.on('console', onConsole);
+  page.on('pageerror', onPageError);
+  return {
+    stop: () => {
+      page.off('console', onConsole);
+      page.off('pageerror', onPageError);
+      if (errors.length > 0) throw new Error(`onboarding shot hit browser error(s):\n${errors.join('\n')}`);
+    },
+  };
+}
+
 /** Signs in as a fresh student, completes every step before `targetStep` via the same
  * `onboardingStep` calls the UI itself sends (fastest way to reach a deep step — see the
  * onboarding spec), then navigates to it and waits for its first question. */
 async function prepareThroughStep(page: Page, targetStep: number): Promise<void> {
   const origin = new URL(page.url()).origin;
+  const errorWatcher = watchForPageErrors(page);
   await freshDevSignIn(page, origin);
 
   for (const body of stepBodies(randomPhone()).slice(0, targetStep - 1)) {
@@ -79,6 +103,7 @@ async function prepareThroughStep(page: Page, targetStep: number): Promise<void>
   await page.goto(`${origin}/onboarding/${targetStep}`, { waitUntil: 'networkidle' });
   const firstQuestion = getQuestions(targetStep)[0];
   if (firstQuestion) await page.getByRole('heading', { level: 1, name: firstQuestion.label }).waitFor({ state: 'visible' });
+  errorWatcher.stop();
 }
 
 /** Screens owned by the onboarding page task. */
