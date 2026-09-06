@@ -1,26 +1,26 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { ApprovalsCard } from '@/components/dashboard/approvals-card';
-import { ChangesStrip } from '@/components/dashboard/changes-strip';
-import { DeadlineHero } from '@/components/dashboard/deadline-hero';
-import { MessagesPreview } from '@/components/dashboard/messages-preview';
-import { NextActionsList } from '@/components/dashboard/next-actions-list';
-import { PageHeader } from '@/components/layout/page-header';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button, Countdown, ErrorNote, PageTitle, Stack } from '@/components/system';
+import { CountdownSection } from '@/components/today/countdown-section';
+import { formatLongDate } from '@/components/today/format-today';
+import { QueueSection } from '@/components/today/queue-section';
+import { SinceYesterday } from '@/components/today/since-yesterday';
+import { VectorSection } from '@/components/today/vector-section';
+import { WaitingOnYou } from '@/components/today/waiting-on-you';
 import { clientApi } from '@/lib/api.client';
 
 // React Query pauses `refetchInterval` while the tab is hidden (refetchIntervalInBackground
-// defaults to false), which is exactly the "poll every 15s while visible" behavior asked for.
+// defaults to false), which is exactly "poll every 15s while visible".
 const POLL_MS = 15_000;
-
-function ErrorNote({ message }: { message: string }) {
-  return <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">{message}</p>;
-}
+const DEFAULT_TIMEZONE = 'America/Chicago';
+const DEFAULT_AGENT_NAME = 'Vector';
 
 export default function TodayPage() {
   const meQuery = useQuery({ queryKey: ['me'], queryFn: () => clientApi.call('me') });
+  const settingsQuery = useQuery({ queryKey: ['settings'], queryFn: () => clientApi.call('settingsGet') });
   const overviewQuery = useQuery({ queryKey: ['overview'], queryFn: () => clientApi.call('overview'), refetchInterval: POLL_MS });
+  const applicationsQuery = useQuery({ queryKey: ['applications'], queryFn: () => clientApi.call('applicationsList'), refetchInterval: POLL_MS });
   const actionsQuery = useQuery({
     queryKey: ['next-actions'],
     queryFn: () => clientApi.call('nextActionsList', { query: { include_closed: false } }),
@@ -32,56 +32,42 @@ export default function TodayPage() {
     refetchInterval: POLL_MS,
   });
   const messagesQuery = useQuery({
-    queryKey: ['messages', 'main', 'recent'],
+    queryKey: ['messages', 'main'],
     queryFn: () => clientApi.call('messagesList', { params: { kind: 'main' } }),
     refetchInterval: POLL_MS,
   });
 
-  const timezone = meQuery.data?.timezone ?? 'America/Chicago';
+  const timezone = meQuery.data?.timezone ?? DEFAULT_TIMEZONE;
+  const agentName = settingsQuery.data?.agent_name ?? DEFAULT_AGENT_NAME;
+  const todayLabel = overviewQuery.data ? formatLongDate(overviewQuery.data.today, timezone) : undefined;
 
   return (
-    <div className="pb-8">
-      <PageHeader title="Today" description="Your next concrete step, in order." />
-      <div className="space-y-4 px-4 py-5 sm:px-6">
-        {overviewQuery.data ? (
-          <DeadlineHero overview={overviewQuery.data} timezone={timezone} />
-        ) : overviewQuery.isError ? (
-          <ErrorNote message="Could not load your overview — try refreshing." />
+    <div>
+      <PageTitle meta={todayLabel}>Today</PageTitle>
+      <Stack className="mt-8">
+        {overviewQuery.isError ? (
+          <ErrorNote>
+            Could not load your overview.{' '}
+            <Button variant="text" size="sm" className="h-auto px-0" onClick={() => void overviewQuery.refetch()}>
+              Try again
+            </Button>
+          </ErrorNote>
+        ) : overviewQuery.data ? (
+          <CountdownSection overview={overviewQuery.data} applications={applicationsQuery.data ?? []} />
         ) : (
-          <Skeleton className="h-40 w-full" />
+          // Same "no deadline" state Countdown already renders elsewhere — keeps the countdown's
+          // own numeral on the page (and its font) from the first paint, rather than an empty gap.
+          <Countdown size="page" days={null} />
         )}
 
-        {overviewQuery.data ? (
-          <ChangesStrip changes={overviewQuery.data.changes_since_yesterday} />
-        ) : overviewQuery.isPending ? (
-          <Skeleton className="h-20 w-full" />
-        ) : null}
+        {approvalsQuery.data && approvalsQuery.data.length > 0 ? <WaitingOnYou approvals={approvalsQuery.data} /> : null}
 
-        {approvalsQuery.data ? (
-          <ApprovalsCard approvals={approvalsQuery.data} />
-        ) : approvalsQuery.isError ? (
-          <ErrorNote message="Could not load approvals — try refreshing." />
-        ) : (
-          <Skeleton className="h-24 w-full" />
-        )}
+        <QueueSection actions={actionsQuery.data} isError={actionsQuery.isError} timezone={timezone} />
 
-        <div>
-          <h2 className="mb-2 text-sm font-medium text-muted-foreground">Next actions</h2>
-          {actionsQuery.data ? (
-            <NextActionsList actions={actionsQuery.data} />
-          ) : actionsQuery.isError ? (
-            <ErrorNote message="Could not load next actions — try refreshing." />
-          ) : (
-            <Skeleton className="h-24 w-full" />
-          )}
-        </div>
+        {overviewQuery.data ? <SinceYesterday overview={overviewQuery.data} /> : null}
 
-        {messagesQuery.data ? (
-          <MessagesPreview messages={messagesQuery.data} />
-        ) : messagesQuery.isPending ? (
-          <Skeleton className="h-32 w-full" />
-        ) : null}
-      </div>
+        {messagesQuery.data ? <VectorSection messages={messagesQuery.data} agentName={agentName} /> : null}
+      </Stack>
     </div>
   );
 }

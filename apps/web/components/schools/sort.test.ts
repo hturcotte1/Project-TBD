@@ -1,6 +1,13 @@
-import type { ApplicationDto } from '@apogee/shared/api';
+import type { ApplicationDto, ApplicationItemDto } from '@apogee/shared/api';
 import { describe, expect, it } from 'vitest';
-import { groupApplications, isSubmittedApplication, sortApplications } from '@/components/schools/sort';
+import {
+  compareDaysRemaining,
+  groupApplications,
+  isSubmittedApplication,
+  openChecklistItems,
+  sortApplications,
+  sortApplicationsByColumn,
+} from '@/components/schools/sort';
 
 function app(overrides: Partial<ApplicationDto> & { id: string }): ApplicationDto {
   return {
@@ -82,5 +89,102 @@ describe('groupApplications', () => {
     const grouped = groupApplications([app({ id: 'a', status: 'in_progress' })]);
     expect(grouped.submitted).toEqual([]);
     expect(grouped.active).toHaveLength(1);
+  });
+});
+
+describe('compareDaysRemaining', () => {
+  it('orders ascending by day count', () => {
+    expect(compareDaysRemaining(5, 10, 'asc')).toBeLessThan(0);
+    expect(compareDaysRemaining(10, 5, 'asc')).toBeGreaterThan(0);
+  });
+
+  it('flips for descending', () => {
+    expect(compareDaysRemaining(5, 10, 'desc')).toBeGreaterThan(0);
+  });
+
+  it('sorts a null deadline after any number, in either direction', () => {
+    expect(compareDaysRemaining(null, 5, 'asc')).toBeGreaterThan(0);
+    expect(compareDaysRemaining(5, null, 'asc')).toBeLessThan(0);
+    expect(compareDaysRemaining(null, 5, 'desc')).toBeGreaterThan(0);
+    expect(compareDaysRemaining(5, null, 'desc')).toBeLessThan(0);
+  });
+
+  it('treats two null deadlines as equal', () => {
+    expect(compareDaysRemaining(null, null, 'asc')).toBe(0);
+  });
+});
+
+describe('sortApplicationsByColumn', () => {
+  const alpha = app({ id: 'alpha', days_remaining: 30, completion_percent: 80, school: { id: 'a', slug: 'alpha', name: 'Alpha College', ceeb_code: null, common_app_member: true, portal_url: null, website: null, city: 'C', state: 'S', type: 'private' } });
+  const zeta = app({ id: 'zeta', days_remaining: 10, completion_percent: 20, school: { id: 'z', slug: 'zeta', name: 'Zeta University', ceeb_code: null, common_app_member: true, portal_url: null, website: null, city: 'C', state: 'S', type: 'private' } });
+
+  it('sorts by school name', () => {
+    expect(sortApplicationsByColumn([zeta, alpha], { column: 'name', direction: 'asc' }).map((a) => a.id)).toEqual(['alpha', 'zeta']);
+    expect(sortApplicationsByColumn([zeta, alpha], { column: 'name', direction: 'desc' }).map((a) => a.id)).toEqual(['zeta', 'alpha']);
+  });
+
+  it('sorts by deadline, ascending by default', () => {
+    expect(sortApplicationsByColumn([alpha, zeta], { column: 'deadline', direction: 'asc' }).map((a) => a.id)).toEqual(['zeta', 'alpha']);
+  });
+
+  it('sorts by completion percent', () => {
+    expect(sortApplicationsByColumn([alpha, zeta], { column: 'completion', direction: 'asc' }).map((a) => a.id)).toEqual(['zeta', 'alpha']);
+    expect(sortApplicationsByColumn([alpha, zeta], { column: 'completion', direction: 'desc' }).map((a) => a.id)).toEqual(['alpha', 'zeta']);
+  });
+
+  it('does not mutate the input array', () => {
+    const list = [alpha, zeta];
+    const copy = [...list];
+    sortApplicationsByColumn(list, { column: 'name', direction: 'asc' });
+    expect(list).toEqual(copy);
+  });
+});
+
+function item(overrides: Partial<ApplicationItemDto> & { id: string }): ApplicationItemDto {
+  return {
+    application_id: 'app-1',
+    rule_key: overrides.id,
+    kind: 'custom',
+    title: overrides.id,
+    description: '',
+    source: 'student',
+    status: 'missing',
+    evidence: null,
+    due_date: null,
+    importance: 50,
+    effort: 'small',
+    depends_on_others: false,
+    blocking: false,
+    student_edited: false,
+    notes: '',
+    essay_id: null,
+    recommender_id: null,
+    last_checked_at: null,
+    completed_at: null,
+    updated_at: '2026-09-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+describe('openChecklistItems', () => {
+  it('keeps only missing, in_progress and blocked items', () => {
+    const items = [
+      item({ id: 'missing', status: 'missing' }),
+      item({ id: 'in-progress', status: 'in_progress' }),
+      item({ id: 'blocked', status: 'blocked' }),
+      item({ id: 'done', status: 'done' }),
+      item({ id: 'na', status: 'not_applicable' }),
+    ];
+    expect(openChecklistItems(items).map((i) => i.rule_key).sort()).toEqual(['blocked', 'in-progress', 'missing']);
+  });
+
+  it('orders by importance descending, then title, and caps to the limit', () => {
+    const items = [
+      item({ id: 'low', title: 'Z low', importance: 10 }),
+      item({ id: 'high', title: 'A high', importance: 90 }),
+      item({ id: 'mid-b', title: 'B mid', importance: 50 }),
+      item({ id: 'mid-a', title: 'A mid', importance: 50 }),
+    ];
+    expect(openChecklistItems(items, 3).map((i) => i.rule_key)).toEqual(['high', 'mid-a', 'mid-b']);
   });
 });

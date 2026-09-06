@@ -6,13 +6,17 @@
  */
 import type { RecommenderAssignmentDto } from '@apogee/shared/api';
 import type { RecommenderAssignmentStatus } from '@apogee/shared/domain';
+import { type HeatStep, heatStep } from '@/lib/urgency';
 
-export type AssignmentBadgeVariant = 'success' | 'warn' | 'outline';
+/** One warm heat step for "invited" (colored by how close that school's deadline is), or the
+ * quiet "ok" outcome color for "submitted". "Not yet invited" reuses heat step 0 — the same
+ * secondary-text color a far-off deadline gets, since neither carries any urgency. */
+export type SchoolStatusTone = HeatStep | 'ok';
 
 export interface PerSchoolStatus {
   status: RecommenderAssignmentStatus;
   label: string;
-  badgeVariant: AssignmentBadgeVariant;
+  tone: SchoolStatusTone;
   /** What to show as "Last seen" — evidence text when we have it, else a status-appropriate note. */
   lastSeenText: string;
 }
@@ -21,12 +25,6 @@ const STATUS_LABEL: Record<RecommenderAssignmentStatus, string> = {
   pending: 'Not yet invited',
   invited: 'Invited',
   submitted: 'Submitted',
-};
-
-const STATUS_VARIANT: Record<RecommenderAssignmentStatus, AssignmentBadgeVariant> = {
-  pending: 'outline',
-  invited: 'warn',
-  submitted: 'success',
 };
 
 type AssignmentInput = Pick<RecommenderAssignmentDto, 'status' | 'invited_at' | 'submitted_at' | 'evidence'>;
@@ -51,12 +49,33 @@ function fallbackLastSeenText(status: RecommenderAssignmentStatus): string {
   }
 }
 
-export function derivePerSchoolStatus(assignment: AssignmentInput): PerSchoolStatus {
+/**
+ * `daysRemaining` is the matching application's days-until-deadline (null when unknown) — only
+ * consulted for an "invited" row, since that's the only status whose color should track urgency.
+ */
+export function derivePerSchoolStatus(assignment: AssignmentInput, daysRemaining: number | null): PerSchoolStatus {
   const status = effectiveStatus(assignment);
+  const tone: SchoolStatusTone = status === 'submitted' ? 'ok' : status === 'invited' ? heatStep(daysRemaining) : 0;
   return {
     status,
     label: STATUS_LABEL[status],
-    badgeVariant: STATUS_VARIANT[status],
+    tone,
     lastSeenText: assignment.evidence?.text ? `Last seen: ${assignment.evidence.text}` : fallbackLastSeenText(status),
   };
+}
+
+/** "3 schools: 1 submitted, 2 invited" — the compact sentence for a recommender's Schools column. */
+export function summarizeSchoolStatuses(assignments: AssignmentInput[]): string {
+  if (assignments.length === 0) return 'Not assigned to any school yet';
+
+  const counts = { submitted: 0, invited: 0, pending: 0 };
+  for (const assignment of assignments) counts[effectiveStatus(assignment)] += 1;
+
+  const parts: string[] = [];
+  if (counts.submitted > 0) parts.push(`${counts.submitted} submitted`);
+  if (counts.invited > 0) parts.push(`${counts.invited} invited`);
+  if (counts.pending > 0) parts.push(`${counts.pending} not yet invited`);
+
+  const schoolWord = assignments.length === 1 ? 'school' : 'schools';
+  return `${assignments.length} ${schoolWord}: ${parts.join(', ')}`;
 }

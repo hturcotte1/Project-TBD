@@ -1,7 +1,7 @@
 import { ApiError } from '@apogee/shared/api';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { AppShell } from '@/components/layout/app-shell';
+import { AppShell } from '@/components/shell/app-shell';
 import { serverApi } from '@/lib/api.server';
 import { AUTH_MODE, loginPath, requireStudent } from '@/lib/auth';
 

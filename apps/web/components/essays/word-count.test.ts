@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countWords, isOverWordLimit, wordCountLabel, wordProgressPercent } from '@/components/essays/word-count';
+import { countWords, isOverWordLimit, wordCountLabel, wordGaugeStep, wordProgressPercent, wordsGaugeLabel, wordsTableLabel } from '@/components/essays/word-count';
 
 describe('countWords', () => {
   it('is zero for empty or whitespace-only text', () => {
@@ -54,5 +54,57 @@ describe('wordCountLabel', () => {
 
   it('singularizes "word" for a count of exactly one', () => {
     expect(wordCountLabel(1, null)).toBe('1 word');
+  });
+});
+
+describe('wordGaugeStep', () => {
+  it('is 0 with no limit, regardless of count', () => {
+    expect(wordGaugeStep(10_000, null)).toBe(0);
+  });
+
+  it('is 0 under 70% of the limit', () => {
+    expect(wordGaugeStep(0, 300)).toBe(0);
+    expect(wordGaugeStep(209, 300)).toBe(0);
+  });
+
+  it('is 1 from 70% up to (but under) 90%', () => {
+    expect(wordGaugeStep(210, 300)).toBe(1);
+    expect(wordGaugeStep(269, 300)).toBe(1);
+  });
+
+  it('is 3 from 90% through the limit itself', () => {
+    expect(wordGaugeStep(270, 300)).toBe(3);
+    expect(wordGaugeStep(300, 300)).toBe(3);
+  });
+
+  it('is 5 once strictly over the limit', () => {
+    expect(wordGaugeStep(301, 300)).toBe(5);
+  });
+});
+
+describe('wordsTableLabel', () => {
+  it('shows just the count with no limit', () => {
+    expect(wordsTableLabel(180, null)).toBe('180');
+  });
+
+  it('shows "count of limit" when a limit exists, even over it', () => {
+    expect(wordsTableLabel(180, 300)).toBe('180 of 300');
+    expect(wordsTableLabel(312, 300)).toBe('312 of 300');
+  });
+});
+
+describe('wordsGaugeLabel', () => {
+  it('shows "N words" with no limit', () => {
+    expect(wordsGaugeLabel(180, null)).toBe('180 words');
+    expect(wordsGaugeLabel(1, null)).toBe('1 word');
+  });
+
+  it('shows "count of limit words" within the limit', () => {
+    expect(wordsGaugeLabel(180, 300)).toBe('180 of 300 words');
+    expect(wordsGaugeLabel(300, 300)).toBe('300 of 300 words');
+  });
+
+  it('appends how many words over once past the limit', () => {
+    expect(wordsGaugeLabel(312, 300)).toBe('312 of 300 words, 12 over');
   });
 });

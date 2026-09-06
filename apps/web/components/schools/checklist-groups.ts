@@ -3,10 +3,10 @@ import type { ItemKind } from '@apogee/shared/domain';
 
 export const CHECKLIST_GROUP_NAMES = [
   'Common App sections',
-  'College questions & supplements',
+  'College questions and supplements',
   'Recommendations',
-  'Tests & scores',
-  'Financial aid & fees',
+  'Tests and scores',
+  'Financial aid and fees',
   'Custom',
 ] as const;
 
@@ -20,11 +20,11 @@ export type ChecklistGroupName = (typeof CHECKLIST_GROUP_NAMES)[number];
  * student added by hand):
  *  - Common App sections: the account-wide sections plus the record-keeping steps tied to the
  *    Common App process itself (transcript, mid-year/school report, final review).
- *  - College questions & supplements: everything the student writes or submits as content for
+ *  - College questions and supplements: everything the student writes or submits as content for
  *    this specific school (including the personal essay and a portfolio).
  *  - Recommendations: recommenders and the FERPA release that unlocks them.
- *  - Tests & scores: score reporting.
- *  - Financial aid & fees: money.
+ *  - Tests and scores: score reporting.
+ *  - Financial aid and fees: money.
  *  - Custom: items the student added themselves, plus anything with no cleaner home (interview).
  * A `satisfies`-style exhaustiveness check below fails to compile if `ItemKind` ever grows a case
  * this map doesn't cover.
@@ -36,23 +36,23 @@ const KIND_TO_GROUP: Record<ItemKind, ChecklistGroupName> = {
   school_report: 'Common App sections',
   review_submit: 'Common App sections',
 
-  college_questions: 'College questions & supplements',
-  supplement_essay: 'College questions & supplements',
-  personal_essay: 'College questions & supplements',
-  portfolio: 'College questions & supplements',
+  college_questions: 'College questions and supplements',
+  supplement_essay: 'College questions and supplements',
+  personal_essay: 'College questions and supplements',
+  portfolio: 'College questions and supplements',
 
   teacher_rec: 'Recommendations',
   counselor_rec: 'Recommendations',
   other_rec: 'Recommendations',
   ferpa: 'Recommendations',
 
-  test_scores: 'Tests & scores',
-  score_send: 'Tests & scores',
+  test_scores: 'Tests and scores',
+  score_send: 'Tests and scores',
 
-  fafsa: 'Financial aid & fees',
-  css_profile: 'Financial aid & fees',
-  application_fee: 'Financial aid & fees',
-  fee_waiver: 'Financial aid & fees',
+  fafsa: 'Financial aid and fees',
+  css_profile: 'Financial aid and fees',
+  application_fee: 'Financial aid and fees',
+  fee_waiver: 'Financial aid and fees',
 
   interview: 'Custom',
   custom: 'Custom',

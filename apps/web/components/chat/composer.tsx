@@ -1,14 +1,20 @@
 'use client';
 
+import { PaperPlaneRight } from '@phosphor-icons/react';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { Button, Textarea, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
-export function Composer({ agentName, onSent }: { agentName: string; onSent: () => void }) {
-  const { toast } = useToast();
+/** Caps the auto-growing textarea at roughly 5 lines of text-14 (20px line height, 16px vertical
+ * padding, 2px border) before it scrolls internally instead of pushing the thread further up. */
+const MAX_TEXTAREA_HEIGHT_PX = 118;
+
+export interface ComposerProps {
+  onSent: () => void;
+}
+
+export function Composer({ onSent }: ComposerProps) {
   const [draft, setDraft] = useState('');
 
   const send = useMutation({
@@ -17,7 +23,7 @@ export function Composer({ agentName, onSent }: { agentName: string; onSent: () 
       setDraft('');
       onSent();
     },
-    onError: () => toast({ title: 'Could not send — try again.', variant: 'destructive' }),
+    onError: () => toast('Could not send. Try again.'),
   });
 
   function submit() {
@@ -26,7 +32,7 @@ export function Composer({ agentName, onSent }: { agentName: string; onSent: () 
   }
 
   return (
-    <div className="space-y-1.5 border-t border-border bg-card px-4 py-3 sm:px-6">
+    <div className="flex flex-col gap-1 border-t border-line pt-3">
       <form
         className="flex items-end gap-2"
         onSubmit={(event) => {
@@ -43,16 +49,18 @@ export function Composer({ agentName, onSent }: { agentName: string; onSent: () 
               submit();
             }
           }}
-          placeholder="Text your agent…"
+          autoResize
           rows={1}
           maxLength={5000}
-          className="min-h-10 flex-1 resize-none"
+          placeholder="Text Vector"
+          className="flex-1 bg-s2"
+          style={{ maxHeight: MAX_TEXTAREA_HEIGHT_PX }}
         />
-        <Button type="submit" disabled={!draft.trim()} loading={send.isPending}>
-          Send
+        <Button type="submit" variant="primary" iconOnly aria-label="Send" disabled={!draft.trim() || send.isPending} loading={send.isPending}>
+          <PaperPlaneRight />
         </Button>
       </form>
-      <p className="text-xs text-muted-foreground">Same thread as your texts with {agentName}.</p>
+      <p className="hidden text-12 text-fg-3 lg:block">The same thread as your iMessages.</p>
     </div>
   );
 }

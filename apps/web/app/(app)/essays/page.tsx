@@ -1,25 +1,13 @@
 'use client';
 
-import type { EssayDto } from '@apogee/shared/api';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useQuery } from '@tanstack/react-query';
-import { FileText } from 'lucide-react';
-import { EssayCard } from '@/components/essays/essay-card';
-import { EmptyState } from '@/components/layout/empty-state';
-import { PageHeader } from '@/components/layout/page-header';
-import { Skeleton } from '@/components/ui/skeleton';
+import { EssaysTable } from '@/components/essays/essays-table';
+import { sortEssays } from '@/components/essays/sort';
+import { Button, Empty, ErrorNote, PageTitle } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 const POLL_MS = 30_000;
-
-/** Nearest due date first (essays with no due date last); ties broken by school name. */
-function sortEssays(essays: EssayDto[]): EssayDto[] {
-  return [...essays].sort((a, b) => {
-    if (a.due_date && b.due_date && a.due_date !== b.due_date) return a.due_date < b.due_date ? -1 : 1;
-    if (a.due_date && !b.due_date) return -1;
-    if (!a.due_date && b.due_date) return 1;
-    return (a.school_name ?? '').localeCompare(b.school_name ?? '');
-  });
-}
 
 export default function EssaysPage() {
   const meQuery = useQuery({ queryKey: ['me'], queryFn: () => clientApi.call('me') });
@@ -29,26 +17,31 @@ export default function EssaysPage() {
   const essays = sortEssays(essaysQuery.data ?? []);
 
   return (
-    <div className="pb-8">
-      <PageHeader title="Essays" description="Every essay across your schools, and the personal essay you write once." />
-      <div className="space-y-3 px-4 py-5 sm:px-6">
-        {essaysQuery.isPending ? (
-          <div className="space-y-3">
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-          </div>
-        ) : essaysQuery.isError ? (
-          <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">Could not load your essays — try refreshing.</p>
-        ) : essays.length === 0 ? (
-          <EmptyState
-            icon={FileText}
-            title="No essays yet"
-            description="Once you add a school with supplement essays, or connect Common App and sync, they'll show up here — including the one personal essay shared across every school."
-          />
-        ) : (
-          essays.map((essay) => <EssayCard key={essay.id} essay={essay} timezone={timezone} />)
-        )}
-      </div>
+    <div className="flex flex-col gap-8">
+      {/* DESIGN.md reserves the count face (Bricolage) for Today, school headers and the Schools
+          table — essays has no numeral of its own to render in it. A hidden span still warms the
+          font file so the browser doesn't leave it entirely unloaded (same warm-up Timeline and
+          Schools do for their own pages). */}
+      <VisuallyHidden>
+        <span className="font-count">0</span>
+      </VisuallyHidden>
+      <PageTitle>Essays</PageTitle>
+
+      {essaysQuery.isError ? (
+        <ErrorNote>
+          Could not load your essays.{' '}
+          <Button variant="text" className="h-auto px-0" onClick={() => essaysQuery.refetch()}>
+            Try again
+          </Button>
+        </ErrorNote>
+      ) : essaysQuery.data && essays.length === 0 ? (
+        <Empty
+          sentence="No essays yet. They appear once a school with supplements is added or Common App syncs."
+          action={{ label: 'Add a school', href: '/schools?add=1' }}
+        />
+      ) : essaysQuery.data ? (
+        <EssaysTable essays={essays} timezone={timezone} />
+      ) : null}
     </div>
   );
 }

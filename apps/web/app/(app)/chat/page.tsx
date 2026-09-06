@@ -1,17 +1,16 @@
 'use client';
 
 import type { MessageDto } from '@apogee/shared/api';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { ApprovalsBanner } from '@/components/chat/approvals-banner';
 import { groupMessages, reactionsByTarget, shouldShowTypingIndicator } from '@/components/chat/chat-utils';
 import { Composer } from '@/components/chat/composer';
-import { MessageBubbleGroup } from '@/components/chat/message-bubble';
+import { MessageThread } from '@/components/chat/message-thread';
 import { usePageVisible } from '@/components/chat/use-page-visible';
-import { PageHeader } from '@/components/layout/page-header';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button, ErrorNote, PageTitle } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
+import { formatUsPhoneAsYouType } from '@/lib/phone';
 
 const POLL_MS = 2000;
 const APPROVALS_POLL_MS = 10_000;
@@ -19,16 +18,6 @@ const INITIAL_LIMIT = 100;
 /** Every 8th poll (~16s while visible) re-fetches the recent window without `after`, so a
  * delivery-status change on an already-seen row (no new message row) still shows up. */
 const FULL_RESYNC_EVERY = 8;
-
-function TypingDots() {
-  return (
-    <div className="flex items-center gap-1 rounded-2xl bg-muted px-3.5 py-2.5">
-      {[0, 1, 2].map((i) => (
-        <span key={i} className="h-1.5 w-1.5 animate-typing-dot rounded-full bg-muted-foreground" style={{ animationDelay: `${i * 0.15}s` }} />
-      ))}
-    </div>
-  );
-}
 
 export default function ChatPage() {
   const visible = usePageVisible();
@@ -41,7 +30,6 @@ export default function ChatPage() {
   });
 
   const timezone = meQuery.data?.timezone ?? 'America/Chicago';
-  const agentName = settingsQuery.data?.agent_name ?? 'your agent';
 
   const [messages, setMessages] = useState<MessageDto[]>([]);
   const [now, setNow] = useState(() => new Date());
@@ -88,40 +76,62 @@ export default function ChatPage() {
   const groups = groupMessages(messages);
   const reactions = reactionsByTarget(messages);
   const showTyping = shouldShowTypingIndicator(messages, now);
-  const pendingApprovals = approvalsQuery.data ?? [];
+  const approvals = approvalsQuery.data ?? [];
+  const lastStudentMessage = [...messages].reverse().find((message) => message.kind !== 'reaction' && message.direction === 'inbound');
+
+  const agentPhone = settingsQuery.data?.agent_phone_number;
+  const agentName = settingsQuery.data?.agent_name ?? 'Vector';
+  const vcardHref = agentPhone ? `/api/vcard?name=${encodeURIComponent(agentName)}&phone=${encodeURIComponent(agentPhone)}` : undefined;
+  const loaded = threadQuery.data !== undefined;
 
   return (
-    <div className="pb-4">
-      <PageHeader title="Chat" description="The dashboard mirror of your iMessage thread." />
-      <ApprovalsBanner approvals={pendingApprovals} />
+    // Mobile: viewport minus the shell's mobile header (40px), the content column's own vertical
+    // padding (24px top + 24px bottom), and the tab bar. Desktop: viewport minus the content
+    // column's 32px top + 32px bottom padding (no mobile header, no tab bar) — see DESIGN.md's
+    // structure section for those shell measurements.
+    <div className="flex h-[calc(100dvh-40px-48px-var(--tabbar))] flex-col lg:h-[calc(100dvh-64px)]">
+      {/* DESIGN.md reserves the count face (Bricolage) for Today, school headers and the Schools
+          table — Vector has no numeral of its own. A hidden span still warms the font file so
+          it's not left completely unloaded (same warm-up Schools, Essays and Timeline do). */}
+      <VisuallyHidden>
+        <span className="font-count">0</span>
+      </VisuallyHidden>
+      <PageTitle
+        meta={agentPhone ? formatUsPhoneAsYouType(agentPhone) : undefined}
+        actions={
+          vcardHref ? (
+            <Button variant="text" asChild>
+              <a href={vcardHref}>Save contact</a>
+            </Button>
+          ) : undefined
+        }
+      >
+        Vector
+      </PageTitle>
 
-      <div className="px-4 py-4 sm:px-6">
-        <ScrollArea className="h-[65vh] min-h-[420px] rounded-md border border-border bg-card p-3">
-          <div className="flex flex-col gap-3">
-            {threadQuery.isPending ? (
-              <div className="space-y-3">
-                <Skeleton className="h-12 w-2/3" />
-                <Skeleton className="ml-auto h-12 w-1/2" />
-                <Skeleton className="h-12 w-3/5" />
-              </div>
-            ) : threadQuery.isError && messages.length === 0 ? (
-              <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">Could not load your messages — try refreshing.</p>
-            ) : messages.length === 0 ? (
-              <p className="py-10 text-center text-sm text-muted-foreground">
-                No messages yet. Say hi below, or text {agentName} directly — either way, it shows up here.
-              </p>
-            ) : (
-              groups.map((group, index) => (
-                <MessageBubbleGroup key={group.messages[0]?.id ?? index} group={group} reactionsByTarget={reactions} timezone={timezone} />
-              ))
-            )}
-            {showTyping ? <TypingDots /> : null}
-            <div ref={bottomRef} />
-          </div>
-        </ScrollArea>
+      <div className="mt-4 flex-1 overflow-y-auto px-0">
+        {threadQuery.isError && messages.length === 0 ? (
+          <ErrorNote>
+            Could not load your messages.{' '}
+            <Button variant="text" className="h-auto px-0" onClick={() => threadQuery.refetch()}>
+              Try again
+            </Button>
+          </ErrorNote>
+        ) : loaded ? (
+          <MessageThread
+            groups={groups}
+            reactions={reactions}
+            lastStudentMessageId={lastStudentMessage?.id}
+            timezone={timezone}
+            now={now}
+            showTyping={showTyping}
+            approvals={approvals}
+          />
+        ) : null}
+        <div ref={bottomRef} />
       </div>
 
-      <Composer agentName={agentName} onSent={() => void threadQuery.refetch()} />
+      <Composer onSent={() => void threadQuery.refetch()} />
     </div>
   );
 }

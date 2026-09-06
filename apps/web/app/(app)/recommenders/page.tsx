@@ -1,12 +1,14 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { Users } from 'lucide-react';
-import { RecommenderCard } from '@/components/recommenders/recommender-card';
-import { RecommenderFormDialog } from '@/components/recommenders/recommender-form-dialog';
-import { EmptyState } from '@/components/layout/empty-state';
-import { PageHeader } from '@/components/layout/page-header';
-import { Skeleton } from '@/components/ui/skeleton';
+import type { RecommenderDto } from '@apogee/shared/api';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { RecommenderFormDrawer } from '@/components/recommenders/recommender-form-drawer';
+import { sortRecommenders } from '@/components/recommenders/recommender-sort';
+import { RecommendersTable } from '@/components/recommenders/recommenders-table';
+import { ReminderDrawer } from '@/components/recommenders/reminder-drawer';
+import { Button, Empty, ErrorNote, PageTitle, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 export default function RecommendersPage() {
@@ -16,36 +18,77 @@ export default function RecommendersPage() {
 
   const timezone = meQuery.data?.timezone ?? 'America/Chicago';
   const applications = applicationsQuery.data ?? [];
+  const applicationsById = new Map(applications.map((application) => [application.id, application]));
+
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<RecommenderDto | undefined>(undefined);
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const [reminderRecommender, setReminderRecommender] = useState<RecommenderDto | null>(null);
+  const [reminderRunId, setReminderRunId] = useState<string | null>(null);
+
+  const requestDraft = useMutation({
+    mutationFn: (recommender: RecommenderDto) => clientApi.call('recommenderReminderDraft', { params: { id: recommender.id } }),
+    onSuccess: (result, recommender) => {
+      setReminderRecommender(recommender);
+      setReminderRunId(result.run_id);
+      setReminderOpen(true);
+    },
+    onError: () => toast('Could not start a draft. Try again.'),
+  });
+
+  function openAdd() {
+    setEditing(undefined);
+    setFormOpen(true);
+  }
+
+  function openEdit(recommender: RecommenderDto) {
+    setEditing(recommender);
+    setFormOpen(true);
+  }
+
+  const recommenders = sortRecommenders(recommendersQuery.data ?? [], applicationsById);
 
   return (
-    <div className="pb-8">
-      <PageHeader
-        title="Recommenders"
-        description="Teachers and counselors writing on your behalf, and where each one stands per school."
-        actions={<RecommenderFormDialog applications={applications} />}
-      />
-      <div className="space-y-4 px-4 py-5 sm:px-6">
-        {recommendersQuery.isPending ? (
-          <div className="space-y-4">
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-          </div>
-        ) : recommendersQuery.isError ? (
-          <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">Could not load recommenders — try refreshing.</p>
-        ) : recommendersQuery.data.length === 0 ? (
-          <EmptyState
-            icon={Users}
-            title="No recommenders yet"
-            description="Recommenders show up here automatically once Common App syncs your invited teachers and counselor, or you can add one yourself with the button above."
-          />
-        ) : (
-          <div className="space-y-4">
-            {recommendersQuery.data.map((recommender) => (
-              <RecommenderCard key={recommender.id} recommender={recommender} applications={applications} timezone={timezone} />
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="flex flex-col gap-8">
+      {/* DESIGN.md reserves the count face (Bricolage) for Today, school headers and the Schools
+          table — this page's DaysFigure numerals stay in the interface face. A hidden span still
+          warms the font file so it's not left completely unloaded (same warm-up Schools, Essays
+          and Timeline do for their own pages). */}
+      <VisuallyHidden>
+        <span className="font-count">0</span>
+      </VisuallyHidden>
+      <PageTitle
+        actions={
+          <Button variant="primary" onClick={openAdd}>
+            Add recommender
+          </Button>
+        }
+      >
+        Recommenders
+      </PageTitle>
+
+      {recommendersQuery.isError ? (
+        <ErrorNote>
+          Could not load your recommenders.{' '}
+          <Button variant="text" className="h-auto px-0" onClick={() => recommendersQuery.refetch()}>
+            Try again
+          </Button>
+        </ErrorNote>
+      ) : recommendersQuery.data && recommenders.length === 0 ? (
+        <Empty sentence="No recommenders yet. Common App adds them after a sync, or add one now." action={{ label: 'Add recommender', onClick: openAdd }} />
+      ) : recommendersQuery.data ? (
+        <RecommendersTable
+          recommenders={recommenders}
+          applicationsById={applicationsById}
+          timezone={timezone}
+          onEdit={openEdit}
+          onDraftReminder={(recommender) => requestDraft.mutate(recommender)}
+        />
+      ) : null}
+
+      <RecommenderFormDrawer open={formOpen} onOpenChange={setFormOpen} applications={applications} recommender={editing} />
+
+      <ReminderDrawer open={reminderOpen} onOpenChange={setReminderOpen} recommenderName={reminderRecommender?.name ?? ''} runId={reminderRunId} />
     </div>
   );
 }

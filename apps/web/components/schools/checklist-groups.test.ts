@@ -38,17 +38,17 @@ describe('checklistGroupForKind', () => {
 
   it('groups the kinds the requirements engine actually produces where the group name says it should', () => {
     expect(checklistGroupForKind('common_app_section')).toBe('Common App sections');
-    expect(checklistGroupForKind('college_questions')).toBe('College questions & supplements');
-    expect(checklistGroupForKind('supplement_essay')).toBe('College questions & supplements');
+    expect(checklistGroupForKind('college_questions')).toBe('College questions and supplements');
+    expect(checklistGroupForKind('supplement_essay')).toBe('College questions and supplements');
     expect(checklistGroupForKind('teacher_rec')).toBe('Recommendations');
     expect(checklistGroupForKind('counselor_rec')).toBe('Recommendations');
     expect(checklistGroupForKind('other_rec')).toBe('Recommendations');
-    expect(checklistGroupForKind('test_scores')).toBe('Tests & scores');
-    expect(checklistGroupForKind('score_send')).toBe('Tests & scores');
-    expect(checklistGroupForKind('fafsa')).toBe('Financial aid & fees');
-    expect(checklistGroupForKind('css_profile')).toBe('Financial aid & fees');
-    expect(checklistGroupForKind('application_fee')).toBe('Financial aid & fees');
-    expect(checklistGroupForKind('fee_waiver')).toBe('Financial aid & fees');
+    expect(checklistGroupForKind('test_scores')).toBe('Tests and scores');
+    expect(checklistGroupForKind('score_send')).toBe('Tests and scores');
+    expect(checklistGroupForKind('fafsa')).toBe('Financial aid and fees');
+    expect(checklistGroupForKind('css_profile')).toBe('Financial aid and fees');
+    expect(checklistGroupForKind('application_fee')).toBe('Financial aid and fees');
+    expect(checklistGroupForKind('fee_waiver')).toBe('Financial aid and fees');
     expect(checklistGroupForKind('custom')).toBe('Custom');
   });
 });
@@ -66,10 +66,10 @@ describe('groupChecklistItems', () => {
     ];
     const groups = groupChecklistItems(items);
     expect(groups['Common App sections'].map((i) => i.rule_key)).toEqual(['sec']);
-    expect(groups['College questions & supplements'].map((i) => i.rule_key).sort()).toEqual(['q', 'sup']);
+    expect(groups['College questions and supplements'].map((i) => i.rule_key).sort()).toEqual(['q', 'sup']);
     expect(groups.Recommendations.map((i) => i.rule_key)).toEqual(['teacher']);
-    expect(groups['Tests & scores'].map((i) => i.rule_key)).toEqual(['score']);
-    expect(groups['Financial aid & fees'].map((i) => i.rule_key)).toEqual(['fafsa']);
+    expect(groups['Tests and scores'].map((i) => i.rule_key)).toEqual(['score']);
+    expect(groups['Financial aid and fees'].map((i) => i.rule_key)).toEqual(['fafsa']);
     expect(groups.Custom.map((i) => i.rule_key)).toEqual(['own']);
   });
 
@@ -88,6 +88,6 @@ describe('groupChecklistItems', () => {
       item({ id: 'tie-a', kind: 'college_questions', title: 'A tie', importance: 50 }),
     ];
     const groups = groupChecklistItems(items);
-    expect(groups['College questions & supplements'].map((i) => i.title)).toEqual(['A high', 'A tie', 'B tie', 'Z low']);
+    expect(groups['College questions and supplements'].map((i) => i.title)).toEqual(['A high', 'A tie', 'B tie', 'Z low']);
   });
 });

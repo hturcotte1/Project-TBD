@@ -1,6 +1,6 @@
 import type { MessageDto } from '@apogee/shared/api';
 import { describe, expect, it } from 'vitest';
-import { groupMessages, reactionsByTarget, shouldShowTypingIndicator } from '@/components/chat/chat-utils';
+import { formatThreadDivider, groupMessages, reactionsByTarget, shouldShowTypingIndicator, threadDividerLabel } from '@/components/chat/chat-utils';
 
 let counter = 0;
 function msg(overrides: Partial<MessageDto> & { direction: MessageDto['direction']; created_at: string }): MessageDto {
@@ -99,5 +99,44 @@ describe('shouldShowTypingIndicator', () => {
 
   it('is false for an empty thread', () => {
     expect(shouldShowTypingIndicator([], now)).toBe(false);
+  });
+});
+
+const TIMEZONE = 'America/Chicago';
+
+describe('formatThreadDivider', () => {
+  const now = new Date('2026-09-05T20:00:00.000Z'); // 2026-09-05 3:00 PM America/Chicago
+
+  it('labels a message from today as "Today <time>"', () => {
+    expect(formatThreadDivider('2026-09-05T20:45:00.000Z', TIMEZONE, now)).toBe('Today 3:45 PM');
+  });
+
+  it('labels a message from yesterday as "Yesterday <time>"', () => {
+    expect(formatThreadDivider('2026-09-04T14:10:00.000Z', TIMEZONE, now)).toBe('Yesterday 9:10 AM');
+  });
+
+  it('labels an older message with its date', () => {
+    expect(formatThreadDivider('2026-09-03T13:00:00.000Z', TIMEZONE, now)).toBe('Sep 3, 8:00 AM');
+  });
+});
+
+describe('threadDividerLabel', () => {
+  const now = new Date('2026-09-05T20:00:00.000Z');
+
+  it('always shows a divider before the very first group', () => {
+    const first = msg({ direction: 'inbound', created_at: '2026-09-05T20:45:00.000Z' });
+    expect(threadDividerLabel(undefined, first, TIMEZONE, now)).toBe('Today 3:45 PM');
+  });
+
+  it('shows nothing when under 15 minutes separate two groups', () => {
+    const previous = msg({ direction: 'inbound', created_at: '2026-09-05T20:00:00.000Z' });
+    const next = msg({ direction: 'outbound', created_at: '2026-09-05T20:10:00.000Z' });
+    expect(threadDividerLabel(previous, next, TIMEZONE, now)).toBeNull();
+  });
+
+  it('shows a divider once 15 minutes or more separate two groups', () => {
+    const previous = msg({ direction: 'inbound', created_at: '2026-09-05T20:00:00.000Z' });
+    const next = msg({ direction: 'outbound', created_at: '2026-09-05T20:15:00.000Z' });
+    expect(threadDividerLabel(previous, next, TIMEZONE, now)).toBe('Today 3:15 PM');
   });
 });

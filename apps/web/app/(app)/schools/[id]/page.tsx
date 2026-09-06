@@ -2,14 +2,14 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { AddCustomItemForm } from '@/components/schools/add-custom-item-form';
-import { ApplicationHeader } from '@/components/schools/application-header';
+import { CaretLeft } from '@phosphor-icons/react';
+import { AddItemInput } from '@/components/schools/add-item-input';
+import { ChecklistTable } from '@/components/schools/checklist-table';
+import { completionGroups } from '@/components/schools/completion';
+import { requirementsToSentences } from '@/components/schools/requirements-prose';
+import { SchoolHeader } from '@/components/schools/school-header';
 import { CHECKLIST_GROUP_NAMES, groupChecklistItems } from '@/components/schools/checklist-groups';
-import { ChecklistSection } from '@/components/schools/checklist-section';
-import { RequirementsSummary } from '@/components/schools/requirements-summary';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button, CompletionBar, ErrorNote, Prose, Section, TextLink } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 const POLL_MS = 20_000;
@@ -24,38 +24,79 @@ export default function SchoolDetailPage() {
     queryFn: () => clientApi.call('applicationGet', { params: { id: applicationId } }),
     refetchInterval: POLL_MS,
   });
+  const syncStatusQuery = useQuery({ queryKey: ['sync-status'], queryFn: () => clientApi.call('syncStatus'), refetchInterval: POLL_MS });
 
   const timezone = meQuery.data?.timezone ?? 'America/Chicago';
+  const application = applicationQuery.data;
+
+  if (applicationQuery.isError) {
+    return (
+      <div className="flex flex-col gap-4">
+        <BackLink />
+        <ErrorNote>
+          Could not load this school.{' '}
+          <Button variant="text" className="h-auto px-0" onClick={() => applicationQuery.refetch()}>
+            Try again
+          </Button>
+        </ErrorNote>
+      </div>
+    );
+  }
+
+  if (!application) return <BackLink />;
+
+  const groups = completionGroups(application.items);
+  const totalDone = groups.reduce((sum, group) => sum + group.done, 0);
+  const totalAll = groups.reduce((sum, group) => sum + group.total, 0);
+  const awaitingCode = syncStatusQuery.data?.awaiting_verification_job_id != null;
+  const itemsByGroup = groupChecklistItems(application.items);
 
   return (
-    <div className="space-y-6 px-4 py-5 sm:px-6">
-      <Link href="/schools" className="flex w-fit items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-3.5 w-3.5" /> All schools
-      </Link>
+    <div className="flex flex-col gap-8">
+      <BackLink />
+      <SchoolHeader application={application} timezone={timezone} />
 
-      {applicationQuery.isPending ? (
-        <div className="space-y-3">
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      ) : applicationQuery.isError ? (
-        <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">Could not load this school — try refreshing.</p>
-      ) : applicationQuery.data ? (
-        <>
-          <ApplicationHeader application={applicationQuery.data} timezone={timezone} />
-          <RequirementsSummary requirements={applicationQuery.data.requirements} />
+      <div className="flex flex-col gap-2">
+        <CompletionBar groups={groups} />
+        <p className="text-12 text-fg-2">
+          {totalDone} of {totalAll} done
+        </p>
+        {awaitingCode ? (
+          <ErrorNote>
+            Common App asked for a verification code. Enter it in <TextLink href="/settings">Settings</TextLink>.
+          </ErrorNote>
+        ) : null}
+      </div>
 
-          <div className="space-y-5">
-            {(() => {
-              const groups = groupChecklistItems(applicationQuery.data.items);
-              return CHECKLIST_GROUP_NAMES.map((name) => <ChecklistSection key={name} title={name} items={groups[name]} timezone={timezone} />);
-            })()}
-          </div>
+      <Section title="Requirements">
+        <Prose>
+          {application.requirements ? (
+            requirementsToSentences(application.school.name, application.requirements, timezone).map((sentence, index) => <p key={index}>{sentence}</p>)
+          ) : (
+            <p>Apogee has not verified this school&rsquo;s requirements yet; the checklist uses the Common App defaults.</p>
+          )}
+        </Prose>
+      </Section>
 
-          <AddCustomItemForm applicationId={applicationQuery.data.id} />
-        </>
-      ) : null}
+      {CHECKLIST_GROUP_NAMES.map((name) => {
+        const groupItems = itemsByGroup[name];
+        if (groupItems.length === 0) return null;
+        return (
+          <Section key={name} title={name}>
+            <ChecklistTable items={groupItems} timezone={timezone} />
+          </Section>
+        );
+      })}
+
+      <AddItemInput applicationId={application.id} />
     </div>
+  );
+}
+
+function BackLink() {
+  return (
+    <TextLink href="/schools" className="flex w-fit items-center gap-1 text-12">
+      <CaretLeft /> Schools
+    </TextLink>
   );
 }

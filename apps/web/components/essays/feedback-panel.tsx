@@ -1,159 +1,138 @@
 'use client';
 
-import type { EssayDetailDto } from '@apogee/shared/api';
 import type { EssayFeedback } from '@apogee/shared/schemas';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
-import { clientApi } from '@/lib/api.client';
-import { relativeTimeFromNow } from '@/lib/format';
+import { CircleNotch } from '@phosphor-icons/react';
+import type { RefObject } from 'react';
+import { AnchoredNotesColumn } from '@/components/essays/anchored-notes-column';
+import { groupNotesByParagraph } from '@/components/essays/anchor-notes';
+import type { EssayFeedbackState } from '@/components/essays/use-essay-feedback';
+import { Button, Drawer, DrawerBody, DrawerContent, DrawerTitle, DrawerTrigger, ErrorNote } from '@/components/system';
+import { cn } from '@/lib/utils';
 
-const TERMINAL_OUTCOMES = new Set(['completed', 'failed', 'refused', 'no_action']);
+const VERDICT_LABEL: Record<EssayFeedback['answers_prompt']['verdict'], string> = { yes: 'yes', partially: 'partially', no: 'no' };
+const VERDICT_CLASS: Record<EssayFeedback['answers_prompt']['verdict'], string> = { yes: 'text-ok', partially: 'text-heat-3', no: 'text-heat-5' };
+const VOICE_LABEL: Record<EssayFeedback['voice_match']['matches'], string> = { yes: 'yes', mostly: 'mostly', no: 'no' };
+const VOICE_CLASS: Record<EssayFeedback['voice_match']['matches'], string> = { yes: 'text-ok', mostly: 'text-heat-3', no: 'text-heat-5' };
 
-// `EssayFeedbackDto` is a schema (value) in the contract without a matching exported type, so the
-// element type is derived from `EssayDetailDto['feedback']` instead of importing it directly.
-type EssayFeedbackDto = EssayDetailDto['feedback'][number];
-
-type Note = { quote: string | null; note: string };
-
-function NoteList({ title, notes }: { title: string; notes: Note[] }) {
-  if (notes.length === 0) return null;
+function VerdictLines({ feedback }: { feedback: EssayFeedback }) {
   return (
-    <div className="space-y-1.5">
-      <p className="text-xs font-semibold text-muted-foreground">{title}</p>
-      <ul className="space-y-1.5">
-        {notes.map((note, index) => (
-          <li key={index} className="rounded-md border border-border bg-muted/40 p-2 text-sm">
-            {note.quote ? <p className="mb-1 italic text-muted-foreground">&ldquo;{note.quote}&rdquo;</p> : null}
-            <p>{note.note}</p>
+    <div className="flex flex-col gap-1 text-14">
+      <p>
+        Answers the prompt: <span className={cn('font-medium', VERDICT_CLASS[feedback.answers_prompt.verdict])}>{VERDICT_LABEL[feedback.answers_prompt.verdict]}</span>
+      </p>
+      <p>
+        Sounds like you: <span className={cn('font-medium', VOICE_CLASS[feedback.voice_match.matches])}>{VOICE_LABEL[feedback.voice_match.matches]}</span>
+      </p>
+    </div>
+  );
+}
+
+function NextStepsAndQuestions({ feedback }: { feedback: EssayFeedback }) {
+  return (
+    <>
+      <ol className="flex flex-col gap-1 pl-5 text-14">
+        {feedback.top_three_next_steps.map((step, index) => (
+          <li key={index} className="list-decimal">
+            {step}
           </li>
         ))}
-      </ul>
-    </div>
-  );
-}
-
-const VERDICT_LABEL: Record<EssayFeedback['answers_prompt']['verdict'], string> = { yes: 'Yes', partially: 'Partially', no: 'No' };
-const VERDICT_VARIANT: Record<EssayFeedback['answers_prompt']['verdict'], 'success' | 'warn' | 'urgent'> = { yes: 'success', partially: 'warn', no: 'urgent' };
-const VOICE_LABEL: Record<EssayFeedback['voice_match']['matches'], string> = { yes: 'Sounds like you', mostly: 'Mostly sounds like you', no: "Doesn't sound like you yet" };
-
-function FeedbackRound({ round, defaultOpen }: { round: EssayFeedbackDto; defaultOpen: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
-  const feedback = round.feedback;
-
-  return (
-    <div className="rounded-md border border-border">
-      <button type="button" onClick={() => setOpen((v) => !v)} className="flex w-full items-center justify-between gap-2 p-3 text-left">
-        <span className="flex items-center gap-2 text-sm font-medium">
-          <Badge variant={VERDICT_VARIANT[feedback.answers_prompt.verdict]}>Answers the prompt: {VERDICT_LABEL[feedback.answers_prompt.verdict]}</Badge>
-          <span className="text-xs font-normal text-muted-foreground">{relativeTimeFromNow(round.created_at)}</span>
-        </span>
-        {open ? <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />}
-      </button>
-      {open ? (
-        <div className="space-y-3 border-t border-border p-3 text-sm">
-          <p className="text-muted-foreground">{feedback.answers_prompt.note}</p>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline">Voice: {VOICE_LABEL[feedback.voice_match.matches]}</Badge>
-            <Badge variant="outline">
-              {feedback.word_count.current} words{feedback.word_count.limit ? ` / ${feedback.word_count.limit}` : ''}
-            </Badge>
-          </div>
-          {feedback.voice_match.note ? <p className="text-muted-foreground">{feedback.voice_match.note}</p> : null}
-          {feedback.word_count.note ? <p className="text-muted-foreground">{feedback.word_count.note}</p> : null}
-
-          <NoteList title="Clarity" notes={feedback.clarity} />
-          <NoteList title="Structure" notes={feedback.structure} />
-          <NoteList title="Generic phrases" notes={feedback.generic_phrases} />
-          <NoteList title="Where a real detail would be stronger" notes={feedback.where_a_real_detail_would_be_stronger} />
-
-          <div className="space-y-1.5">
-            <p className="text-xs font-semibold text-muted-foreground">Top next steps</p>
-            <ol className="list-decimal space-y-1 pl-4">
-              {feedback.top_three_next_steps.map((step, index) => (
-                <li key={index}>{step}</li>
-              ))}
-            </ol>
-          </div>
-
-          {feedback.questions_to_ask_yourself.length > 0 ? (
-            <div className="space-y-1.5">
-              <p className="text-xs font-semibold text-muted-foreground">Questions to ask yourself</p>
-              <ul className="list-disc space-y-1 pl-4">
-                {feedback.questions_to_ask_yourself.map((question, index) => (
-                  <li key={index}>{question}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-export function FeedbackPanel({ essay }: { essay: EssayDetailDto }) {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-  const [runId, setRunId] = useState<string | null>(null);
-  const handledRunIdRef = useRef<string | null>(null);
-
-  const requestFeedback = useMutation({
-    mutationFn: () => clientApi.call('essayRequestFeedback', { params: { id: essay.id } }),
-    onSuccess: (data) => setRunId(data.run_id),
-    onError: () => toast({ title: 'Could not request feedback', description: 'Try again in a moment.', variant: 'destructive' }),
-  });
-
-  const runQuery = useQuery({
-    queryKey: ['agent-run', runId],
-    queryFn: () => clientApi.call('agentRunGet', { params: { id: runId as string } }),
-    enabled: runId !== null,
-    refetchInterval: (query) => (query.state.data && TERMINAL_OUTCOMES.has(query.state.data.outcome) ? false : 1500),
-  });
-
-  useEffect(() => {
-    const run = runQuery.data;
-    if (!run || !TERMINAL_OUTCOMES.has(run.outcome) || handledRunIdRef.current === run.id) return;
-    handledRunIdRef.current = run.id;
-    if (run.outcome === 'completed') {
-      void queryClient.invalidateQueries({ queryKey: ['essay', essay.id] });
-      toast({ title: 'Feedback is ready' });
-    } else {
-      toast({
-        title: "Feedback isn't available right now",
-        description: run.error ?? "Vector's model is unavailable at the moment — try again in a bit.",
-        variant: 'destructive',
-      });
-    }
-    setRunId(null);
-  }, [runQuery.data, essay.id, queryClient, toast]);
-
-  const isRunning = runId !== null && (!runQuery.data || !TERMINAL_OUTCOMES.has(runQuery.data.outcome));
-  const rounds = [...essay.feedback].sort((a, b) => (a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0));
-
-  return (
-    <div className="space-y-3">
-      <div className="space-y-1.5">
-        <Button type="button" onClick={() => requestFeedback.mutate()} loading={requestFeedback.isPending || isRunning} disabled={!essay.current_draft}>
-          <Sparkles className="h-3.5 w-3.5" /> Get feedback
-        </Button>
-        <p className="text-xs text-muted-foreground">Feedback only — I&rsquo;ll never write or rewrite your sentences.</p>
-        {!essay.current_draft ? <p className="text-xs text-muted-foreground">Write a draft first so there&rsquo;s something to react to.</p> : null}
-      </div>
-
-      {rounds.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No feedback yet — ask once you have a draft you&rsquo;d like a reaction to.</p>
-      ) : (
-        <div className="space-y-2">
-          {rounds.map((round, index) => (
-            <FeedbackRound key={round.id} round={round} defaultOpen={index === 0} />
+      </ol>
+      {feedback.questions_to_ask_yourself.length > 0 ? (
+        <ul className="flex flex-col gap-1 text-14 text-fg-2">
+          {feedback.questions_to_ask_yourself.map((question, index) => (
+            <li key={index}>{question}</li>
           ))}
+        </ul>
+      ) : null}
+    </>
+  );
+}
+
+function GeneralNotes({ notes }: { notes: EssayFeedbackState['general'] }) {
+  if (notes.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-3">
+      {notes.map((note, index) => (
+        <div key={index} className="group rounded bg-s1 p-3">
+          <p className="text-12 text-fg-2">{note.categoryLabel}</p>
+          <p className="text-14 text-fg">{note.note}</p>
+          {note.quote ? <p className="mt-1 hidden text-12 italic text-fg-3 group-hover:block">&ldquo;{note.quote}&rdquo;</p> : null}
         </div>
-      )}
+      ))}
     </div>
+  );
+}
+
+/** The request button, plus (once feedback exists) the verdict sentences and the next-steps and
+ * questions lists — everything that's the same regardless of layout, and sits above the
+ * per-paragraph notes in both of them. */
+export function FeedbackHeader({ state, hasDraft }: { state: EssayFeedbackState; hasDraft: boolean }) {
+  return (
+    <>
+      {/* Below `lg:` this stays the full-width bottom button it always was (the flex column it
+          sits in stretches its children by default). At `lg:`, where it moves to the top of the
+          margin column, `self-start` keeps it a normal content-width button instead of stretching
+          to the column's full width. */}
+      <Button variant="primary" className="lg:self-start" onClick={state.request} disabled={state.isBusy || !hasDraft} aria-busy={state.isBusy || undefined}>
+        {state.isBusy ? (
+          <>
+            <CircleNotch className="animate-spin" aria-hidden />
+            Reading your draft
+          </>
+        ) : (
+          'Ask Vector for feedback'
+        )}
+      </Button>
+      {state.runError ? <ErrorNote>{state.runError}</ErrorNote> : null}
+      {state.feedback ? <VerdictLines feedback={state.feedback} /> : null}
+      {state.feedback ? <NextStepsAndQuestions feedback={state.feedback} /> : null}
+    </>
+  );
+}
+
+/** Desktop margin column: general notes in normal flow, then the paragraph-anchored ones
+ * positioned beside the paragraph they're about. */
+export function FeedbackNotesDesktop({ state, editorRef }: { state: EssayFeedbackState; editorRef: RefObject<HTMLTextAreaElement | null> }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <GeneralNotes notes={state.general} />
+      <AnchoredNotesColumn editorRef={editorRef} paragraphs={state.paragraphs} notes={state.anchored} />
+    </div>
+  );
+}
+
+/** Mobile: a text button naming how many notes there are, opening a bottom sheet that groups them
+ * by paragraph (then "General") instead of positioning them in a margin that doesn't exist yet. */
+export function FeedbackNotesMobile({ state }: { state: EssayFeedbackState }) {
+  if (!state.feedback || state.placed.length === 0) return null;
+  const groups = groupNotesByParagraph(state.placed);
+
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="text" className="h-auto w-fit px-0">
+          Feedback ({state.placed.length})
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerTitle>Feedback</DrawerTitle>
+        <DrawerBody>
+          <div className="flex flex-col gap-6">
+            {groups.map((group) => (
+              <div key={group.label} className="flex flex-col gap-3">
+                <p className="text-12 font-medium text-fg-2">{group.label}</p>
+                {group.notes.map((note, index) => (
+                  <div key={index}>
+                    <p className="text-12 text-fg-2">{note.categoryLabel}</p>
+                    <p className="text-14 text-fg">{note.note}</p>
+                    {note.quote ? <p className="mt-1 text-12 italic text-fg-3">&ldquo;{note.quote}&rdquo;</p> : null}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
   );
 }

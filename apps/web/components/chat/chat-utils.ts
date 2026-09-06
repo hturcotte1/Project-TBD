@@ -1,9 +1,12 @@
 /**
- * Pure helpers for the dashboard chat mirror: clustering consecutive same-direction messages into
- * visual groups (so the thread reads like iMessage, not a log), mapping tapback reactions onto the
- * message they react to, and deciding when to show the "…" typing indicator.
+ * Pure helpers for Vector's thread: clustering consecutive same-direction messages into visual
+ * groups (so the thread reads like iMessage, not a log), mapping tapback reactions onto the
+ * message they react to, deciding when to show the "…" typing indicator, and labeling the
+ * centered timestamp that separates groups more than 15 minutes apart.
  */
 import type { MessageDto } from '@apogee/shared/api';
+import { formatInTimeZone } from 'date-fns-tz';
+import { formatTime } from '@/lib/format';
 
 export interface MessageGroup {
   direction: MessageDto['direction'];
@@ -60,4 +63,34 @@ export function shouldShowTypingIndicator(messages: MessageDto[], now: Date): bo
   if (!last || last.direction !== 'inbound') return false;
   const elapsedMs = now.getTime() - new Date(last.created_at).getTime();
   return elapsedMs >= 0 && elapsedMs < TYPING_WINDOW_MS;
+}
+
+const DIVIDER_THRESHOLD_MS = 15 * 60_000;
+
+/** The calendar day of a timestamp in a given timezone, as a sortable/comparable "yyyy-MM-dd" key. */
+function dayKey(dateTimeIso: string, timezone: string): string {
+  return formatInTimeZone(new Date(dateTimeIso), timezone, 'yyyy-MM-dd');
+}
+
+/** "Today 3:45 PM" / "Yesterday 9:10 AM" / "Sep 3, 8:00 AM" for the divider above `dateTimeIso`. */
+export function formatThreadDivider(dateTimeIso: string, timezone: string, now: Date): string {
+  const time = formatTime(dateTimeIso, timezone);
+  const messageDay = dayKey(dateTimeIso, timezone);
+  if (messageDay === dayKey(now.toISOString(), timezone)) return `Today ${time}`;
+  if (messageDay === dayKey(new Date(now.getTime() - 86_400_000).toISOString(), timezone)) return `Yesterday ${time}`;
+  return `${formatInTimeZone(new Date(dateTimeIso), timezone, 'MMM d')}, ${time}`;
+}
+
+/**
+ * The divider label to show immediately before `next` (null when none belongs there). Groups are
+ * only ever split at a >5 minute gap or a direction change, so an intra-group gap can never reach
+ * the 15 minute threshold — this only ever fires between groups, including before the very first
+ * one (no `previous`).
+ */
+export function threadDividerLabel(previous: MessageDto | undefined, next: MessageDto, timezone: string, now: Date): string | null {
+  if (previous) {
+    const gapMs = new Date(next.created_at).getTime() - new Date(previous.created_at).getTime();
+    if (gapMs < DIVIDER_THRESHOLD_MS) return null;
+  }
+  return formatThreadDivider(next.created_at, timezone, now);
 }

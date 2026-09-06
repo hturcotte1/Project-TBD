@@ -99,7 +99,7 @@ Two families, clearly different jobs.
 
 **Hanken Grotesk** (variable, 100 to 900, self-hosted) is the interface: body, tables, headings, buttons, the rail. It has real tabular figures by default (verified by measurement: `111` and `000` render at the same width), a slightly wide, open lowercase that stays legible at 12px in a dense table, and none of the "generated page" signature that Inter and its cousins carry. Weights used: 400 body, 500 for the first column of a row and for buttons, 600 for headings. No 300, no 700 and up.
 
-**Bricolage Grotesque** (variable, 200 to 800, self-hosted) is the countdown and nothing else: the days-remaining numeral on Today and in school headers, and the small numeral in the Schools table. Weight 600, tracking -0.03em, `font-variant-numeric: tabular-nums` so the number does not jitter as it settles. Its narrow, slightly eccentric figures are the only display personality on the page, and they are the one place the design spends boldness.
+**Bricolage Grotesque** (variable, 200 to 800, self-hosted) is the countdown and nothing else: the days-remaining numeral on Today and in school headers, and the small days figure in the Schools table (set at body size in the same face). Weight 600, tracking -0.03em, `font-variant-numeric: tabular-nums` so the number does not jitter as it settles. Its narrow, slightly eccentric figures are the only display personality on the page, and they are the one place the design spends boldness.
 
 Monospace is the system stack (`ui-monospace`, SF Mono, Menlo, Consolas) and appears only for literal identifiers: job ids, run ids, the verification-code input.
 
@@ -127,7 +127,7 @@ Base 14px, ratio 1.25 (a major third), rounded to whole pixels; line heights on 
 | `text-22` | 22 / 28 | page title on mobile, drawer title |
 | `text-28` | 28 / 34 | page title on desktop |
 | `text-34` | 34 / 40 | school-name header on detail pages |
-| `text-43` | 43 / 48 | Schools table countdown numeral (Bricolage) |
+| `text-43` | 43 / 48 | row-size countdown in an expanded school row and on First sync (Bricolage) |
 | `text-54` | 54 / 56 | school header countdown, mobile Today countdown fallback |
 | `text-67` | 67 / 68 | Today countdown at 390px (Bricolage) |
 | `text-84` | 84 / 84 | Today countdown at 1280px (Bricolage) |
