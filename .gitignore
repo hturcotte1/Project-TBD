@@ -13,3 +13,4 @@ test-results
 packages/browser/fixtures/recorded/*.html
 !packages/browser/fixtures/recorded/.gitkeep
 .next-build/
+*.tsbuildinfo
