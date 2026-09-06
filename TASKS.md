@@ -64,4 +64,19 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 | W4-4e | Recommenders table + reminder drawer; Vector chat | `apps/web/app/(app)/{recommenders,chat}`, `components/{recommenders,chat}/**` | sonnet | done — reviewed by the orchestrator, findings fixed (docs/DESIGN_REVIEW.md) |
 | W4-4f | Activity stream; Settings; Profile; Admin | `apps/web/app/(app)/{activity,settings,profile,admin}`, `components/{activity,settings,profile,admin}/**` | sonnet | done — reviewed by the orchestrator, findings fixed (docs/DESIGN_REVIEW.md) |
 | W4-4g | Onboarding (one question per screen), sign-in, dev login, empty states | `apps/web/app/(onboarding)/**`, `app/sign-in`, `app/dev/login`, `components/onboarding/**` | sonnet | done — reviewed by the orchestrator, findings fixed (docs/DESIGN_REVIEW.md) |
-| W4-5 | Review pass 1 and 2 with notes in `docs/DESIGN_REVIEW.md`; fixes; copy pass; delete `components/ui`; DoD greps; fresh-clone build/test/lint; `docs/screenshots` committed; KNOWN_GAPS and DECISIONS | root | orchestrator | todo |
+| W4-5 | Review pass 1 and 2 with notes in `docs/DESIGN_REVIEW.md`; fixes; copy pass; delete `components/ui`; DoD greps; fresh-clone build/test/lint; `docs/screenshots` committed; KNOWN_GAPS and DECISIONS | root | orchestrator | done — three review passes, DoD below |
+
+## Redesign definition of done
+
+| # | Check | Result |
+|---|---|---|
+| 1 | `grep -ri remy`, `grep -r @tbd` outside git history; `Inter\b`, `lucide-react`, `bg-blue-`, `rounded-2xl shadow` in `apps/web` | 0 hits each (comments included) |
+| 2 | `docs/DESIGN.md` complete | concept, palettes with contrast tables, heat scale, typefaces and bake-off, type and spacing scales, radii, elevation, structure, wireframes at 390 and 1280, motion, principles, seven items changed against the default |
+| 3 | `apps/web/app/tokens.css` is the only source; default palette removed | Tailwind replaces `colors`, `fontSize`, `fontWeight`, `borderRadius`, `boxShadow` with `var()` aliases; a stock palette class produces no CSS |
+| 4 | `components/ui` gone, `components/system` present | 32 files in `components/system`, kitchen sink at `/dev/system` |
+| 5 | Every page rebuilt; ring, changes strip, card grid, month calendar, four Activity tabs, numbered stepper gone | 0 references to any of them |
+| 6 | Command palette on desktop and mobile | Ctrl-K / Cmd-K, the rail row and the mobile Search tab; screenshots `palette-*` |
+| 7 | `docs/screenshots` complete, `docs/DESIGN_REVIEW.md` with three passes | 27 screens at 390 and 1280, dark and light |
+| 8 | Fresh clone: `pnpm build && pnpm test && pnpm lint` | green from a clean checkout of `claude/college-application-agent-thp2zi`: build 7 tasks, lint 7 tasks, test 11 tasks and 823 tests |
+| 9 | Visible focus, reduced motion, 4.5:1 body contrast in both themes | global `:focus-visible`, inset on rows; reduced motion zeroes durations and skips the settle; contrast tables in DESIGN.md |
+| 10 | DECISIONS for names, typefaces, theme, deviations; KNOWN_GAPS updated | DECISIONS #1, #2, #36 to #46; KNOWN_GAPS "Redesign" section |
