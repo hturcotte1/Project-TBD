@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss';
 
 /**
  * Tailwind is a thin alias layer over apps/web/app/tokens.css. The default palette, font sizes,
- * radii and shadows are replaced, not extended, so a class like `bg-blue-500`, `text-xs`,
+ * radii and shadows are replaced, not extended, so a stock palette class, `text-xs`,
  * `rounded-2xl` or `shadow-md` does not exist. Every value below is a var(--…) from tokens.css.
  */
 const config: Config = {

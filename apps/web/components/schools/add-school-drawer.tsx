@@ -169,7 +169,7 @@ export function AddSchoolDrawer({ open, onOpenChange, excludedSlugs, timezone }:
                   </SelectContent>
                 </Select>
                 <p className="text-12 text-fg-2">
-                  {resolvedDeadline ? `Due ${formatDate(resolvedDeadline, timezone)}` : 'Deadline unconfirmed — Vector will verify it once you connect Common App.'}
+                  {resolvedDeadline ? `Due ${formatDate(resolvedDeadline, timezone)}` : 'Deadline unconfirmed. Vector will verify it once you connect Common App.'}
                 </p>
               </div>
             </div>
