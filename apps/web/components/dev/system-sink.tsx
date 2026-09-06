@@ -175,7 +175,7 @@ export function SystemSink() {
       </div>
 
       <Stack>
-        <Demo title="Button" when="The one verb someone can click to do a thing — text by default, filled once per screen for the thing the page most wants done.">
+        <Demo title="Button" when="The one verb someone can click to do a thing, text by default, filled once per screen for the thing the page most wants done.">
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <Button variant="primary">Approve all</Button>
@@ -208,14 +208,14 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="Link" when="An inline link inside a sentence — brand-colored, underlines on hover and focus.">
+        <Demo title="Link" when="An inline link inside a sentence, brand-colored, underlines on hover and focus.">
           <p className="text-14 text-fg">
             Common App marked your Purdue transcript as received. See the <TextLink href="/timeline">full timeline</TextLink> for every update since
             yesterday.
           </p>
         </Demo>
 
-        <Demo title="Input, Textarea, Search" when="Text entry, form fields, and mobile search — same skin, three shapes.">
+        <Demo title="Input, Textarea, Search" when="Text entry, form fields, and mobile search, same skin, three shapes.">
           <div className="grid max-w-md gap-3">
             <Input placeholder="Recommender's email" />
             <Input defaultValue="ms.park@annarbor.k12.mi.us" />
@@ -226,7 +226,7 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="Select" when="Choosing one of a short, known list — a school, a status, a term.">
+        <Demo title="Select" when="Choosing one of a short, known list, a school, a status, a term.">
           <Select defaultValue="michigan">
             <SelectTrigger className="w-56">
               <SelectValue />
@@ -271,11 +271,11 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="Segmented" when="A single-choice control for filters and settings — the track above switches this page's theme.">
+        <Demo title="Segmented" when="A single-choice control for filters and settings, the track above switches this page's theme.">
           <SegmentedDemo />
         </Demo>
 
-        <Demo title="Dialog" when="A focused decision that blocks the page until it's answered — confirming, snoozing, naming something.">
+        <Demo title="Dialog" when="A focused decision that blocks the page until it's answered, confirming, snoozing, naming something.">
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="text">Snooze a week</Button>
@@ -293,7 +293,7 @@ export function SystemSink() {
           </Dialog>
         </Demo>
 
-        <Demo title="Drawer" when="Detail on a row without leaving the page — a right panel on desktop, a bottom sheet on mobile.">
+        <Demo title="Drawer" when="Detail on a row without leaving the page, a right panel on desktop, a bottom sheet on mobile.">
           <Drawer>
             <DrawerTrigger asChild>
               <Button variant="text">Open Michigan</Button>
@@ -332,7 +332,7 @@ export function SystemSink() {
           </Menu>
         </Demo>
 
-        <Demo title="Popover" when="A small amount of extra content anchored to a control — more than a tooltip, less than a drawer.">
+        <Demo title="Popover" when="A small amount of extra content anchored to a control, more than a tooltip, less than a drawer.">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="text">Snooze options</Button>
@@ -380,7 +380,7 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="Table" when="The default shape for a list of things — rows, not cards, with detail one tap away.">
+        <Demo title="Table" when="The default shape for a list of things, rows, not cards, with detail one tap away.">
           <div className="overflow-x-auto">
             <Table>
               <TableHead>
@@ -429,7 +429,7 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="Countdown" when="The hero number on Today and every school header — how long until the next deadline.">
+        <Demo title="Countdown" when="The hero number on Today and every school header, how long until the next deadline.">
           <div className="flex flex-col gap-8">
             <Countdown days={57} size="page" label="days until Michigan, Early Action." />
             <Countdown days={12} size="header" label="days until the Why Michigan supplement is due." />
@@ -468,13 +468,13 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="ProgressTop" when="The one loading indicator in the app — a thin bar at the top of the content column, nothing else.">
+        <Demo title="ProgressTop" when="The one loading indicator in the app, a thin bar at the top of the content column, nothing else.">
           <div className="relative h-8 w-full max-w-md overflow-hidden rounded bg-s1">
             <ProgressTop active className="absolute" />
           </div>
         </Demo>
 
-        <Demo title="Empty" when="Nothing to show yet — one sentence and one link, never an illustration.">
+        <Demo title="Empty" when="Nothing to show yet, one sentence and one link, never an illustration.">
           <Empty sentence="No essays started yet." action={{ label: 'Start the Why Michigan supplement', href: '/essays' }} />
         </Demo>
 
@@ -490,7 +490,7 @@ export function SystemSink() {
           </p>
         </Demo>
 
-        <Demo title="Avatar" when="A person's initials where a photo would otherwise go — the student menu, a recommender.">
+        <Demo title="Avatar" when="A person's initials where a photo would otherwise go, the student menu, a recommender.">
           <div className="flex items-center gap-4">
             <Avatar name="Dee Demo" size={32} />
             <Avatar name="Ms. Park" size={24} />
@@ -498,7 +498,7 @@ export function SystemSink() {
           </div>
         </Demo>
 
-        <Demo title="OkNote, ErrorNote" when="Quiet success and plain-sentence failure — no banners, nothing that moves.">
+        <Demo title="OkNote, ErrorNote" when="Quiet success and plain-sentence failure, no banners, nothing that moves.">
           <div className="flex flex-col gap-2">
             <OkNote>Your Common App is linked.</OkNote>
             <ErrorNote>Couldn't reach Georgia Tech's portal. Try syncing again.</ErrorNote>

@@ -1,5 +1,5 @@
 /**
- * Captures every entry in scripts/shots.ts at 390px and 1280px, in dark and light, against a
+ * Captures every entry in scripts/shots/*.ts at 390px and 1280px, in dark and light, against a
  * running app (`pnpm start` or `pnpm dev`). See docs/screenshots for output and the project's
  * spec for the full contract — this is the tool other agents run after they migrate a page onto
  * the component system, not a test suite in itself.
@@ -8,7 +8,7 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { chromium } from 'playwright';
 import type { Browser, BrowserContext, Page } from 'playwright';
-import { SHOTS } from './shots';
+import { SHOTS, settle } from './shots/index';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const DEFAULT_OUT_DIR = '/home/user/Project-TBD/docs/screenshots';
@@ -67,9 +67,10 @@ function parseArgs(argv: string[]): Args {
 
 /** Signs in once per context by POSTing the dev login form directly (no page navigation needed)
  * and copying the resulting session cookie into the context's cookie jar. */
-async function signIn(context: BrowserContext): Promise<void> {
+async function signIn(context: BrowserContext, email: string): Promise<void> {
+  await context.clearCookies();
   const response = await context.request.post(`${BASE_URL}/dev/session`, {
-    form: { email: DEV_EMAIL, redirect_url: '/' },
+    form: { email, redirect_url: '/' },
     maxRedirects: 0,
   });
 
@@ -101,6 +102,7 @@ async function assertFontsLoaded(page: Page): Promise<void> {
   if (matches.length < 2) {
     throw new Error(`expected at least two loaded hanken/bricolage font faces, found: ${JSON.stringify(loadedFamilies)}`);
   }
+  console.log(`Fonts loaded: ${matches.join(', ')}`);
 }
 
 async function captureContext(browser: Browser, theme: Theme, width: Width, outDir: string, shots: typeof SHOTS): Promise<string[]> {
@@ -121,13 +123,20 @@ async function captureContext(browser: Browser, theme: Theme, width: Width, outD
         // Storage can be unavailable in a locked-down context; the app falls back to system theme.
       }
     }, theme);
-    await signIn(context);
-
+    // Each shot names its own account (or none); the cookie jar is swapped only when that changes.
+    let sessionEmail: string | null = null;
     const page = await context.newPage();
     for (const shot of shots) {
+      const wanted = shot.anonymous ? null : (shot.email ?? DEV_EMAIL);
+      if (wanted !== sessionEmail) {
+        if (wanted === null) await context.clearCookies();
+        else await signIn(context, wanted);
+        sessionEmail = wanted;
+      }
       await page.goto(`${BASE_URL}${shot.path}`, { waitUntil: 'networkidle' });
       await assertFontsLoaded(page);
       if (shot.prepare) await shot.prepare(page);
+      await settle(page);
 
       const fileName = `${shot.name}-${width}-${theme}.png`;
       const filePath = path.join(outDir, fileName);

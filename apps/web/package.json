@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint app components lib",
     "test": "vitest run",
-    "clean": "rm -rf .next .turbo",
+    "clean": "rm -rf .next .next-build .turbo",
     "screenshots": "tsx scripts/screenshots.ts"
   },
   "dependencies": {

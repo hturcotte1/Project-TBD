@@ -56,7 +56,7 @@ Status: `todo` → `in-progress` → `review` → `done`. Owner `orchestrator` =
 |---|---|---|---|---|
 | W4-1 | Rename to Apogee / Vector across packages, config, docs, persona and welcome; full test run | everywhere | orchestrator | done — commit 13c2259 |
 | W4-2 | Design plan: `docs/DESIGN.md`, `tokens.css`, typeface bake-off, Tailwind on tokens only, self-hosted fonts, theme script | `docs/DESIGN.md`, `apps/web/app/{tokens.css,globals.css,fonts.ts,fonts/,layout.tsx}`, `apps/web/tailwind.config.ts` | orchestrator | done |
-| W4-3 | Component system `components/system/*` (Radix underneath) + `/dev/system` kitchen sink in both themes; `lib/urgency.ts` six-step heat; `lib/theme.ts`; screenshots script skeleton | `apps/web/components/system/**`, `apps/web/app/dev/system`, `apps/web/scripts/screenshots.ts` | sonnet | todo |
+| W4-3 | Component system `components/system/*` (Radix underneath) + `/dev/system` kitchen sink in both themes; `lib/urgency.ts` six-step heat; `lib/theme.ts`; screenshots script skeleton | `apps/web/components/system/**`, `apps/web/app/dev/system`, `apps/web/scripts/screenshots.ts` | sonnet | done — reviewed, six findings fixed (docs/DESIGN_REVIEW.md pass 1) |
 | W4-4a | Today + command palette + app shell (rail, tab bar, student menu) | `apps/web/app/(app)/{layout,page}.tsx`, `components/{shell,today,palette}` | sonnet | todo |
 | W4-4b | Schools table + school detail | `apps/web/app/(app)/schools/**`, `components/schools/**` | sonnet | todo |
 | W4-4c | Timeline runway + agenda | `apps/web/app/(app)/timeline`, `components/timeline/**` | sonnet | todo |

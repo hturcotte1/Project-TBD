@@ -46,10 +46,10 @@ export const CommandInput = forwardRef<ElementRef<typeof CommandPrimitive.Input>
   function CommandInput({ className, ...props }, ref) {
     return (
       <div className="flex items-center gap-2 px-4">
-        <MagnifyingGlass className="shrink-0 text-fg-3" />
+        <MagnifyingGlass className="shrink-0 text-fg-2" />
         <CommandPrimitive.Input
           ref={ref}
-          className={cn('h-12 w-full bg-transparent text-14 text-fg placeholder:text-fg-3', className)}
+          className={cn('focus-inset h-12 w-full bg-transparent text-14 text-fg placeholder:text-fg-2', className)}
           {...props}
         />
       </div>

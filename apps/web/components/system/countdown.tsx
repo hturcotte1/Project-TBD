@@ -154,6 +154,7 @@ export function Countdown({ days, size, label, settle: settleProp }: CountdownPr
         className={cn('font-count font-semibold tracking-[-0.03em] tabular-nums', SIZE_CLASSES[size], colorClass)}
         aria-live="off"
         aria-label={target === null ? 'no deadline' : `${target} days`}
+        data-settling={animating ? 'true' : undefined}
       >
         {numeralText}
       </div>

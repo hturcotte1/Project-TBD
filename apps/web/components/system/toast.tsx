@@ -80,7 +80,7 @@ export function Toaster() {
               </button>
             </ToastPrimitive.Action>
           ) : null}
-          <ToastPrimitive.Close aria-label="Dismiss" className="flex shrink-0 text-fg-3 hover:text-fg">
+          <ToastPrimitive.Close aria-label="Dismiss" className="flex shrink-0 text-fg-2 hover:text-fg">
             <X />
           </ToastPrimitive.Close>
         </ToastPrimitive.Root>
