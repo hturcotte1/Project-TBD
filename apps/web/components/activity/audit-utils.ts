@@ -3,13 +3,25 @@
  * readable label, and turning a `details` JSON blob into a compact, safe key/value list.
  */
 
-/** Known action strings get a specific, plain-language label. */
+/** Every action string the API, worker and agent emit, as a plain sentence in the student's terms. */
 const ACTION_LABELS: Record<string, string> = {
-  'sync.started': 'Started syncing with Common App',
+  'seed.demo_student': 'Set up the demo account',
+  'sync.requested': 'Asked for a Common App sync',
+  'sync.started': 'Started reading Common App',
   'sync.completed': 'Synced with Common App',
   'sync.failed': 'Sync failed',
+  'sync.paused': 'Paused syncing',
+  'sync_followup.sent': 'Texted you about what changed in the sync',
+  'verify.connected': 'Confirmed the Common App login works',
+  'welcome.sent': 'Sent the welcome text',
+  'first_plan.sent': 'Sent your first plan',
+  'weekly_plan.generated': 'Wrote the plan for the week',
+  'proactive.sent': 'Texted you about something that needed you',
   'message.sent': 'Sent a message',
   'message.received': 'Received a message',
+  'inbound.unknown_phone': 'Ignored a text from an unknown number',
+  'agent.turn_failed': 'Could not finish a reply',
+  'approval.proposed': 'Asked for your approval',
   'approval.created': 'Asked for your approval',
   'approval.approved': 'You approved a request',
   'approval.rejected': 'You rejected a request',
@@ -18,36 +30,69 @@ const ACTION_LABELS: Record<string, string> = {
   'fill.completed': 'Filled in a field',
   'fill.verified': 'Verified a filled-in field',
   'fill.failed': 'Could not fill in a field',
+  'fill.invalid_approval': 'Refused to fill without a valid approval',
+  'fill.blocked_by_guard': 'Stopped short of a submit or payment step',
   'tool_origin_blocked': 'Blocked an unsafe action',
   'credentials.connected': 'Connected Common App',
   'credentials.disconnected': 'Disconnected Common App',
   'credentials.invalid': 'Common App login stopped working',
   'verification_code.requested': 'Asked for a verification code',
+  'verification_code.received': 'You sent a verification code',
   'verification_code.submitted': 'You sent a verification code',
   'drift.detected': 'Noticed the Common App site changed',
   'drift.resolved': 'Resolved a site-change alert',
+  'application.added': 'Added a school',
+  'item.custom_added': 'You added a checklist item',
+  'item.marked_done': 'Marked an item done',
+  'item.snoozed': 'Snoozed an item',
+  'next_actions.recomputed': 'Reordered your queue',
+  'notifications.snoozed': 'Snoozed texts for a while',
+  'quiet_hours.updated': 'Updated quiet hours',
+  'recommender.status_updated': 'Updated a recommender status from Common App',
   'recommender.reminder_drafted': 'Drafted a recommender reminder',
+  'reminder.drafted': 'Drafted a recommender reminder',
   'recommender.created': 'Added a recommender',
   'recommender.updated': 'Updated a recommender',
   'recommender.deleted': 'Removed a recommender',
+  'document.extracted': 'Read an uploaded document',
+  'document.extraction_failed': 'Could not read an uploaded document',
   'account.exported': 'Exported your data',
+  'export.completed': 'Finished your data export',
   'account.deleted': 'Deleted your account',
   'narrative.summarized': 'Summarized your story',
   'essay.feedback_requested': 'Asked for essay feedback',
+  'essay.feedback_generated': 'Gave feedback on an essay',
+  'essay.draft_saved': 'Saved an essay draft',
+  like: 'Reacted with a like',
+  love: 'Reacted with a heart',
 };
 
-/** Title-cases a dot/underscore/hyphen separated action string as a fallback. */
-function titleCaseFallback(action: string): string {
-  const words = action
-    .split(/[._-]+/)
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1));
-  return words.join(' ') || action;
+const BROWSER_JOB_LABELS: Record<string, string> = {
+  verify_credentials: 'the Common App login check',
+  full_sync: 'a full Common App sync',
+  fill_fields: 'a fill of approved fields',
+  check_recommenders: 'a recommender check',
+};
+
+/** `browser_job.<kind>.<outcome>` is built dynamically by the worker, so it is matched by shape. */
+function browserJobLabel(action: string): string | null {
+  const match = /^browser_job\.([a-z_]+)\.(succeeded|failed)$/.exec(action);
+  if (!match) return null;
+  const what = BROWSER_JOB_LABELS[match[1] ?? ''] ?? 'a browser job';
+  return match[2] === 'succeeded' ? `Finished ${what}` : `Could not finish ${what}`;
 }
 
-/** "sync.completed" -> "Synced with Common App"; unknown actions fall back to a title-cased guess. */
+/** Sentence-cases a dot/underscore/hyphen separated action string as a fallback. */
+function sentenceFallback(action: string): string {
+  const words = action.split(/[._-]+/).filter(Boolean);
+  if (words.length === 0) return action;
+  const sentence = words.join(' ');
+  return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+}
+
+/** "sync.completed" -> "Synced with Common App"; unknown actions fall back to a sentence-cased guess. */
 export function humanizeAuditAction(action: string): string {
-  return ACTION_LABELS[action] ?? titleCaseFallback(action);
+  return ACTION_LABELS[action] ?? browserJobLabel(action) ?? sentenceFallback(action);
 }
 
 export interface DetailEntry {

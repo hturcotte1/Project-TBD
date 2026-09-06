@@ -11,8 +11,11 @@ describe('humanizeAuditAction', () => {
   });
 
   it('falls back to a title-cased guess for an unrecognized action', () => {
-    expect(humanizeAuditAction('weekly_plan.rebuilt')).toBe('Weekly Plan Rebuilt');
-    expect(humanizeAuditAction('some-new.thing_here')).toBe('Some New Thing Here');
+    expect(humanizeAuditAction('weekly_plan.rebuilt')).toBe('Weekly plan rebuilt');
+    expect(humanizeAuditAction('some-new.thing_here')).toBe('Some new thing here');
+    expect(humanizeAuditAction('browser_job.full_sync.succeeded')).toBe('Finished a full Common App sync');
+    expect(humanizeAuditAction('browser_job.fill_fields.failed')).toBe('Could not finish a fill of approved fields');
+    expect(humanizeAuditAction('seed.demo_student')).toBe('Set up the demo account');
   });
 
   it('returns the raw string when nothing can be split out of it', () => {
