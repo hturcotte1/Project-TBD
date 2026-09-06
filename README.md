@@ -30,7 +30,7 @@ flowchart LR
 
 | Package | What it is |
 |---|---|
-| `apps/web` | Next.js dashboard: onboarding, Today, Schools, Timeline, Essays, Recommenders, Activity, Profile, Settings, Admin, chat mirror |
+| `apps/web` | Next.js dashboard: onboarding, Today, Schools, Essays, Recommenders, Timeline, Vector (the iMessage thread), Activity, Profile, Settings, Admin |
 | `apps/api` | Fastify API implementing the shared contract, Sendblue webhook, dev phone at `/dev/phone`, uploads |
 | `apps/worker` | BullMQ workers: scheduler tick, browser jobs (sync, verify, fill) with verification-code pause/resume, agent runs, proactive nudges, maintenance |
 | `packages/shared` | Drizzle schema + migrations, zod schemas, API contract, adapters, scoped repos, requirements engine, prioritizer, trigger rules, nudge policy, seed |
@@ -51,7 +51,7 @@ pnpm dev                      # web :3000, api :4000, worker (+ mock Common App 
 
 Then:
 
-- Dashboard: http://localhost:3000 → `/dev/login` → "Demo Student" (or "New student" to run onboarding from scratch)
+- Dashboard: http://localhost:3000 → `/dev/login` → "Demo student" (or "New student" to run onboarding from scratch)
 - Fake phone: http://localhost:4000/dev/phone (type as the student; the agent replies through the worker)
 - Mock Common App: http://localhost:4100 (login `demo@example.com` / `demo-password`; set `COMMONAPP_MOCK_VERIFICATION_CODE=246810` to exercise the code round-trip)
 - Admin: log in as `admin@example.com`
@@ -101,3 +101,13 @@ Browser tests need `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` or a Playwright-install
 - [KNOWN_GAPS.md](KNOWN_GAPS.md) — what could not be completed or verified
 - [NEXT_STEPS.md](NEXT_STEPS.md) — what it takes to run this for real students next week
 - [TASKS.md](TASKS.md) — the build board
+
+## Design
+
+The dashboard is designed, not themed: the concept, palette, type, spacing and rules are in [docs/DESIGN.md](docs/DESIGN.md), every color and size comes from `apps/web/app/tokens.css`, and the component system lives in `apps/web/components/system` (a kitchen sink renders at `/dev/system` in development). Review notes are in [docs/DESIGN_REVIEW.md](docs/DESIGN_REVIEW.md). Every page is captured at 390px and 1280px in dark and light under [docs/screenshots](docs/screenshots); regenerate them against a running stack with:
+
+```
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/path/to/chrome pnpm -F @apogee/web screenshots
+```
+
+The theme follows the device by default; Settings offers dark, light or system.

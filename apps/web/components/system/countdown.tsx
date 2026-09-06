@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { heatStep, heatTextClass } from '@/lib/urgency';
 import { cn } from '@/lib/utils';
@@ -109,12 +109,11 @@ export function Countdown({ days, size, label, settle: settleProp }: CountdownPr
   });
   const [animating, setAnimating] = useState(willSettle);
   const [labelVisible, setLabelVisible] = useState(!willSettle);
-  const mounted = useRef(false);
 
   useIsomorphicLayoutEffect(() => {
-    // The settle is a one-time "on load" moment, not something later prop updates re-trigger.
-    if (mounted.current) return;
-    mounted.current = true;
+    // The settle is a one-time "on load" moment (empty deps), not something later prop updates
+    // re-trigger. No "already ran" ref guard here: React Strict Mode runs mount effects twice in
+    // development, and a guard would let the first run's cleanup cancel the frame loop for good.
     if (!willSettle || target === null || prefersReducedMotion()) {
       setDisplay(target);
       setAnimating(false);

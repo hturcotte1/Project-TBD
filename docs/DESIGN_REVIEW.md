@@ -27,3 +27,22 @@ Reviewed `system-{390,1280}-{dark,light}.png` and `system-palette-*`.
 - Finding: the kitchen sink's own descriptions used spaced em dashes as label separators, the pattern DESIGN.md rules out. Fix: rewritten as sentences.
 - Accepted as is: the sink's five-column demo table wraps badly at 390px; real pages drop columns on mobile per the page specs, and the table primitive is correct.
 - Passed: Hanken and Bricolage load (asserted by the runner); the dark page reads blue-slate, not black; the light theme has a visible step between page and rail; buttons show one filled primary per group; two radii read as two levels; the one shadow appears only on the palette; focus ring visible on inputs, buttons and rows.
+
+## Pass 2, first review of the rebuilt pages
+
+Reviewed `today`, `today-menu`, `palette`, `schools`, `schools-expanded`, `school`, `timeline`, `timeline-deadlines`, `essays`, `essay`, `essay-feedback-sheet`, `recommenders`, `recommenders-expanded`, `vector` at both widths, dark and light. Activity, Settings, Profile, Admin, onboarding and sign-in were still being rebuilt when this pass ran and are reviewed below in pass 3.
+
+Passed across the board: the rail and tab bar read as one product; the countdown is the first thing on Today and on every school header, in Bricolage, colored by heat; every list is a table of rows with detail in an inline expansion or a drawer; no cards, rings, badges, strips or skeletons; both themes hold up, and the light theme is a designed palette rather than an inversion; the palette filters schools, essays and actions with a keyboard hint per row; the Vector thread has iMessage grouping with quiet timestamps and a single hairline above the composer.
+
+Findings and fixes:
+
+- Shell: two hairlines inside the rail (above Search, above the student row) are outside the five allowed places. Fix: spacing only.
+- Today: the queue shows the prioritizer's raw sentences, which carry spaced em dashes and a trailing "it is due in 57 days" that duplicates the days column. Fix: a display helper tidies the action and reason text (em dashes become commas, the duplicated due clause is dropped); the backend text is unchanged.
+- Today at 390px: "Done" and "Snooze" as always-visible text buttons leave the action sentence a third of the width. Fix: on mobile the two actions live in one row menu; the sentence gets the width.
+- Schools, Essays, Recommenders: the deadline cell sets the date and the days figure side by side ("Nov 1 57"), which reads as one number. Fix: the days figure moves to its own right-aligned column with a clear gap, consistently on all three tables.
+- Schools and Recommenders at 390px: a one-column table still shows its header row ("School", "Name"). Fix: no header when only one column remains.
+- Essays list: the Edited column says "not started" in lowercase next to a capitalised Status column. Fix: "Never".
+- Essay editor at 1280px: the feedback summary and a full-width primary button sit between the gauge and the essay, pushing the text below the fold. Fix: the essay starts directly under the gauge; the summary (verdicts, next steps, questions) and a normal-width "Ask Vector for feedback" open the right margin column, above the anchored notes. Mobile keeps the bottom button and the sheet.
+- Recommenders at 390px: the second line under a name shows the role, and the status sentence ("3 schools: 3 invited") is dropped, which is the fact the page exists for. Fix: the second line is the status sentence; the role moves into the expansion.
+- Timeline at 390px: the status word wraps ("In progress") in a narrow column. Fix: status is hidden below `lg`; "Done" rows keep a small check before the title.
+- Component system, found by the Today agent: the countdown's settle never ran under React Strict Mode in development because a ref guard let the first effect's cleanup cancel the frame loop. Fixed in the system (no guard; the effect is mount-only by its empty dependency list). The Today shots no longer need to emulate reduced motion.

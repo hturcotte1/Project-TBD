@@ -33,4 +33,4 @@ Still open from that review: Sendblue's documentation defines no webhook payload
 - A worker restart while a browser job is waiting for a verification code loses that wait; BullMQ retries the job after the lock expires, and the student is asked for a new code.
 - The mock Common App is served by the worker process, so its state (including a configured verification code) resets when the worker restarts.
 - `pnpm test` runs packages serially because they share one test database.
-- Running `next build` while `next dev` is up corrupts the dev server's `.next` directory (a Next.js limitation); stop `pnpm dev` before `pnpm build`.
+- Running `next build` while `next dev` is up corrupts the dev server's `.next` directory (a Next.js limitation); either stop `pnpm dev` before `pnpm build`, or build into a separate directory with `NEXT_DIST_DIR=.next-build pnpm -F @apogee/web build`.
