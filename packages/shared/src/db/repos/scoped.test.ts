@@ -108,4 +108,13 @@ describe('StudentDb row-level authorization', () => {
     expect(b.id).toBe(a.id);
     expect(b.role).toBe('student');
   });
+
+  it('creates one row when several first requests race', async () => {
+    const db = await getTestDb();
+    const input = { authUserId: 'dev:racer', email: 'racer@example.com', isAdmin: false };
+    const rows = await Promise.all(Array.from({ length: 6 }, () => studentsRepo.upsertFromAuth(db, input)));
+    const ids = new Set(rows.map((row) => row.id));
+    expect(ids.size).toBe(1);
+    expect(await studentsRepo.findByEmail(db, 'racer@example.com')).not.toBeNull();
+  });
 });

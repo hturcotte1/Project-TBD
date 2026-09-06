@@ -36,12 +36,17 @@ export const studentsRepo = {
       }
       return existing;
     }
+    // A new account's first page load fires several authenticated requests at once, so two of
+    // them can reach this insert together; the unique auth_user_id lets the loser re-read the row.
     const [created] = await db
       .insert(S.students)
       .values({ authUserId: input.authUserId, email: input.email.toLowerCase(), role: input.isAdmin ? 'admin' : 'student' })
+      .onConflictDoNothing({ target: S.students.authUserId })
       .returning();
-    if (!created) throw new Error('failed to create student');
-    return created;
+    if (created) return created;
+    const raced = await studentsRepo.findByAuthUserId(db, input.authUserId);
+    if (!raced) throw new Error('failed to create student');
+    return raced;
   },
   async listActive(db: DbOrTx): Promise<S.Student[]> {
     return db.select().from(S.students).where(eq(S.students.status, 'active'));
