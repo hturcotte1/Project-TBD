@@ -28,6 +28,10 @@ Still open from that review: Sendblue's documentation defines no webhook payload
 - **Recommender "check" job** (`browser.check_recommenders`) reuses the full capture; it is not a lighter pass.
 - **Common App RD deadlines for a few schools** and several test policies are marked `needs_verification` in the dataset; the sync clears the supplement flags it can confirm but cannot confirm deadlines the site does not show.
 
+## Redesign: not visually verified against the seed
+
+The Demo Student seed has no pending approvals, no submitted applications and no application paused for a verification code, so three states were built and unit-tested but never seen in a screenshot: the "Waiting on you" approval row and its review drawer on Today, the "Submitted" table on Schools, and the "Needs a code" status and its Settings field. `AUTH_MODE=clerk` renders Clerk's sign-in with token-driven appearance variables that were not exercised without keys. The timeline's runway ticks are 2px wide, under the 40px touch minimum horizontally (a deliberate trade for a day-by-day axis; each tick has a tooltip and a 40px tall hit area). Bricolage Grotesque and Hanken Grotesk are served from committed OFL files rather than Google Fonts (DECISIONS #38).
+
 ## Operational notes
 
 - A worker restart while a browser job is waiting for a verification code loses that wait; BullMQ retries the job after the lock expires, and the student is asked for a new code.
