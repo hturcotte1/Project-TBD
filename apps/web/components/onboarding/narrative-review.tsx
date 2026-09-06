@@ -1,11 +1,8 @@
 'use client';
 
 import type { StudentNarrative } from '@apogee/shared/schemas';
-import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Trash } from '@phosphor-icons/react';
+import { Button, Field, Input, Textarea } from '@/components/system';
 
 const TEXT_FIELDS: Array<{ key: 'summary' | 'cares_about' | 'wants_to_do' | 'free_saturday' | 'proud_of_not_on_resume' | 'home_vs_school' | 'family_context' | 'anxieties'; label: string }> = [
   { key: 'summary', label: 'Summary' },
@@ -18,48 +15,33 @@ const TEXT_FIELDS: Array<{ key: 'summary' | 'cares_about' | 'wants_to_do' | 'fre
   { key: 'anxieties', label: 'What worries you about applying' },
 ];
 
+/** Editable summary of the interview transcript, reviewed before it becomes the profile's
+ * narrative. Also used unchanged from `/profile/interview` — props stay exactly
+ * `{ narrative, onChange }`. */
 export function NarrativeReview({ narrative, onChange }: { narrative: StudentNarrative; onChange: (next: StudentNarrative) => void }) {
   return (
-    <div className="space-y-5">
+    <div className="flex flex-col gap-5">
       {TEXT_FIELDS.map(({ key, label }) => (
-        <div key={key} className="space-y-1.5">
-          <Label htmlFor={`narrative-${key}`}>{label}</Label>
-          <Textarea
-            id={`narrative-${key}`}
-            rows={key === 'summary' ? 4 : 2}
-            value={narrative[key]}
-            onChange={(event) => onChange({ ...narrative, [key]: event.target.value })}
-          />
-        </div>
+        <Field key={key} label={label}>
+          <Textarea rows={key === 'summary' ? 4 : 2} value={narrative[key]} onChange={(event) => onChange({ ...narrative, [key]: event.target.value })} />
+        </Field>
       ))}
 
       {narrative.themes.length > 0 ? (
-        <div className="space-y-2">
-          <Label>Themes</Label>
+        <div className="flex flex-col gap-2">
+          <span className="text-14 font-medium text-fg">Themes</span>
           {narrative.themes.map((theme, index) => (
-            <div key={index} className="flex items-start gap-2 rounded-md border border-border p-2.5">
-              <div className="flex-1 space-y-1.5">
-                <Input
-                  value={theme.title}
-                  onChange={(event) => onChange({ ...narrative, themes: narrative.themes.map((t, i) => (i === index ? { ...t, title: event.target.value } : t)) })}
-                />
+            <div key={index} className="flex items-start gap-2 rounded border border-line p-2.5">
+              <div className="flex flex-1 flex-col gap-1.5">
+                <Input value={theme.title} onChange={(event) => onChange({ ...narrative, themes: narrative.themes.map((t, i) => (i === index ? { ...t, title: event.target.value } : t)) })} />
                 <Textarea
                   rows={2}
                   value={theme.description}
-                  onChange={(event) =>
-                    onChange({ ...narrative, themes: narrative.themes.map((t, i) => (i === index ? { ...t, description: event.target.value } : t)) })
-                  }
+                  onChange={(event) => onChange({ ...narrative, themes: narrative.themes.map((t, i) => (i === index ? { ...t, description: event.target.value } : t)) })}
                 />
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => onChange({ ...narrative, themes: narrative.themes.filter((_, i) => i !== index) })}
-                aria-label="Remove theme"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
+              <Button variant="quiet" size="sm" iconOnly aria-label="Remove theme" onClick={() => onChange({ ...narrative, themes: narrative.themes.filter((_, i) => i !== index) })}>
+                <Trash />
               </Button>
             </div>
           ))}
@@ -67,32 +49,20 @@ export function NarrativeReview({ narrative, onChange }: { narrative: StudentNar
       ) : null}
 
       {narrative.stories.length > 0 ? (
-        <div className="space-y-2">
-          <Label>Stories</Label>
+        <div className="flex flex-col gap-2">
+          <span className="text-14 font-medium text-fg">Stories</span>
           {narrative.stories.map((story, index) => (
-            <div key={index} className="flex items-start gap-2 rounded-md border border-border p-2.5">
-              <div className="flex-1 space-y-1.5">
-                <Input
-                  value={story.title}
-                  onChange={(event) => onChange({ ...narrative, stories: narrative.stories.map((st, i) => (i === index ? { ...st, title: event.target.value } : st)) })}
-                />
+            <div key={index} className="flex items-start gap-2 rounded border border-line p-2.5">
+              <div className="flex flex-1 flex-col gap-1.5">
+                <Input value={story.title} onChange={(event) => onChange({ ...narrative, stories: narrative.stories.map((st, i) => (i === index ? { ...st, title: event.target.value } : st)) })} />
                 <Textarea
                   rows={3}
                   value={story.summary}
-                  onChange={(event) =>
-                    onChange({ ...narrative, stories: narrative.stories.map((st, i) => (i === index ? { ...st, summary: event.target.value } : st)) })
-                  }
+                  onChange={(event) => onChange({ ...narrative, stories: narrative.stories.map((st, i) => (i === index ? { ...st, summary: event.target.value } : st)) })}
                 />
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => onChange({ ...narrative, stories: narrative.stories.filter((_, i) => i !== index) })}
-                aria-label="Remove story"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
+              <Button variant="quiet" size="sm" iconOnly aria-label="Remove story" onClick={() => onChange({ ...narrative, stories: narrative.stories.filter((_, i) => i !== index) })}>
+                <Trash />
               </Button>
             </div>
           ))}
@@ -100,20 +70,13 @@ export function NarrativeReview({ narrative, onChange }: { narrative: StudentNar
       ) : null}
 
       {narrative.values.length > 0 ? (
-        <div className="space-y-2">
-          <Label>Values</Label>
+        <div className="flex flex-col gap-2">
+          <span className="text-14 font-medium text-fg">Values</span>
           <div className="grid gap-2 sm:grid-cols-2">
             {narrative.values.map((value, index) => (
-              <div key={index} className="space-y-1.5 rounded-md border border-border p-2.5">
-                <Input
-                  value={value.name}
-                  onChange={(event) => onChange({ ...narrative, values: narrative.values.map((v, i) => (i === index ? { ...v, name: event.target.value } : v)) })}
-                />
-                <Textarea
-                  rows={2}
-                  value={value.why}
-                  onChange={(event) => onChange({ ...narrative, values: narrative.values.map((v, i) => (i === index ? { ...v, why: event.target.value } : v)) })}
-                />
+              <div key={index} className="flex flex-col gap-1.5 rounded border border-line p-2.5">
+                <Input value={value.name} onChange={(event) => onChange({ ...narrative, values: narrative.values.map((v, i) => (i === index ? { ...v, name: event.target.value } : v)) })} />
+                <Textarea rows={2} value={value.why} onChange={(event) => onChange({ ...narrative, values: narrative.values.map((v, i) => (i === index ? { ...v, why: event.target.value } : v)) })} />
               </div>
             ))}
           </div>

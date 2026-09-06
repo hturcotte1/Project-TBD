@@ -2,15 +2,9 @@
 
 import type { ActivityInput } from '@apogee/shared/schemas';
 import { ACTIVITY_TIMINGS, ACTIVITY_TYPES, GRADE_LEVELS } from '@apogee/shared/domain';
-import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-react';
+import { CaretDown, CaretUp, Plus, Trash } from '@phosphor-icons/react';
 import { DESCRIPTION_MAX_LENGTH, MAX_ACTIVITIES, canAddActivity, descriptionRemaining } from '@/components/onboarding/activities-editor-utils';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
+import { Button, Checkbox, Field, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from '@/components/system';
 
 const ACTIVITY_TYPE_LABELS: Record<(typeof ACTIVITY_TYPES)[number], string> = {
   academic: 'Academic',
@@ -70,6 +64,7 @@ function toggle<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
+/** Up to 10 activities as plain rows of Inputs, not a card per activity. */
 export function ActivitiesEditor({ activities, onChange }: { activities: ActivityInput[]; onChange: (next: ActivityInput[]) => void }) {
   function update(index: number, patch: Partial<ActivityInput>) {
     onChange(activities.map((a, i) => (i === index ? { ...a, ...patch } : a)));
@@ -87,50 +82,30 @@ export function ActivitiesEditor({ activities, onChange }: { activities: Activit
   }
 
   return (
-    <div className="space-y-3">
-      {activities.length === 0 ? (
-        <p className="rounded-md border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
-          No activities yet. Upload a resume above, or add one manually.
-        </p>
-      ) : null}
+    <div className="flex flex-col gap-6">
+      {activities.length === 0 ? <p className="text-14 text-fg-2">No activities yet. Upload a resume above, or add one below.</p> : null}
 
       {activities.map((activity, index) => (
-        <div key={index} className="space-y-3 rounded-md border border-border p-3">
+        <div key={index} className="flex flex-col gap-3 border-t border-line pt-4 first:border-t-0 first:pt-0">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium text-muted-foreground">
+            <span className="text-12 text-fg-2">
               Activity {index + 1} of {MAX_ACTIVITIES}
-            </p>
+            </span>
             <div className="flex items-center gap-1">
-              <Button type="button" variant="ghost" size="icon" className="h-7 w-7" disabled={index === 0} onClick={() => move(index, -1)} aria-label="Move activity up">
-                <ChevronUp className="h-3.5 w-3.5" />
+              <Button variant="quiet" size="sm" iconOnly aria-label="Move activity up" disabled={index === 0} onClick={() => move(index, -1)}>
+                <CaretUp />
               </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                disabled={index === activities.length - 1}
-                onClick={() => move(index, 1)}
-                aria-label="Move activity down"
-              >
-                <ChevronDown className="h-3.5 w-3.5" />
+              <Button variant="quiet" size="sm" iconOnly aria-label="Move activity down" disabled={index === activities.length - 1} onClick={() => move(index, 1)}>
+                <CaretDown />
               </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-destructive"
-                onClick={() => onChange(activities.filter((_, i) => i !== index))}
-                aria-label="Remove activity"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
+              <Button variant="danger" size="sm" iconOnly aria-label="Remove activity" onClick={() => onChange(activities.filter((_, i) => i !== index))}>
+                <Trash />
               </Button>
             </div>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label>Type</Label>
+            <Field label="Type">
               <Select value={activity.activity_type} onValueChange={(value) => update(index, { activity_type: value as ActivityInput['activity_type'] })}>
                 <SelectTrigger>
                   <SelectValue />
@@ -143,98 +118,53 @@ export function ActivitiesEditor({ activities, onChange }: { activities: Activit
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Position/leadership</Label>
-              <Input value={activity.position} maxLength={50} onChange={(event) => update(index, { position: event.target.value })} placeholder="e.g. Editor-in-Chief" />
-            </div>
+            </Field>
+            <Field label="Position or leadership">
+              <Input value={activity.position} maxLength={50} onChange={(event) => update(index, { position: event.target.value })} placeholder="Editor-in-Chief" />
+            </Field>
           </div>
 
-          <div className="space-y-1.5">
-            <Label>Organization</Label>
-            <Input
-              value={activity.organization}
-              maxLength={100}
-              onChange={(event) => update(index, { organization: event.target.value })}
-              placeholder="e.g. The Lincoln Log"
-            />
-          </div>
+          <Field label="Organization">
+            <Input value={activity.organization} maxLength={100} onChange={(event) => update(index, { organization: event.target.value })} placeholder="The Lincoln Log" />
+          </Field>
 
-          <div className="space-y-1.5">
-            <Label>Description</Label>
-            <Textarea
-              value={activity.description}
-              maxLength={DESCRIPTION_MAX_LENGTH}
-              rows={2}
-              onChange={(event) => update(index, { description: event.target.value })}
-              placeholder="What you did, Common App style — abbreviations are fine."
-            />
-            <p className={cn('text-right text-xs', descriptionRemaining(activity.description) < 0 ? 'text-destructive' : 'text-muted-foreground')}>
-              {descriptionRemaining(activity.description)} characters left
-            </p>
-          </div>
+          <Field label="Description" help={`${descriptionRemaining(activity.description)} characters left`}>
+            <Textarea value={activity.description} maxLength={DESCRIPTION_MAX_LENGTH} rows={2} onChange={(event) => update(index, { description: event.target.value })} placeholder="What you did, Common App style." />
+          </Field>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label>Grade levels</Label>
-              <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-col gap-1">
+              <span className="text-14 font-medium text-fg">Grade levels</span>
+              <div className="flex flex-wrap gap-3">
                 {GRADE_LEVELS.map((grade) => (
-                  <button
-                    key={grade}
-                    type="button"
-                    onClick={() => update(index, { grade_levels: toggle(activity.grade_levels, grade) })}
-                    className={cn(
-                      'rounded-full border px-2.5 py-1 text-xs font-medium',
-                      activity.grade_levels.includes(grade) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground',
-                    )}
-                  >
+                  <label key={grade} className="flex items-center gap-1.5 text-14 text-fg">
+                    <Checkbox checked={activity.grade_levels.includes(grade)} onCheckedChange={() => update(index, { grade_levels: toggle(activity.grade_levels, grade) })} />
                     {grade}
-                  </button>
+                  </label>
                 ))}
               </div>
             </div>
-            <div className="space-y-1.5">
-              <Label>Timing</Label>
-              <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-col gap-1">
+              <span className="text-14 font-medium text-fg">Timing</span>
+              <div className="flex flex-wrap gap-3">
                 {ACTIVITY_TIMINGS.map((timing) => (
-                  <button
-                    key={timing}
-                    type="button"
-                    onClick={() => update(index, { timing: toggle(activity.timing, timing) })}
-                    className={cn(
-                      'rounded-full border px-2.5 py-1 text-xs font-medium',
-                      activity.timing.includes(timing) ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground',
-                    )}
-                  >
+                  <label key={timing} className="flex items-center gap-1.5 text-14 text-fg">
+                    <Checkbox checked={activity.timing.includes(timing)} onCheckedChange={() => update(index, { timing: toggle(activity.timing, timing) })} />
                     {TIMING_LABELS[timing]}
-                  </button>
+                  </label>
                 ))}
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 items-end gap-3 sm:grid-cols-3">
-            <div className="space-y-1.5">
-              <Label>Hours/week</Label>
-              <Input
-                type="number"
-                min={0}
-                max={168}
-                value={activity.hours_per_week}
-                onChange={(event) => update(index, { hours_per_week: Number(event.target.value) || 0 })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Weeks/year</Label>
-              <Input
-                type="number"
-                min={1}
-                max={52}
-                value={activity.weeks_per_year}
-                onChange={(event) => update(index, { weeks_per_year: Number(event.target.value) || 1 })}
-              />
-            </div>
-            <label className="flex items-center gap-2 pb-2 text-sm">
+            <Field label="Hours/week">
+              <Input type="number" min={0} max={168} value={activity.hours_per_week} onChange={(event) => update(index, { hours_per_week: Number(event.target.value) || 0 })} />
+            </Field>
+            <Field label="Weeks/year">
+              <Input type="number" min={1} max={52} value={activity.weeks_per_year} onChange={(event) => update(index, { weeks_per_year: Number(event.target.value) || 1 })} />
+            </Field>
+            <label className="flex items-center gap-2 pb-2 text-14 text-fg">
               <Checkbox checked={activity.continue_in_college} onCheckedChange={(checked) => update(index, { continue_in_college: checked === true })} />
               Continue in college
             </label>
@@ -242,13 +172,12 @@ export function ActivitiesEditor({ activities, onChange }: { activities: Activit
         </div>
       ))}
 
-      <div className="space-y-1">
-        <Button type="button" variant="outline" size="sm" disabled={!canAddActivity(activities.length)} onClick={() => onChange([...activities, emptyActivity()])}>
-          <Plus className="h-3.5 w-3.5" /> Add activity
+      <div className="flex flex-col gap-1">
+        <Button variant="text" size="sm" className="h-auto w-fit px-0" disabled={!canAddActivity(activities.length)} onClick={() => onChange([...activities, emptyActivity()])}>
+          <Plus /> Add activity
         </Button>
-        {!canAddActivity(activities.length) ? <p className="text-xs text-muted-foreground">Common App caps activities at {MAX_ACTIVITIES}.</p> : null}
+        {!canAddActivity(activities.length) ? <p className="text-12 text-fg-2">Common App caps activities at {MAX_ACTIVITIES}.</p> : null}
       </div>
     </div>
   );
 }
-

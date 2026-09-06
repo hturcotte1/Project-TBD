@@ -6,10 +6,12 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { ActivitiesEditor } from '@/components/onboarding/activities-editor';
+import { QuestionLayout } from '@/components/onboarding/question-layout';
 import { ResumeUpload } from '@/components/onboarding/resume-upload';
-import { StepActions } from '@/components/onboarding/step-actions';
+import { getQuestionCount, getQuestionId } from '@/components/onboarding/step-questions';
 import type { OnboardingStepProps } from '@/components/onboarding/step-types';
-import { useToast } from '@/components/ui/use-toast';
+import { useQuestionNav } from '@/components/onboarding/use-question-nav';
+import { Button, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 /** Server rows carry an `order` index; the editor works on plain Common App-shaped inputs. */
@@ -17,35 +19,53 @@ function toActivityInputs(dtos: ActivityDto[]): ActivityInput[] {
   return [...dtos].sort((a, b) => a.order - b.order).map(({ id: _id, order: _order, ...rest }) => rest);
 }
 
+/** Step 3: resume upload, then the activities list — one question per screen. */
 export function StepActivities({ onboarding, step }: OnboardingStepProps) {
   const router = useRouter();
-  const { toast } = useToast();
+  const total = getQuestionCount(step);
+  const nav = useQuestionNav(step, total);
+  const questionId = getQuestionId(step, nav.question);
   const [activities, setActivities] = useState<ActivityInput[]>(() => toActivityInputs(onboarding.activities));
 
   const save = useMutation({
     mutationFn: () => clientApi.call('onboardingStep', { body: { step: 3, data: { activities } } }),
     onSuccess: (state) => router.push(`/onboarding/${state.step}`),
-    onError: () => toast({ title: 'Could not save — try again.', variant: 'destructive' }),
+    onError: () => toast('Could not save. Try again.'),
   });
 
+  if (questionId === 'resume') {
+    return (
+      <QuestionLayout
+        question="Have a resume?"
+        onSubmit={(event) => {
+          event.preventDefault();
+          nav.goNext();
+        }}
+        onBack={nav.goBack}
+        footerExtra={
+          <Button variant="text" onClick={() => nav.goNext()}>
+            Skip for now
+          </Button>
+        }
+      >
+        <ResumeUpload onApplied={setActivities} />
+      </QuestionLayout>
+    );
+  }
+
+  // 'activities' — the last question of this step.
   return (
-    <form
-      className="space-y-6"
+    <QuestionLayout
+      question="What do you spend your time on?"
+      context="Up to 10, in the order they matter most to you — Common App's own limit."
       onSubmit={(event) => {
         event.preventDefault();
         save.mutate();
       }}
+      onBack={nav.goBack}
+      continueLoading={save.isPending}
     >
-      <div className="space-y-1.5">
-        <h1 className="text-xl font-semibold tracking-tight">Activities</h1>
-        <p className="text-sm text-muted-foreground">Up to 10, in the order they matter most to you — Common App&rsquo;s own limit.</p>
-      </div>
-
-      <ResumeUpload onApplied={setActivities} />
-
       <ActivitiesEditor activities={activities} onChange={setActivities} />
-
-      <StepActions step={step} loading={save.isPending} />
-    </form>
+    </QuestionLayout>
   );
 }

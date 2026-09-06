@@ -1,31 +1,35 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { ONBOARDING_STEP_COUNT } from '@apogee/shared/domain';
-import { ONBOARDING_STEPS } from '@/components/onboarding/step-config';
-import { Progress } from '@/components/ui/progress';
+import { computeProgressSegments } from '@/components/onboarding/progress';
+import { cn } from '@/lib/utils';
 
 /**
- * Header for the onboarding layout. The layout persists across `/onboarding/[step]` navigations,
- * so the step shown must come from the current route, not from the server-rendered state.
+ * Seven segments, no "Step 3 of 7" text and no step titles (DESIGN.md: the number is the hero,
+ * everything around it is quiet). The layout persists across `/onboarding/[step]` navigations, so
+ * both the step and the question index come from the current URL, not the server-rendered state
+ * that was current when the layout itself first rendered.
  */
-export function OnboardingProgress({ currentStep, agentName }: { currentStep: number; agentName: string }) {
+export function OnboardingProgress({ currentStep }: { currentStep: number }) {
   const params = useParams<{ step?: string }>();
+  const searchParams = useSearchParams();
+
   const routeStep = Number(params?.step);
   const step = Number.isInteger(routeStep) && routeStep >= 1 && routeStep <= ONBOARDING_STEP_COUNT ? routeStep : currentStep;
-  const percent = (step / ONBOARDING_STEP_COUNT) * 100;
-  const title = ONBOARDING_STEPS[step]?.title ?? '';
+  const rawQuestion = Number(searchParams.get('q'));
+  const question = Number.isInteger(rawQuestion) && rawQuestion >= 1 ? rawQuestion : 1;
+
+  const segments = computeProgressSegments(step, question);
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-        <span>Setting up with {agentName}</span>
-        <span>
-          Step {step} of {ONBOARDING_STEP_COUNT}
-        </span>
-      </div>
-      <Progress value={percent} />
-      <p className="text-sm font-medium">{title}</p>
+    <div className="flex gap-1" role="progressbar" aria-valuemin={1} aria-valuemax={ONBOARDING_STEP_COUNT} aria-valuenow={step} aria-label="Setup progress">
+      {segments.map((segment, index) => (
+        <div key={index} className={cn('h-1 flex-1 overflow-hidden rounded-full bg-line')}>
+          {segment.state === 'done' ? <div className="h-full w-full rounded-full bg-fg-2" /> : null}
+          {segment.state === 'current' ? <div className="h-full rounded-full bg-brand" style={{ width: `${segment.fill * 100}%` }} /> : null}
+        </div>
+      ))}
     </div>
   );
 }

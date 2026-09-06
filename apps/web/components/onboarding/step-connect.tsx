@@ -1,33 +1,31 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, Loader2, Lock, MessageCircle, Save, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { StepActions } from '@/components/onboarding/step-actions';
+import { useEffect, useState } from 'react';
+import { QuestionLayout } from '@/components/onboarding/question-layout';
+import { getQuestionCount, getQuestionId } from '@/components/onboarding/step-questions';
 import type { OnboardingStepProps } from '@/components/onboarding/step-types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/components/ui/use-toast';
+import { useQuestionNav } from '@/components/onboarding/use-question-nav';
+import { Button, Checkbox, Field, Input, OkNote, Prose, TextLink, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 const ACTIVE_JOB_STATUSES = new Set(['queued', 'running']);
 
+/** Step 6: connect Common App (with its verification-code detour), then a final acknowledgement. */
 export function StepConnect({ onboarding, step }: OnboardingStepProps) {
   const router = useRouter();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
+  const total = getQuestionCount(step);
+  const nav = useQuestionNav(step, total);
+  const questionId = getQuestionId(step, nav.question);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
+  const [connectError, setConnectError] = useState<string | null>(null);
+  const [codeError, setCodeError] = useState<string | null>(null);
   const [acknowledged, setAcknowledged] = useState(onboarding.credentials.connected);
-
-  const settingsQuery = useQuery({ queryKey: ['settings'], queryFn: () => clientApi.call('settingsGet') });
 
   const syncStatusQuery = useQuery({
     queryKey: ['sync-status'],
@@ -41,161 +39,129 @@ export function StepConnect({ onboarding, step }: OnboardingStepProps) {
     },
   });
 
+  const status = syncStatusQuery.data;
+  const connected = status?.credentials.connected ?? onboarding.credentials.connected;
+  const awaitingCode = Boolean(status?.awaiting_verification_job_id);
+
+  // Follow the browser job's own state: once it asks for a code, move to the code question; once
+  // it resolves to connected, skip ahead to the closing acknowledgement.
+  useEffect(() => {
+    if (nav.question === 1 && awaitingCode) nav.goToQuestion(2);
+    else if (nav.question === 2 && !awaitingCode && connected) nav.goToQuestion(3);
+  }, [awaitingCode, connected, nav.question]);
+
   const connect = useMutation({
     mutationFn: () => clientApi.call('credentialsConnectCommonApp', { body: { email, password } }),
     onSuccess: () => {
       setPassword('');
+      setConnectError(null);
       void queryClient.invalidateQueries({ queryKey: ['sync-status'] });
-      toast({ title: 'Connecting…', description: 'Vector is logging in and checking your Common App account.' });
     },
-    onError: () => toast({ title: 'Could not connect', description: 'Check the email and password and try again.', variant: 'destructive' }),
-  });
-
-  const disconnect = useMutation({
-    mutationFn: () => clientApi.call('credentialsDisconnectCommonApp'),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['sync-status'] });
-      toast({ title: 'Disconnected', description: 'Your Common App password has been deleted.' });
-    },
+    onError: () => setConnectError('Could not connect. Check the email and password and try again.'),
   });
 
   const submitCode = useMutation({
     mutationFn: () => clientApi.call('verificationCodeSubmit', { body: { code } }),
     onSuccess: () => {
       setCode('');
+      setCodeError(null);
       void queryClient.invalidateQueries({ queryKey: ['sync-status'] });
-      toast({ title: 'Code submitted', description: 'Finishing the connection now.' });
     },
-    onError: () => toast({ title: 'That code did not work', description: 'Try again, or wait for a fresh one.', variant: 'destructive' }),
+    onError: () => setCodeError('That code did not work. Try again, or wait for a fresh one.'),
   });
 
   const save = useMutation({
     mutationFn: () => clientApi.call('onboardingStep', { body: { step: 6, data: { acknowledged } } }),
     onSuccess: (state) => router.push(`/onboarding/${state.step}`),
-    onError: () => toast({ title: 'Could not save — try again.', variant: 'destructive' }),
+    onError: () => toast('Could not save. Try again.'),
   });
 
-  const status = syncStatusQuery.data;
-  const connected = status?.credentials.connected ?? onboarding.credentials.connected;
-  const awaitingCode = Boolean(status?.awaiting_verification_job_id);
-  const agentName = onboarding.agent_name;
-  const agentPhone = onboarding.agent_phone_number;
-  const gmailEnabled = settingsQuery.data?.features.gmail ?? false;
+  if (questionId === 'connect') {
+    return (
+      <QuestionLayout
+        question="Connect your Common App?"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (connected) {
+            nav.goToQuestion(3);
+            return;
+          }
+          connect.mutate();
+        }}
+        onBack={nav.goBack}
+        backHidden={nav.isFirstOverall}
+        continueLabel={connected ? 'Continue' : 'Connect'}
+        continueLoading={connect.isPending}
+        continueDisabled={!connected && (!email || !password)}
+        footerExtra={
+          !connected ? (
+            <Button type="button" variant="text" onClick={() => nav.goToQuestion(3)}>
+              Skip for now
+            </Button>
+          ) : undefined
+        }
+      >
+        <Prose>
+          <p>
+            Vector reads your Common App account — what is filled in, in progress, or missing — and, with your approval field by field,
+            fills in what you ask it to. It never submits anything. Your password is encrypted at rest and decrypted only for a few
+            seconds inside Vector's browser worker.{' '}
+            <TextLink href="/privacy">Read the full privacy page</TextLink>.
+          </p>
+        </Prose>
+        {connected ? (
+          <OkNote>Connected</OkNote>
+        ) : (
+          <>
+            <Field label="Common App email">
+              <Input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+            </Field>
+            <Field label="Common App password" error={connectError ?? undefined}>
+              <Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+            </Field>
+          </>
+        )}
+      </QuestionLayout>
+    );
+  }
 
-  const vcardHref = `/api/vcard?name=${encodeURIComponent(agentName)}&phone=${encodeURIComponent(agentPhone)}`;
-  const smsHref = `sms:${agentPhone}`;
+  if (questionId === 'verify') {
+    return (
+      <QuestionLayout
+        question="What's the code Common App sent you?"
+        context={`Common App just sent a code — text it to ${onboarding.agent_name} or enter it here.`}
+        onSubmit={(event) => {
+          event.preventDefault();
+          submitCode.mutate();
+        }}
+        onBack={() => nav.goToQuestion(1)}
+        continueLabel="Send code"
+        continueLoading={submitCode.isPending}
+        continueDisabled={!code}
+      >
+        <Field label="Verification code" error={codeError ?? undefined}>
+          <Input value={code} onChange={(event) => setCode(event.target.value)} placeholder="123456" maxLength={12} className="font-mono" />
+        </Field>
+      </QuestionLayout>
+    );
+  }
 
+  // 'ready' — the last question of this step.
   return (
-    <form
+    <QuestionLayout
+      question="Ready?"
       onSubmit={(event) => {
         event.preventDefault();
         save.mutate();
       }}
-      className="space-y-6"
+      onBack={() => nav.goToQuestion(1)}
+      continueLoading={save.isPending}
+      continueDisabled={!acknowledged}
     >
-      <div className="space-y-1.5">
-        <h1 className="text-xl font-semibold tracking-tight">Connect</h1>
-        <p className="text-sm text-muted-foreground">Two ways Vector stays in the loop — Common App, and texting you directly.</p>
-      </div>
-
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Lock className="h-4 w-4" /> Common App
-          </CardTitle>
-          <CardDescription>
-            Your password is encrypted at rest and decrypted only for a few seconds inside Vector&rsquo;s browser worker — to read your account and fill in what
-            you approve. It is never used to submit anything. Disconnect any time from Settings and it&rsquo;s deleted immediately.{' '}
-            <Link href="/privacy" className="text-primary underline underline-offset-2">
-              Read the full privacy page
-            </Link>
-            .
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {connected ? (
-            <div className="flex items-center justify-between rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm">
-              <span className="flex items-center gap-2 text-success">
-                <CheckCircle2 className="h-4 w-4" /> Connected
-              </span>
-              <Button type="button" variant="ghost" size="sm" onClick={() => disconnect.mutate()} loading={disconnect.isPending}>
-                Disconnect
-              </Button>
-            </div>
-          ) : awaitingCode ? (
-            <div className="space-y-2 rounded-md border border-border p-3">
-              <p className="text-sm">Common App just sent you a code — text it to {agentName} or enter it here.</p>
-              <div className="flex gap-2">
-                <Input value={code} onChange={(event) => setCode(event.target.value)} placeholder="123456" maxLength={12} />
-                <Button type="button" onClick={() => submitCode.mutate()} loading={submitCode.isPending} disabled={!code}>
-                  Submit
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <Label htmlFor="ca-email">Common App email</Label>
-                <Input id="ca-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="ca-password">Common App password</Label>
-                <Input id="ca-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
-              </div>
-              <Button type="button" onClick={() => connect.mutate()} loading={connect.isPending} disabled={!email || !password}>
-                Connect Common App
-              </Button>
-            </div>
-          )}
-          {status?.last_job && ACTIVE_JOB_STATUSES.has(status.last_job.status) && !awaitingCode ? (
-            <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Verifying your login…
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <MessageCircle className="h-4 w-4" /> Text {agentName}
-          </CardTitle>
-          <CardDescription>Save the contact, or send the first text yourself — replies usually arrive within seconds.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          <Button type="button" variant="outline" asChild>
-            <a href={smsHref}>Text me</a>
-          </Button>
-          <Button type="button" variant="outline" asChild>
-            <a href={vcardHref}>
-              <Save className="h-3.5 w-3.5" /> Save contact
-            </a>
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="opacity-70">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <ShieldCheck className="h-4 w-4" /> Gmail
-          </CardTitle>
-          <CardDescription>
-            {gmailEnabled ? 'Read-only access so Vector can catch recommender and portal emails.' : 'Coming soon — read-only access so Vector can catch recommender and portal emails.'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button type="button" variant="outline" disabled>
-            {gmailEnabled ? 'Connect Gmail' : 'Coming soon'}
-          </Button>
-        </CardContent>
-      </Card>
-
-      <label className="flex items-start gap-2 text-sm">
+      <label className="flex items-start gap-2 text-14 text-fg">
         <Checkbox checked={acknowledged} onCheckedChange={(checked) => setAcknowledged(checked === true)} className="mt-0.5" />
-        <span>I understand how my Common App password is used and stored.</span>
+        I understand how my Common App password is used and stored.
       </label>
-
-      <StepActions step={step} loading={save.isPending} disabled={!acknowledged} />
-    </form>
+    </QuestionLayout>
   );
 }

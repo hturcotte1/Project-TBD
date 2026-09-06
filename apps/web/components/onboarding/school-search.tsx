@@ -1,11 +1,10 @@
 'use client';
 
 import type { SchoolWithRequirementsDto } from '@apogee/shared/api';
+import { Plus } from '@phosphor-icons/react';
 import { useQuery } from '@tanstack/react-query';
-import { Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button, SearchInput } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
@@ -36,31 +35,28 @@ export function SchoolSearch({ excludedSlugs, onAdd, onAddFreeText }: SchoolSear
   const visible = (results.data ?? []).filter((school) => !excludedSlugs.has(school.slug));
 
   return (
-    <div className="space-y-2">
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search for a school…" className="pl-8" />
-      </div>
+    <div className="flex flex-col gap-2">
+      <SearchInput value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery('')} placeholder="Search for a school" />
       {debounced.length > 0 ? (
-        <div className="max-h-56 space-y-1 overflow-y-auto">
-          {results.isFetching ? <p className="px-1 text-xs text-muted-foreground">Searching…</p> : null}
+        <div className="flex max-h-56 flex-col gap-1 overflow-y-auto">
+          {results.isFetching ? <p className="px-1 text-12 text-fg-2">Searching</p> : null}
           {visible.map((school) => (
             <button
               key={school.id}
               type="button"
               onClick={() => onAdd(school)}
-              className="flex w-full items-center justify-between gap-2 rounded-md border border-border px-3 py-2 text-left text-sm hover:bg-accent"
+              className="flex h-row-touch w-full items-center justify-between gap-2 rounded px-3 text-left text-14 hover:bg-s2 focus-inset lg:h-row"
             >
               <span className="truncate">
-                {school.name} <span className="text-xs text-muted-foreground">— {school.city}, {school.state}</span>
+                {school.name} <span className="text-fg-2">— {school.city}, {school.state}</span>
               </span>
-              <Plus className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <Plus className="shrink-0 text-fg-3" />
             </button>
           ))}
           {results.data && visible.length === 0 && !results.isFetching ? (
-            <div className="space-y-1.5 rounded-md border border-dashed border-border p-3 text-sm">
-              <p className="text-muted-foreground">No match in our dataset.</p>
-              <Button type="button" variant="outline" size="sm" onClick={() => onAddFreeText(query.trim())}>
+            <div className="flex flex-col gap-1.5 rounded border border-dashed border-line-strong p-3">
+              <p className="text-14 text-fg-2">No match in our dataset.</p>
+              <Button variant="text" size="sm" className="h-auto w-fit px-0" onClick={() => onAddFreeText(query.trim())}>
                 Add &ldquo;{query.trim()}&rdquo; anyway
               </Button>
             </div>

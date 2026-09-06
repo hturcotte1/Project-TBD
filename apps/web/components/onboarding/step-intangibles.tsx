@@ -2,32 +2,41 @@
 
 import type { StudentNarrative } from '@apogee/shared/schemas';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { InterviewChat, TERMINAL_RUN_OUTCOMES } from '@/components/onboarding/interview-chat';
 import { NarrativeReview } from '@/components/onboarding/narrative-review';
-import { StepActions } from '@/components/onboarding/step-actions';
+import { QuestionLayout } from '@/components/onboarding/question-layout';
+import { getQuestionCount, getQuestionId } from '@/components/onboarding/step-questions';
 import type { OnboardingStepProps } from '@/components/onboarding/step-types';
+import { useQuestionNav } from '@/components/onboarding/use-question-nav';
 import { WhyWeAsk } from '@/components/onboarding/why-we-ask';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { Button, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 const UNSUCCESSFUL_OUTCOMES = new Set(['failed', 'refused', 'no_action']);
 
+/** Step 4: the interview conversation, then reviewing the narrative it produces. */
 export function StepIntangibles({ onboarding, step }: OnboardingStepProps) {
   const router = useRouter();
-  const { toast } = useToast();
+  const total = getQuestionCount(step);
+  const nav = useQuestionNav(step, total);
+  const questionId = getQuestionId(step, nav.question);
 
-  const [mode, setMode] = useState<'chat' | 'review'>(onboarding.narrative ? 'review' : 'chat');
   const [runId, setRunId] = useState<string | null>(null);
   const [narrative, setNarrative] = useState<StudentNarrative | null>(onboarding.narrative?.narrative ?? null);
+  const [editing, setEditing] = useState(false);
+
+  // A student revisiting this step with an already-built narrative lands on the review question
+  // rather than re-starting the chat.
+  useEffect(() => {
+    if (onboarding.narrative && nav.question === 1) nav.goToQuestion(2);
+  }, []);
 
   const summarize = useMutation({
     mutationFn: () => clientApi.call('narrativeSummarize'),
     onSuccess: (result) => setRunId(result.run_id),
-    onError: () => toast({ title: 'Could not start the summary — try again in a moment.', variant: 'destructive' }),
+    onError: () => toast('Could not start the summary. Try again in a moment.'),
   });
 
   const runQuery = useQuery({
@@ -46,11 +55,11 @@ export function StepIntangibles({ onboarding, step }: OnboardingStepProps) {
   useEffect(() => {
     if (runQuery.data?.outcome === 'completed' && narrativeQuery.data) {
       setNarrative(narrativeQuery.data.narrative);
-      setMode('review');
+      nav.goToQuestion(2);
     } else if (runQuery.data && UNSUCCESSFUL_OUTCOMES.has(runQuery.data.outcome)) {
-      toast({ title: "Couldn't build a summary from that yet", description: 'Answer a couple more questions and try again.', variant: 'destructive' });
+      toast("Could not build a summary from that yet. Answer a couple more questions and try again.");
     }
-  }, [runQuery.data, narrativeQuery.data, toast]);
+  }, [runQuery.data, narrativeQuery.data]);
 
   const confirm = useMutation({
     mutationFn: async () => {
@@ -59,51 +68,65 @@ export function StepIntangibles({ onboarding, step }: OnboardingStepProps) {
       return clientApi.call('onboardingStep', { body: { step: 4, data: { narrative_confirmed: true } } });
     },
     onSuccess: (state) => router.push(`/onboarding/${state.step}`),
-    onError: () => toast({ title: 'Could not save — try again.', variant: 'destructive' }),
+    onError: () => toast('Could not save. Try again.'),
   });
 
   const summarizing = summarize.isPending || (runId !== null && (!runQuery.data || runQuery.data.outcome === 'pending' || runQuery.data.outcome === 'running'));
 
-  return (
-    <div className="space-y-6">
-      <div className="space-y-1.5">
-        <h1 className="text-xl font-semibold tracking-tight">Getting to know you</h1>
-        <p className="text-sm text-muted-foreground">A short conversation — Vector uses this to write in your voice, not its own.</p>
-      </div>
-
-      <WhyWeAsk>
-        Essays and short answers land better when they draw on something real. Nothing here gets used word-for-word — it helps Vector ask
-        better questions and give sharper feedback later.
-      </WhyWeAsk>
-
-      {mode === 'chat' ? (
-        <div className="space-y-4">
-          <InterviewChat timezone={onboarding.student.timezone} />
-          <Button type="button" variant="outline" onClick={() => summarize.mutate()} loading={summarizing}>
-            <Sparkles className="h-3.5 w-3.5" /> Wrap up &amp; summarize
-          </Button>
-        </div>
-      ) : narrative ? (
-        <div className="space-y-4">
-          <NarrativeReview narrative={narrative} onChange={setNarrative} />
-          <Button type="button" variant="ghost" size="sm" onClick={() => setMode('chat')}>
-            Keep talking instead
-          </Button>
-        </div>
-      ) : (
-        <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Building your summary…
-        </p>
-      )}
-
-      <form
+  if (questionId === 'interview') {
+    return (
+      <QuestionLayout
+        question="Tell Vector about yourself."
+        context="A short conversation — Vector uses this to write in your voice, not its own."
+        whyWeAsk={
+          <WhyWeAsk>
+            Essays and short answers land better when they draw on something real — nothing here is used word-for-word.
+          </WhyWeAsk>
+        }
         onSubmit={(event) => {
           event.preventDefault();
-          confirm.mutate();
+          summarize.mutate();
         }}
+        onBack={nav.goBack}
+        backHidden={nav.isFirstOverall}
+        continueLabel="I'm done talking"
+        continueLoading={summarizing}
       >
-        <StepActions step={step} loading={confirm.isPending} submitLabel="Looks right" disabled={mode !== 'review' || !narrative} />
-      </form>
-    </div>
+        <InterviewChat timezone={onboarding.student.timezone} />
+      </QuestionLayout>
+    );
+  }
+
+  // 'review' — the last question of this step. No built-in Back here: "Talk more" replaces it.
+  return (
+    <QuestionLayout
+      question="Does this sound like you?"
+      onSubmit={(event) => {
+        event.preventDefault();
+        confirm.mutate();
+      }}
+      backHidden
+      continueLabel="Yes, continue"
+      continueLoading={confirm.isPending}
+      continueDisabled={!narrative}
+      footerExtra={
+        <>
+          <Button type="button" variant="text" onClick={() => setEditing((value) => !value)} disabled={!narrative}>
+            {editing ? 'Done editing' : 'Edit'}
+          </Button>
+          <Button type="button" variant="quiet" onClick={() => nav.goToQuestion(1)}>
+            Talk more
+          </Button>
+        </>
+      }
+    >
+      {!narrative ? (
+        <p className="text-14 text-fg-2">Building your summary.</p>
+      ) : editing ? (
+        <NarrativeReview narrative={narrative} onChange={setNarrative} />
+      ) : (
+        <p className="text-14 text-fg">{narrative.summary}</p>
+      )}
+    </QuestionLayout>
   );
 }

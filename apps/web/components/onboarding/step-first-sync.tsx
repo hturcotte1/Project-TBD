@@ -1,33 +1,39 @@
 'use client';
 
+import type { ApplicationPlan } from '@apogee/shared/domain';
+import { CircleNotch } from '@phosphor-icons/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { CheckCircle2, Loader2, PartyPopper } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import type { OnboardingStepProps } from '@/components/onboarding/step-types';
-import { DeadlineBadge } from '@/components/layout/deadline-badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
+import { Button, Countdown, DaysFigure, ErrorNote, Table, TableBody, TableCell, TableRow, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
-import { relativeDays } from '@/lib/format';
 
 const ACTIVE_JOB_STATUSES = new Set(['queued', 'running']);
 
+const PLAN_LABELS: Record<ApplicationPlan, string> = {
+  ED: 'Early Decision',
+  ED2: 'Early Decision II',
+  EA: 'Early Action',
+  REA: 'Restrictive Early Action',
+  RD: 'Regular Decision',
+  rolling: 'Rolling',
+};
+
+/** Step 7: a single screen with no question — completion kicks off the first sync automatically,
+ * and "Go to Today" both retries a failed attempt and, once it succeeds, leaves onboarding. */
 export function StepFirstSync({ onboarding }: OnboardingStepProps) {
   const router = useRouter();
-  const { toast } = useToast();
 
   const finish = useMutation({
     mutationFn: async () => {
       await clientApi.call('onboardingStep', { body: { step: 7, data: {} } });
       return clientApi.call('onboardingComplete');
     },
-    onError: () => toast({ title: 'Could not finish setup', description: 'Try again in a moment.', variant: 'destructive' }),
+    onError: () => toast('Could not finish setup. Try again in a moment.'),
   });
 
   const { mutate: startFinishing } = finish;
-  // Runs once on mount — kicks off completion + first sync as soon as the student lands here.
   useEffect(() => {
     startFinishing();
   }, [startFinishing]);
@@ -58,72 +64,61 @@ export function StepFirstSync({ onboarding }: OnboardingStepProps) {
     enabled: finish.isSuccess && !syncing,
   });
 
+  const deadline = overviewQuery.data?.nearest_deadline;
+  const label = deadline ? `days until ${deadline.school_name}, ${PLAN_LABELS[deadline.plan]}.` : undefined;
+
+  function handleGoToToday() {
+    if (finish.isError) {
+      finish.mutate();
+      return;
+    }
+    if (finish.isSuccess && !syncing) router.push('/');
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="space-y-1.5 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">First sync</h1>
-        <p className="text-sm text-muted-foreground">Vector is reading your Common App account and building your plan.</p>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-22 font-semibold lg:text-28">First sync</h1>
       </div>
 
+      <Countdown size="header" days={deadline?.days_remaining ?? null} label={label} />
+
       {finish.isError ? (
-        <div className="flex flex-col items-center gap-3 py-6">
-          <p className="text-sm text-destructive">Something went wrong finishing setup.</p>
-          <Button type="button" onClick={() => finish.mutate()} loading={finish.isPending}>
-            Try again
-          </Button>
-        </div>
-      ) : !finish.isSuccess ? (
-        <div className="flex flex-col items-center gap-3 py-10">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Setting things up…</p>
-        </div>
-      ) : syncing ? (
-        <div className="flex flex-col items-center gap-3 py-10">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Syncing your Common App account — this usually takes under a minute.</p>
-        </div>
+        <ErrorNote>The first sync did not finish. You can start it again from Schools.</ErrorNote>
+      ) : syncing || !finish.isSuccess ? (
+        <p className="flex items-center gap-2 text-14 text-fg-2">
+          <CircleNotch className="animate-spin" /> Vector is reading your Common App.
+        </p>
       ) : (
-        <div className="space-y-4">
-          <div className="flex flex-col items-center gap-2 rounded-lg border border-success/30 bg-success/10 px-4 py-6 text-center">
-            <PartyPopper className="h-6 w-6 text-success" />
-            <p className="text-sm font-medium">You&rsquo;re set up, {onboarding.student.preferred_name || onboarding.student.first_name}.</p>
-            <p className="text-sm text-muted-foreground">I just texted you the top 3 things to do first — check your phone.</p>
-          </div>
-
-          {overviewQuery.data?.nearest_deadline ? (
-            <Card>
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs text-muted-foreground">Nearest deadline</p>
-                  <p className="text-sm font-medium">{overviewQuery.data.nearest_deadline.school_name}</p>
-                </div>
-                <DeadlineBadge daysRemaining={overviewQuery.data.nearest_deadline.days_remaining} />
-              </CardContent>
-            </Card>
-          ) : null}
-
+        <div className="flex flex-col gap-2">
+          <p className="text-14 text-fg">
+            You're set up, {onboarding.student.preferred_name || onboarding.student.first_name}. I just texted you the top 3 things to do first.
+          </p>
           {actionsQuery.data && actionsQuery.data.length > 0 ? (
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-muted-foreground">Top next actions</p>
-              {actionsQuery.data.slice(0, 3).map((action) => (
-                <Card key={action.id}>
-                  <CardContent className="space-y-1 p-3">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      {action.school_name ? <span>{action.school_name}</span> : null}
-                      {action.days_remaining !== null ? <span>· {relativeDays(action.days_remaining)}</span> : null}
-                    </div>
-                    <p className="text-sm font-medium">{action.action}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Table>
+              <TableBody>
+                {actionsQuery.data.slice(0, 3).map((action) => (
+                  <TableRow key={action.id}>
+                    <TableCell>
+                      <div className="font-medium">{action.action}</div>
+                      {action.school_name ? <div className="text-12 text-fg-2">{action.school_name}</div> : null}
+                    </TableCell>
+                    <TableCell numeric className="whitespace-nowrap">
+                      {action.days_remaining === null ? null : <DaysFigure days={action.days_remaining} format="relative" />}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           ) : null}
-
-          <Button type="button" className="w-full" onClick={() => router.push('/')}>
-            <CheckCircle2 className="h-4 w-4" /> Go to my dashboard
-          </Button>
         </div>
       )}
+
+      <div className="flex justify-end pt-2">
+        <Button variant="primary" onClick={handleGoToToday} loading={finish.isPending || syncing} disabled={!finish.isError && (!finish.isSuccess || syncing)}>
+          Go to Today
+        </Button>
+      </div>
     </div>
   );
 }

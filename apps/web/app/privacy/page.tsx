@@ -1,35 +1,39 @@
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { PageTitle, Prose, TextLink } from '@/components/system';
 
 export const metadata: Metadata = { title: 'Privacy' };
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="space-y-3">
-      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-      <div className="space-y-3 text-sm leading-6 text-muted-foreground">{children}</div>
+    <section className="flex flex-col gap-3">
+      <h2 className="text-17 font-semibold">{title}</h2>
+      <Prose>{children}</Prose>
     </section>
   );
 }
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl px-6 py-12">
-      <div className="space-y-2 pb-8">
-        <p className="text-sm font-medium text-primary">Privacy, in plain language</p>
-        <h1 className="text-2xl font-semibold tracking-tight">What we store, what the agent can do, and how to leave</h1>
-        <p className="text-sm text-muted-foreground">
-          This page describes how the product actually works. If anything here seems off, that&rsquo;s a bug — tell us.
+    <main className="mx-auto flex w-full max-w-content flex-col gap-8 px-4 py-8 lg:px-8 lg:py-12">
+      {/* Warms the Bricolage font file, unused elsewhere on this page. */}
+      <VisuallyHidden>
+        <span className="font-count">0</span>
+      </VisuallyHidden>
+      <div className="flex flex-col gap-2">
+        <PageTitle>Privacy</PageTitle>
+        <p className="max-w-measure text-14 text-fg-2">
+          This page describes how the product actually works. If anything here seems off, that is a bug — tell us.
         </p>
       </div>
 
-      <div className="space-y-10">
+      <div className="flex flex-col gap-8">
         <Section title="What is stored">
           <p>We keep only what your application needs:</p>
-          <ul className="list-disc space-y-1.5 pl-5">
+          <ul className="flex list-disc flex-col gap-1.5 pl-5">
             <li>Your profile — name, school, grad year, GPA, test scores, activities, goals, and anything you tell the intangibles interview.</li>
-            <li>Your Common App state — a normalized snapshot of what&rsquo;s filled in, in progress, or missing, captured each time we sync.</li>
+            <li>Your Common App state — a normalized snapshot of what is filled in, in progress, or missing, captured each time we sync.</li>
             <li>Your school list, deadlines, checklist items, essays and drafts, and recommender status.</li>
             <li>Every message between you and the agent, on iMessage and on this dashboard — one shared conversation.</li>
             <li>A record of what the agent did and why: every tool call, every browser session, every approval you answered.</li>
@@ -46,36 +50,39 @@ export default function PrivacyPage() {
             The agent reads your real Common App account, compares it against what colleges actually require, and figures out what to
             do next. With your data, and only your data, it can:
           </p>
-          <ul className="list-disc space-y-1.5 pl-5">
+          <ul className="flex list-disc flex-col gap-1.5 pl-5">
             <li>Draft answers, activity descriptions, and reminders for you to review.</li>
             <li>Fill in a section of Common App — but only after you say yes to the exact text it plans to type, field by field.</li>
-            <li>Text you proactively about deadlines, a recommender who hasn&rsquo;t submitted, or a stale draft — never during your quiet hours, and never more than your chosen intensity allows.</li>
+            <li>
+              Text you proactively about deadlines, a recommender who has not submitted, or a stale draft — never during your quiet
+              hours, and never more than your chosen intensity allows.
+            </li>
             <li>Give feedback on your essays — structure, clarity, whether it answers the prompt — without ever writing or rewriting a sentence for you.</li>
           </ul>
         </Section>
 
-        <Section title="What the agent can&rsquo;t do">
-          <ul className="list-disc space-y-1.5 pl-5">
+        <Section title="What the agent cannot do">
+          <ul className="flex list-disc flex-col gap-1.5 pl-5">
             <li>It never submits an application. A hard, always-on guard blocks any submit or payment action, independent of what any model decides.</li>
             <li>It never writes essay text on your behalf — feedback comes back as structured notes and questions, never suggested prose.</li>
             <li>It never fills anything without your explicit approval of that exact content.</li>
             <li>It never sees another student&rsquo;s data — every request is scoped to your account and checked in code, not just by convention.</li>
-            <li>It treats anything it reads off a web page, a document, or a photo as data, never as an instruction — a page can&rsquo;t talk it into doing something you didn&rsquo;t ask for.</li>
+            <li>It treats anything it reads off a web page, a document, or a photo as data, never as an instruction — a page cannot talk it into doing something you did not ask for.</li>
           </ul>
         </Section>
 
         <Section title="Who can see this">
           <p>
-            You, and the small team operating this product for support and debugging. We don&rsquo;t sell data, and we don&rsquo;t use it
-            to train models beyond the run that answers your own request.
+            You, and the small team operating this product for support and debugging. We do not sell data, and we do not use it to
+            train models beyond the run that answers your own request.
           </p>
         </Section>
 
         <Section title="Disconnecting Common App">
           <p>
-            Disconnect from <Link href="/settings" className="text-primary underline underline-offset-2">Settings</Link> at any time.
-            That deletes your stored credentials immediately and cancels any browser jobs already queued. Nothing already synced is
-            deleted — only your saved password and any future ability to log back in on your behalf.
+            Disconnect from <TextLink href="/settings">Settings</TextLink> at any time. That deletes your stored credentials
+            immediately and cancels any browser jobs already queued. Nothing already synced is deleted — only your saved password and
+            any future ability to log back in on your behalf.
           </p>
         </Section>
 

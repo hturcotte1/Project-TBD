@@ -1,11 +1,22 @@
 import type { OnboardingStateDto } from '@apogee/shared/api';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ONBOARDING_STEPS, getOnboardingStep } from '@/components/onboarding/step-config';
+import { getQuestions } from '@/components/onboarding/step-questions';
+
+// Vitest doesn't expose a global `afterEach` unless `test.globals` is set (it isn't here), so
+// @testing-library/react's built-in auto-cleanup never fires — do it explicitly between tests.
+afterEach(cleanup);
+
+let mockPathname = '/onboarding/1';
+let mockSearch = '';
+const mockRouter = { push: vi.fn(), replace: vi.fn(), back: vi.fn() };
 
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
+  useRouter: () => mockRouter,
+  usePathname: () => mockPathname,
+  useSearchParams: () => new URLSearchParams(mockSearch),
 }));
 
 function fakeOnboarding(step: number): OnboardingStateDto {
@@ -43,11 +54,16 @@ function fakeOnboarding(step: number): OnboardingStateDto {
   };
 }
 
-function renderStep(step: number) {
+/** Renders one step at a given `?q=` question index (defaults to the step's first question). The
+ * URL — not any local mode state — is what the step reads (see `use-question-nav.ts`), so the
+ * pathname mock is kept in sync with `step` on every render. */
+function renderStep(step: number, question?: number) {
   const def = getOnboardingStep(step);
   if (!def) throw new Error(`no step definition for ${step}`);
+  mockPathname = `/onboarding/${step}`;
+  mockSearch = question ? `q=${question}` : '';
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  const StepComponent = def.component;
+  const StepComponent = def;
   return render(
     <QueryClientProvider client={client}>
       <StepComponent onboarding={fakeOnboarding(step)} step={step} />
@@ -55,13 +71,19 @@ function renderStep(step: number) {
   );
 }
 
+beforeEach(() => {
+  mockRouter.push.mockClear();
+  mockRouter.replace.mockClear();
+  mockRouter.back.mockClear();
+});
+
 describe('getOnboardingStep', () => {
   it('maps every step from 1 to 7 to a distinct component', () => {
     for (let step = 1; step <= 7; step += 1) {
       expect(getOnboardingStep(step)).not.toBeNull();
     }
-    const titles = new Set(Object.values(ONBOARDING_STEPS).map((s) => s.title));
-    expect(titles.size).toBe(7);
+    const components = new Set(Object.values(ONBOARDING_STEPS));
+    expect(components.size).toBe(7);
   });
 
   it('returns null outside the 1-7 range', () => {
@@ -71,24 +93,44 @@ describe('getOnboardingStep', () => {
   });
 });
 
-describe('onboarding step page renders the component matching its step number', () => {
-  it('step 1 renders the basics form', () => {
+// Steps 4 (interview), 6 (Common App connect) and 7 (first sync) fetch on mount and are covered by
+// their own component tests instead — this suite is about the shared question-index routing, not
+// re-testing every step's data fetching.
+describe('a step renders the first question from its URL by default', () => {
+  it.each([1, 2, 3, 5])('step %i shows its first question as an h1', (step) => {
+    renderStep(step);
+    const firstQuestion = getQuestions(step)[0];
+    expect(firstQuestion).toBeDefined();
+    expect(screen.getByRole('heading', { level: 1, name: firstQuestion!.label })).toBeTruthy();
+  });
+});
+
+describe('Back', () => {
+  it('is hidden on the very first question of the whole flow', () => {
     renderStep(1);
-    expect(screen.getByText('The basics')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Back' })).toBeNull();
   });
 
-  it('step 2 renders the academics form', () => {
+  it('is shown on the first question of any later step, to step back into the previous one', () => {
     renderStep(2);
-    expect(screen.getByText('Academics')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Back' })).toBeTruthy();
+  });
+});
+
+describe('Continue advances the question index in the URL', () => {
+  it("advances this step's own question param, leaving the step segment unchanged", () => {
+    renderStep(1);
+    fireEvent.change(screen.getByLabelText('First name'), { target: { value: 'Dee' } });
+    fireEvent.change(screen.getByLabelText('Last name'), { target: { value: 'Demo' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    expect(mockRouter.push).toHaveBeenCalledWith('/onboarding/1?q=2');
   });
 
-  it('step 3 renders the activities editor', () => {
-    renderStep(3);
-    expect(screen.getByText('Activities')).toBeTruthy();
-  });
-
-  it('step 5 renders goals & schools', () => {
-    renderStep(5);
-    expect(screen.getByText('Goals & schools')).toBeTruthy();
+  it('does not advance when the current question is invalid', () => {
+    renderStep(1);
+    fireEvent.change(screen.getByLabelText('First name'), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    expect(mockRouter.push).not.toHaveBeenCalled();
+    expect(screen.getByText('Enter your first and last name.')).toBeTruthy();
   });
 });

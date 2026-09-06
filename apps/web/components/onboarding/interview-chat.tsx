@@ -1,26 +1,28 @@
 'use client';
 
+import { PaperPlaneRight } from '@phosphor-icons/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from '@/components/ui/textarea';
+import { Button, Textarea } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 import { formatTime } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 const TERMINAL_RUN_OUTCOMES = new Set(['completed', 'failed', 'refused', 'no_action']);
 
-function TypingDots() {
+function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1 rounded-lg bg-muted px-3 py-2">
-      {[0, 1, 2].map((i) => (
-        <span key={i} className="h-1.5 w-1.5 animate-typing-dot rounded-full bg-muted-foreground" style={{ animationDelay: `${i * 0.15}s` }} />
+    <div className="flex w-fit items-center gap-1.5 rounded-lg bg-s2 px-3 py-2.5">
+      {[0, 1, 2].map((dot) => (
+        <span key={dot} className="h-1.5 w-1.5 animate-typing-dot rounded-full bg-fg-3" style={{ animationDelay: `${dot * 150}ms` }} />
       ))}
     </div>
   );
 }
 
+/** The intangibles interview as the same Vector thread pattern used in Chat: Vector's bubbles on
+ * the left in Surface 2, the student's on the right in brand, a composer with a primary send icon.
+ * Also used unchanged from `/profile/interview` — props stay exactly `{ timezone }`. */
 export function InterviewChat({ timezone }: { timezone: string }) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState('');
@@ -52,39 +54,37 @@ export function InterviewChat({ timezone }: { timezone: string }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length, awaitingReply]);
 
+  function submit() {
+    const trimmed = draft.trim();
+    if (trimmed) send.mutate(trimmed);
+  }
+
   return (
     <div className="flex flex-col gap-3">
-      <ScrollArea className="h-80 rounded-md border border-border bg-card p-3">
-        <div className="flex flex-col gap-3">
-          {messages.length === 0 && !messagesQuery.isPending ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Vector will start with an easy question. Say hi, or just start typing whatever comes to mind.
-            </p>
-          ) : null}
-          {messages.map((message) => (
-            <div key={message.id} className={cn('flex flex-col gap-0.5', message.direction === 'inbound' ? 'items-end' : 'items-start')}>
-              <div
-                className={cn(
-                  'max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm',
-                  message.direction === 'inbound' ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground',
-                )}
-              >
+      <div className="flex h-80 flex-col gap-3 overflow-y-auto rounded border border-line p-3">
+        {messages.length === 0 && !messagesQuery.isPending ? (
+          <p className="py-8 text-center text-14 text-fg-2">Vector will start with an easy question. Say hi, or just start typing whatever comes to mind.</p>
+        ) : null}
+        {messages.map((message) => {
+          const isStudent = message.direction === 'inbound';
+          return (
+            <div key={message.id} className={cn('flex flex-col gap-0.5', isStudent ? 'items-end' : 'items-start')}>
+              <div className={cn('max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-14', isStudent ? 'bg-brand text-fg-on-brand' : 'bg-s2 text-fg')}>
                 {message.body}
               </div>
-              <span className="px-1 text-[10px] text-muted-foreground">{formatTime(message.created_at, timezone)}</span>
+              <span className="px-1 text-12 text-fg-3">{formatTime(message.created_at, timezone)}</span>
             </div>
-          ))}
-          {awaitingReply ? <TypingDots /> : null}
-          <div ref={bottomRef} />
-        </div>
-      </ScrollArea>
+          );
+        })}
+        {awaitingReply ? <TypingIndicator /> : null}
+        <div ref={bottomRef} />
+      </div>
 
       <form
         className="flex items-end gap-2"
         onSubmit={(event) => {
           event.preventDefault();
-          const trimmed = draft.trim();
-          if (trimmed) send.mutate(trimmed);
+          submit();
         }}
       >
         <Textarea
@@ -93,17 +93,16 @@ export function InterviewChat({ timezone }: { timezone: string }) {
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
               event.preventDefault();
-              const trimmed = draft.trim();
-              if (trimmed) send.mutate(trimmed);
+              submit();
             }
           }}
-          placeholder="Type your answer…"
+          placeholder="Type your answer"
           rows={2}
           maxLength={5000}
           className="flex-1"
         />
-        <Button type="submit" disabled={!draft.trim()} loading={send.isPending}>
-          Send
+        <Button type="submit" variant="primary" iconOnly aria-label="Send" disabled={!draft.trim()} loading={send.isPending}>
+          <PaperPlaneRight />
         </Button>
       </form>
     </div>

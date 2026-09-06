@@ -1,9 +1,8 @@
 'use client';
 
-import { X } from 'lucide-react';
+import { X } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/system';
 
 export interface ChipInputProps {
   value: string[];
@@ -29,21 +28,16 @@ export function ChipInput({ value, onChange, placeholder, max, id }: ChipInputPr
   }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2">
       {value.length > 0 ? (
         <div className="flex flex-wrap gap-1.5">
           {value.map((chip) => (
-            <Badge key={chip} variant="secondary" className="gap-1 py-1 pl-2.5 pr-1.5">
+            <span key={chip} className="flex items-center gap-1 rounded bg-s2 py-1 pl-2 pr-1 text-12 text-fg">
               {chip}
-              <button
-                type="button"
-                onClick={() => onChange(value.filter((v) => v !== chip))}
-                className="rounded-full p-0.5 hover:bg-background/60"
-                aria-label={`Remove ${chip}`}
-              >
-                <X className="h-3 w-3" />
+              <button type="button" onClick={() => onChange(value.filter((v) => v !== chip))} className="flex rounded p-0.5 text-fg-2 hover:text-fg" aria-label={`Remove ${chip}`}>
+                <X />
               </button>
-            </Badge>
+            </span>
           ))}
         </div>
       ) : null}
@@ -62,7 +56,7 @@ export function ChipInput({ value, onChange, placeholder, max, id }: ChipInputPr
           placeholder={placeholder}
         />
       ) : (
-        <p className="text-xs text-muted-foreground">Max {max} reached.</p>
+        <p className="text-12 text-fg-2">Max {max} reached.</p>
       )}
     </div>
   );
