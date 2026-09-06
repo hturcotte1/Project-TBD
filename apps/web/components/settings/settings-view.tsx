@@ -1,15 +1,15 @@
 'use client';
 
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
-import { CommonAppCard } from '@/components/settings/common-app-card';
-import { DangerZone } from '@/components/settings/danger-zone';
+import { AppearanceSection } from '@/components/settings/appearance-section';
+import { CommonAppSection } from '@/components/settings/common-app-section';
 import { DataExportSection } from '@/components/settings/data-export-section';
-import { GmailCard } from '@/components/settings/gmail-card';
-import { ImessageCard } from '@/components/settings/imessage-card';
-import { NotificationsForm } from '@/components/settings/notifications-form';
-import { PageHeader } from '@/components/layout/page-header';
-import { Skeleton } from '@/components/ui/skeleton';
+import { DeleteAccountSection } from '@/components/settings/delete-account-section';
+import { GmailSection } from '@/components/settings/gmail-section';
+import { ImessageSection } from '@/components/settings/imessage-section';
+import { NotificationsSection } from '@/components/settings/notifications-section';
+import { Button, ErrorNote, PageTitle, Stack, TextLink } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 import type { AuthMode } from '@/lib/auth';
 
@@ -21,39 +21,36 @@ export function SettingsView({ authMode }: { authMode: AuthMode }) {
   const commonAppCredential = settings?.connected_accounts.find((account) => account.provider === 'common_app');
 
   return (
-    <div className="pb-8">
-      <PageHeader title="Settings" description="How Vector reaches you, what it's connected to, and your data." />
-      <div className="space-y-4 px-4 py-5 sm:px-6">
-        {!settings || settingsQuery.isPending ? (
-          <div className="space-y-4">
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-32 w-full" />
-          </div>
-        ) : settingsQuery.isError ? (
-          <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">Could not load settings — try refreshing.</p>
-        ) : (
-          <>
-            <NotificationsForm settings={settings} />
+    <div className="flex flex-col gap-8">
+      {/* DESIGN.md reserves the count face (Bricolage) for Today, school headers and the Schools
+          table — Settings has no numeral of its own. A hidden span still warms the font file so
+          it's not left completely unloaded (same warm-up Schools, Essays and Timeline do). */}
+      <VisuallyHidden>
+        <span className="font-count">0</span>
+      </VisuallyHidden>
+      <PageTitle>Settings</PageTitle>
 
-            <div className="space-y-1.5 pt-2">
-              <h2 className="text-sm font-medium text-muted-foreground">Connected accounts</h2>
-            </div>
-            {commonAppCredential ? <CommonAppCard credential={commonAppCredential} syncStatus={syncStatusQuery.data} /> : null}
-            <ImessageCard agentName={settings.agent_name} agentPhone={settings.agent_phone_number} />
-            <GmailCard enabled={settings.features.gmail} />
-
-            <DataExportSection />
-            <DangerZone authMode={authMode} />
-
-            <p className="text-center text-xs text-muted-foreground">
-              <Link href="/privacy" className="underline underline-offset-2">
-                Read the privacy page
-              </Link>
-            </p>
-          </>
-        )}
-      </div>
+      {settingsQuery.isError ? (
+        <ErrorNote>
+          Could not load settings.{' '}
+          <Button variant="text" className="h-auto px-0" onClick={() => settingsQuery.refetch()}>
+            Try again
+          </Button>
+        </ErrorNote>
+      ) : settings ? (
+        <Stack>
+          <NotificationsSection settings={settings} />
+          <AppearanceSection />
+          <CommonAppSection credential={commonAppCredential} syncStatus={syncStatusQuery.data} />
+          <ImessageSection agentName={settings.agent_name} agentPhone={settings.agent_phone_number} />
+          <GmailSection enabled={settings.features.gmail} />
+          <DataExportSection />
+          <DeleteAccountSection authMode={authMode} />
+          <p className="text-12 text-fg-3">
+            <TextLink href="/privacy">Privacy</TextLink>
+          </p>
+        </Stack>
+      ) : null}
     </div>
   );
 }

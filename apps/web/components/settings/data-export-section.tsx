@@ -2,23 +2,22 @@
 
 import type { AgentRunDto } from '@apogee/shared/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Download, FileJson, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
+import { Button, ErrorNote, Section, TextLink, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 const TERMINAL_RUN_OUTCOMES = new Set<AgentRunDto['outcome']>(['completed', 'failed', 'refused', 'no_action']);
 
 export function DataExportSection() {
-  const { toast } = useToast();
   const [runId, setRunId] = useState<string | null>(null);
 
   const startExport = useMutation({
     mutationFn: () => clientApi.call('accountExport'),
-    onSuccess: (result) => setRunId(result.run_id),
-    onError: () => toast({ title: 'Could not start the export — try again.', variant: 'destructive' }),
+    onSuccess: (result) => {
+      setRunId(result.run_id);
+      toast('Preparing your export.');
+    },
+    onError: () => toast('Could not start the export. Try again.'),
   });
 
   const runQuery = useQuery({
@@ -33,26 +32,19 @@ export function DataExportSection() {
   const failed = runQuery.data && runQuery.data.outcome !== 'completed' && TERMINAL_RUN_OUTCOMES.has(runQuery.data.outcome);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Data</CardTitle>
-        <CardDescription>Everything the agent stores about you, as one JSON file.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-wrap items-center gap-3">
+    <Section title="Your data">
+      <div className="flex flex-col items-start gap-2">
         {ready && runId ? (
-          <Button type="button" asChild>
-            <a href={`/api/proxy/account/export/${runId}`} target="_blank" rel="noopener noreferrer">
-              <Download className="h-3.5 w-3.5" /> Download export
-            </a>
-          </Button>
+          <TextLink href={`/api/proxy/account/export/${runId}`} target="_blank" rel="noopener noreferrer">
+            Download export (JSON)
+          </TextLink>
         ) : (
-          <Button type="button" variant="outline" onClick={() => startExport.mutate()} disabled={preparing}>
-            {preparing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileJson className="h-3.5 w-3.5" />}
-            {preparing ? 'Preparing your export…' : 'Export my data'}
+          <Button variant="text" className="h-auto px-0" loading={preparing} onClick={() => startExport.mutate()}>
+            Export everything
           </Button>
         )}
-        {failed ? <p className="text-sm text-destructive">Could not build the export — try again.</p> : null}
-      </CardContent>
-    </Card>
+        {failed ? <ErrorNote>Could not build the export. Try again.</ErrorNote> : null}
+      </div>
+    </Section>
   );
 }

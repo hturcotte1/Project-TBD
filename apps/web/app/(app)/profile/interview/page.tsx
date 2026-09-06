@@ -2,15 +2,14 @@
 
 import type { AgentRunDto } from '@apogee/shared/api';
 import type { StudentNarrative } from '@apogee/shared/schemas';
+import { Sparkle } from '@phosphor-icons/react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { PageHeader } from '@/components/layout/page-header';
 import { InterviewChat } from '@/components/onboarding/interview-chat';
 import { NarrativeReview } from '@/components/onboarding/narrative-review';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { Button, PageTitle, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 
 const TERMINAL_RUN_OUTCOMES = new Set<AgentRunDto['outcome']>(['completed', 'failed', 'refused', 'no_action']);
@@ -18,7 +17,6 @@ const UNSUCCESSFUL_OUTCOMES = new Set<AgentRunDto['outcome']>(['failed', 'refuse
 
 export default function ProfileInterviewPage() {
   const router = useRouter();
-  const { toast } = useToast();
 
   const meQuery = useQuery({ queryKey: ['me'], queryFn: () => clientApi.call('me') });
   const timezone = meQuery.data?.timezone ?? 'America/Chicago';
@@ -30,7 +28,7 @@ export default function ProfileInterviewPage() {
   const summarize = useMutation({
     mutationFn: () => clientApi.call('narrativeSummarize'),
     onSuccess: (result) => setRunId(result.run_id),
-    onError: () => toast({ title: 'Could not start the summary — try again in a moment.', variant: 'destructive' }),
+    onError: () => toast('Could not start the summary. Try again in a moment.'),
   });
 
   const runQuery = useQuery({
@@ -51,9 +49,9 @@ export default function ProfileInterviewPage() {
       setNarrative(narrativeQuery.data.narrative);
       setMode('review');
     } else if (runQuery.data && UNSUCCESSFUL_OUTCOMES.has(runQuery.data.outcome)) {
-      toast({ title: "Couldn't build a summary from that yet", description: 'Answer a couple more questions and try again.', variant: 'destructive' });
+      toast('Could not build a summary from that yet. Answer a couple more questions and try again.');
     }
-  }, [runQuery.data, narrativeQuery.data, toast]);
+  }, [runQuery.data, narrativeQuery.data]);
 
   const confirm = useMutation({
     mutationFn: async () => {
@@ -61,43 +59,51 @@ export default function ProfileInterviewPage() {
       return clientApi.call('narrativeUpdate', { body: narrative });
     },
     onSuccess: () => {
-      toast({ title: 'Your story is saved' });
+      toast('Your story is saved.');
       router.push('/profile');
     },
-    onError: () => toast({ title: 'Could not save — try again.', variant: 'destructive' }),
+    onError: () => toast('Could not save. Try again.'),
   });
 
   const summarizing = summarize.isPending || (runId !== null && (!runQuery.data || runQuery.data.outcome === 'pending' || runQuery.data.outcome === 'running'));
 
   return (
-    <div className="pb-8">
-      <PageHeader title="The interview" description="A short conversation — Vector uses this to write in your voice, not its own." />
-      <div className="space-y-4 px-4 py-5 sm:px-6 sm:max-w-2xl">
-        {mode === 'chat' ? (
-          <div className="space-y-4">
-            <InterviewChat timezone={timezone} />
-            <Button type="button" variant="outline" onClick={() => summarize.mutate()} loading={summarizing}>
-              <Sparkles className="h-3.5 w-3.5" /> Wrap up &amp; summarize
+    <div className="flex flex-col gap-8">
+      {/* DESIGN.md reserves the count face (Bricolage) for Today, school headers and the Schools
+          table — the interview has no numeral of its own. A hidden span still warms the font file
+          so it's not left completely unloaded (same warm-up Schools, Essays and Timeline do). */}
+      <VisuallyHidden>
+        <span className="font-count">0</span>
+      </VisuallyHidden>
+      <div className="flex flex-col gap-1">
+        <PageTitle>Your story</PageTitle>
+        <p className="text-14 text-fg-2">A short conversation with Vector so your applications sound like you.</p>
+      </div>
+
+      {mode === 'chat' ? (
+        <div className="flex max-w-measure flex-col gap-4">
+          <InterviewChat timezone={timezone} />
+          <div>
+            <Button variant="text" loading={summarizing} onClick={() => summarize.mutate()}>
+              <Sparkle /> Wrap up and summarize
             </Button>
           </div>
-        ) : narrative ? (
-          <div className="space-y-4">
-            <NarrativeReview narrative={narrative} onChange={setNarrative} />
-            <div className="flex flex-wrap gap-2">
-              <Button type="button" variant="ghost" size="sm" onClick={() => setMode('chat')}>
-                Keep talking instead
-              </Button>
-              <Button type="button" className="ml-auto" onClick={() => confirm.mutate()} loading={confirm.isPending}>
-                Save and return to profile
-              </Button>
-            </div>
+        </div>
+      ) : narrative ? (
+        <div className="flex max-w-measure flex-col gap-4">
+          <NarrativeReview narrative={narrative} onChange={setNarrative} />
+          <div className="flex flex-wrap items-center gap-4">
+            <Button variant="quiet" onClick={() => setMode('chat')}>
+              Keep talking instead
+            </Button>
+            <Button variant="primary" className="ml-auto" loading={confirm.isPending} onClick={() => confirm.mutate()}>
+              Save and return to profile
+            </Button>
           </div>
-        ) : (
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Building your summary…
-          </p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <p className="text-14 text-fg-2">Building your summary.</p>
+      )}
     </div>
   );
 }

@@ -1,66 +1,83 @@
 'use client';
 
+import type { DriftAlertDto } from '@apogee/shared/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle } from 'lucide-react';
-import { EmptyState } from '@/components/layout/empty-state';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/components/ui/use-toast';
+import { Button, Empty, ErrorNote, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, toast } from '@/components/system';
 import { clientApi } from '@/lib/api.client';
 import { relativeTimeFromNow } from '@/lib/format';
 
 const POLL_MS = 15_000;
 
-export function DriftTab() {
+function ResolveActions({ alert }: { alert: DriftAlertDto }) {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
-  const query = useQuery({ queryKey: ['admin', 'drift'], queryFn: () => clientApi.call('adminDrift'), refetchInterval: POLL_MS });
-
   const resolve = useMutation({
-    mutationFn: (id: string) => clientApi.call('adminDriftResolve', { params: { id }, body: { status: 'resolved' } }),
+    mutationFn: () => clientApi.call('adminDriftResolve', { params: { id: alert.id }, body: { status: 'resolved' } }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin', 'drift'] });
-      toast({ title: 'Marked resolved' });
+      toast('Marked resolved.');
     },
-    onError: () => toast({ title: 'Could not resolve — try again.', variant: 'destructive' }),
+    onError: () => toast('Could not resolve. Try again.'),
   });
 
-  if (query.isPending) {
+  if (alert.status !== 'open') return null;
+  return (
+    <div className="flex items-center gap-2">
+      <Button variant="text" size="sm" loading={resolve.isPending} onClick={() => resolve.mutate()}>
+        Resolve
+      </Button>
+      <Button variant="quiet" size="sm" loading={resolve.isPending} onClick={() => resolve.mutate()}>
+        Ignore
+      </Button>
+    </div>
+  );
+}
+
+export function DriftTab() {
+  const query = useQuery({ queryKey: ['admin', 'drift'], queryFn: () => clientApi.call('adminDrift'), refetchInterval: POLL_MS });
+
+  if (query.isError) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-24 w-full" />
-      </div>
+      <ErrorNote>
+        Could not load site drift.{' '}
+        <Button variant="text" className="h-auto px-0" onClick={() => query.refetch()}>
+          Try again
+        </Button>
+      </ErrorNote>
     );
   }
-  if (query.isError) return <p className="rounded-md border border-urgent-border bg-urgent-bg px-3 py-2 text-sm text-urgent">Could not load site drift — try refreshing.</p>;
-  if (query.data.length === 0) return <EmptyState icon={AlertTriangle} title="No drift detected" description="When Common App's page structure changes enough to lower extraction confidence, it shows up here." />;
+  if (!query.data) return null;
+  if (query.data.length === 0) return <Empty sentence="No drift detected. This fills in when Common App's pages change enough to lower extraction confidence." />;
 
   return (
-    <div className="space-y-3">
-      {query.data.map((alert) => (
-        <Card key={alert.id}>
-          <CardContent className="space-y-2 p-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-medium">{alert.section}</p>
-                <Badge variant={alert.status === 'open' ? 'warn' : 'success'}>{alert.status}</Badge>
-              </div>
-              <span className="text-xs text-muted-foreground">
-                {Math.round(alert.confidence * 100)}% confidence · {relativeTimeFromNow(alert.created_at)}
-              </span>
-            </div>
-            <pre className="overflow-x-auto rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">{JSON.stringify(alert.details, null, 2)}</pre>
-            {alert.status === 'open' ? (
-              <Button type="button" variant="outline" size="sm" loading={resolve.isPending} onClick={() => resolve.mutate(alert.id)}>
-                Mark resolved
-              </Button>
-            ) : null}
-          </CardContent>
-        </Card>
-      ))}
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell>Section</TableHeaderCell>
+            <TableHeaderCell>Confidence</TableHeaderCell>
+            <TableHeaderCell>Status</TableHeaderCell>
+            <TableHeaderCell className="hidden sm:table-cell">Created</TableHeaderCell>
+            <TableHeaderCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {query.data.map((alert) => (
+            <TableRow key={alert.id}>
+              <TableCell className="font-medium">{alert.section}</TableCell>
+              <TableCell numeric muted>
+                {alert.confidence.toFixed(2)}
+              </TableCell>
+              <TableCell className={alert.status === 'open' ? 'text-fg' : 'text-fg-2'}>{alert.status === 'open' ? 'Open' : 'Resolved'}</TableCell>
+              <TableCell muted className="hidden text-12 sm:table-cell">
+                {relativeTimeFromNow(alert.created_at)}
+              </TableCell>
+              <TableCell>
+                <ResolveActions alert={alert} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
