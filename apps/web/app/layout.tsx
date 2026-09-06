@@ -1,8 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { IconProvider, Toaster as SystemToaster, TooltipProvider } from '@/components/system';
-import { Toaster } from '@/components/ui/toaster';
+import { IconProvider, Toaster, TooltipProvider } from '@/components/system';
 import { AUTH_MODE } from '@/lib/auth';
 import { QueryProvider } from '@/lib/query';
 import { bricolage, hanken } from './fonts';
@@ -36,9 +35,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <IconProvider>
             <TooltipProvider>
               {children}
-              {/* Old and new toasters coexist until other agents migrate pages off components/ui. */}
               <Toaster />
-              <SystemToaster />
             </TooltipProvider>
           </IconProvider>
         </QueryProvider>
